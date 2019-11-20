@@ -4,63 +4,94 @@ import ActorManager from './Actors/ActorManager.js';
 
 (function main() {
 
-    // * Main render logic
+    // * Main render function
+    // TODO - its currently only Graphics here - can we leave this in the graphics manager and retrieve it later?
     const render = function render() {
-        console.log('rendering...');
         Graphics.render();
     }
 
-    // * Construct systems
+
+    // * -----------------------------------
+    // *    SYSTEM CONSTRUCTION
+    // * -----------------------------------
+
+    // * Construct Engine Manager
     const Engine = new EngineManager(
-        { managerName: 'EngineManager' },
+        {
+            managerName: 'EngineManager'
+        },
         render
     );
 
+    // * Construct Graphics Manager
     const Graphics = new GraphicsManager(
-        { managerName: 'GraphicsManager', canvasID: '#canvas' }
+        {
+            managerName: 'GraphicsManager',
+            canvasID: '#canvas'
+        }
     );
 
+    // * Construct Actor Manager
     const ActorMgr = new ActorManager(
-        { managerName: 'ActorManager' }
+        {
+            managerName: 'ActorManager'
+        }
     );
 
-    // * Initialise
-    Engine.initialise();
-    Graphics.initialise({
-        fov: 75,
-        aspect: window.innerWidth / window.innerHeight,
-        near: 0.2,
-        far: 200
-    });
 
-    ActorMgr.initialise();
-    let Player = ActorMgr.createActor({
-        name: 'Player',
-        meshData: {
-            type: 'CUBE',
-            dimensions: { x: 1, y: 1, z: 1 }
-        },
-        materialData: {
-            color: 0x44aa88
-        },
-        initialPosition: { x: 1, y: 1, z: 0 }
-    });
+    // * -----------------------------------
+    // *    SYSTEM INITIALISATIONS
+    // * -----------------------------------
+    {
+        // * Initialise Engine Manager
+        Engine.initialise();
 
-    ActorMgr.registerActor(Player);
-    Player.setActiveStatus(true);
-    // * Override Actor update function
-    Player.update = function update() {
-        this.actorMesh.rotation.x += 0.01;
-        this.actorMesh.rotation.y += 0.01;
-        this.moveBy({
-            x: 0.01
+        // * Initialise Graphics Manager
+        Graphics.initialise({
+            fov: 40,
+            aspect: window.innerWidth / window.innerHeight,
+            near: 0.1,
+            far: 2000
         });
+
+        // * Position Camera
+        Graphics.moveCameraTo({ x: 0, y: 0, z: 100 });
+
+        // * Initialise Actor Manager
+        ActorMgr.initialise();
     }
-    Graphics.addActorToScene(Player);
 
-    // * Set up Camera
-    Graphics.moveCameraTo({ x: 0, y: 0, z: 5 });
 
+    // * -----------------------------------
+    // *    SCENE CREATION
+    // * -----------------------------------
+    {
+        // * Create Player Actor
+        let Player = ActorMgr.createActor({
+            name: 'Player',
+            meshData: {
+                type: 'CUBE',
+                dimensions: { x: 4, y: 4, z: 4 }
+            },
+            materialData: {
+                color: 0x44aa88
+            },
+            initialPosition: { x: 0, y: 0, z: 0 }
+        });
+
+        ActorMgr.registerActor(Player);
+        Player.setActiveStatus(true);
+        Player.update = function update() {
+            this.actorMesh.rotation.x += 0.01;
+            this.actorMesh.rotation.y += 0.01;
+        }
+        Graphics.addActorToScene(Player);
+    }
+
+
+    // * -----------------------------------
+    // *    ENGINE READY AND GO
+    // * -----------------------------------
     Engine.registerUpdater(Graphics.update.bind(Graphics));
     Engine.registerUpdater(ActorMgr.update.bind(ActorMgr));
 

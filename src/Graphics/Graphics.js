@@ -20,7 +20,7 @@ const GraphicsManager = function GraphicsManager(data) {
         this.createCamera(cameraData);
 
         window.addEventListener('resize', () => {
-            // debugger;
+            // TODO - Still skewing
             this.setUpdateRenderAspectStatus(true);
             this.setShouldRenderResize(true);
         });
@@ -36,6 +36,7 @@ const GraphicsManager = function GraphicsManager(data) {
     // * Scene setup
     this.createScene = function createScene() {
         this.scene = new THREE.Scene();
+        this.scene.background = new THREE.Color(0xAAAAAA);
     }
 
     this.getScene = function getScene() {
@@ -67,6 +68,7 @@ const GraphicsManager = function GraphicsManager(data) {
     // * Render
     this.render = function render() {
 
+        // TODO - Still skewing
         if (this.shouldUpdateRenderAspect) {
             let canvas = this.renderer.domElement;
             this.camera.aspect = canvas.clientWidth / canvas.clientHeight;
@@ -74,6 +76,7 @@ const GraphicsManager = function GraphicsManager(data) {
             this.setUpdateRenderAspectStatus(false);
         }
 
+        // TODO - Still skewing
         if (this.shouldResizeRenderer) {
             let canvas = this.renderer.domElement;
             let width = window.innerWidth;
