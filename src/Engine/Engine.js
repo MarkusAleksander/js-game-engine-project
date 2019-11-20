@@ -48,7 +48,7 @@ const EngineManager = function EngineManager(data, render) {
 
         //console.log('end running updates...');
         // * run update loop again
-        // requestAnimationFrame(this.update.bind(this));
+        requestAnimationFrame(this.update.bind(this));
     }
 
 }

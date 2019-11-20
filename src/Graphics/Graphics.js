@@ -19,6 +19,12 @@ const GraphicsManager = function GraphicsManager(data) {
         this.createRenderer();
         this.createCamera(cameraData);
 
+        window.addEventListener('resize', () => {
+            // debugger;
+            this.setUpdateRenderAspectStatus(true);
+            this.setShouldRenderResize(true);
+        });
+
         this.isInitialised = true;
     }
 
@@ -50,12 +56,33 @@ const GraphicsManager = function GraphicsManager(data) {
         return this.renderer;
     }
 
+    this.setUpdateRenderAspectStatus = function setUpdateRenderAspectStatus(status) {
+        this.shouldUpdateRenderAspect = status;
+    }
+
+    this.setShouldRenderResize = function setShouldRenderResize(status) {
+        this.shouldResizeRenderer = status;
+    }
+
     // * Render
     this.render = function render() {
 
         if (this.shouldUpdateRenderAspect) {
             let canvas = this.renderer.domElement;
-            // this.camera.aspect =
+            this.camera.aspect = canvas.clientWidth / canvas.clientHeight;
+            this.camera.updateProjectionMatrix();
+            this.setUpdateRenderAspectStatus(false);
+        }
+
+        if (this.shouldResizeRenderer) {
+            let canvas = this.renderer.domElement;
+            let width = window.innerWidth;
+            let height = window.innerHeight;
+            let needResize = canvas.width !== width || canvas.height !== height;
+            if (needResize) {
+                this.renderer.setSize(width, height);
+            }
+            this.setShouldRenderResize(false);
         }
 
         // * Doing render

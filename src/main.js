@@ -43,7 +43,7 @@ import ActorManager from './Actors/ActorManager.js';
         materialData: {
             color: 0x44aa88
         },
-        position: { x: 0, y: 0, z: 0 }
+        initialPosition: { x: 1, y: 1, z: 0 }
     });
 
     ActorMgr.registerActor(Player);
@@ -52,6 +52,9 @@ import ActorManager from './Actors/ActorManager.js';
     Player.update = function update() {
         this.actorMesh.rotation.x += 0.01;
         this.actorMesh.rotation.y += 0.01;
+        this.moveBy({
+            x: 0.01
+        });
     }
     Graphics.addActorToScene(Player);
 

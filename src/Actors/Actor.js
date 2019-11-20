@@ -37,15 +37,15 @@ const ActorPrototype = function ActorPrototype(data) {
 
     // * movement
     this.moveTo = function moveTo(moveTo) {
-        this.actor.x = moveTo.x !== undefined ? moveTo.x : this.actor.x;
-        this.actor.y = moveTo.y !== undefined ? moveTo.y : this.actor.y;
-        this.actor.z = moveTo.z !== undefined ? moveTo.z : this.actor.z;
+        this.actorMesh.position.x = moveTo.x !== undefined ? moveTo.x : this.actorMesh.position.x;
+        this.actorMesh.position.y = moveTo.y !== undefined ? moveTo.y : this.actorMesh.position.y;
+        this.actorMesh.position.z = moveTo.z !== undefined ? moveTo.z : this.actorMesh.position.z;
     }
 
     this.moveBy = function moveBy(moveBy) {
-        this.actor.x = moveTo.x !== undefined ? moveTo.x + this.actor.x : this.actor.x;
-        this.actor.y = moveTo.y !== undefined ? moveTo.y + this.actor.y : this.actor.y;
-        this.actor.z = moveTo.z !== undefined ? moveTo.z + this.actor.z : this.actor.z;
+        this.actorMesh.position.x = moveBy.x !== undefined ? moveBy.x + this.actorMesh.position.x : this.actorMesh.position.x;
+        this.actorMesh.position.y = moveBy.y !== undefined ? moveBy.y + this.actorMesh.position.y : this.actorMesh.position.y;
+        this.actorMesh.position.z = moveBy.z !== undefined ? moveBy.z + this.actorMesh.position.z : this.actorMesh.position.z;
     }
 
     this.getPosition = function getPosition() {
