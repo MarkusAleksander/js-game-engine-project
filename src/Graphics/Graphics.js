@@ -2,98 +2,135 @@ import ManagerPrototype from '../ManagerPrototype/ManagerPrototype.js';
 
 import Utilities from './../Globals/Utilities.js';
 
-// * ------------------- Graphics Manager
+// * -----------------------------------
+// *    GRAPHICS MANAGER
+// * -----------------------------------
 const GraphicsManager = function GraphicsManager(data) {
 
-    this.scene = null;
-    this.renderer = null;
+    // * -----------------------------------
+    // *    GRAPHICS MANAGER PROPERTIES
+    // * -----------------------------------
+
+    // * Scene Object
+    this.Scene = null;
+    // * Renderer Object
+    this.Renderer = null;
+    // * Canvas ID
     this.canvasID = data.canvasID !== undefined ? data.canvasID : '';
-    this.camera = null;
+    // * Camera Object
+    this.Camera = null;
+    // * Should Update Aspect Ratio?
     this.shouldUpdateRenderAspect = false;
+    // * Should Resize Renderer?
+    this.shouldResizeRenderer = false;
 
     ManagerPrototype.call(this, data);
 
+
+    // * -----------------------------------
+    // *    GRAPHICS MANAGER METHODS
+    // * -----------------------------------
+
     // * Override initialise function
     this.initialise = function initialise(cameraData) {
-        Utilities.outputDebug('initialising graphics manager');
-
+        // * Set up scene, render and camera
         this.createScene();
         this.createRenderer();
         this.createCamera(cameraData);
 
+        // * Update render aspect ratio and render size on window resize
         window.addEventListener('resize', () => {
             this.setUpdateRenderAspectStatus(true);
             this.setShouldRenderResize(true);
         });
 
-        this.isInitialised = true;
+        // * Call to base to do any prototype based initialising
+        ManagerPrototype.prototype.initialise.call(this);
     }
 
-    // ? Get Graphics Engine (if needed to interact with directly)
-    this.getGraphicsEngine = function getGraphicsEngine() {
-        return this.GRAPHICS_LIBRARY;
-    }
 
-    // * Scene setup
+    // * ------- SCENE METHODS ------- * //
+
+    // * Scene creation
     this.createScene = function createScene() {
-        this.scene = new THREE.Scene();
-        this.scene.background = new THREE.Color(0xAAAAAA);
+        this.Scene = new THREE.Scene();
+        this.Scene.background = new THREE.Color(0xAAAAAA);
     }
 
+    // * Get Scene
     this.getScene = function getScene() {
-        return this.scene;
+        return this.Scene;
     }
 
+    // * Add Actor to the Scene
     this.addActorToScene = function addActorToScene(actor) {
-        this.scene.add(actor.getActorMesh());
+        this.Scene.add(actor.getActorMesh());
     }
 
-    // * Renderer setup
+
+    // * ------- RENDERER METHODS ------- * //
+
+    // * Create Renderer
     this.createRenderer = function createRenderer() {
-        this.renderer = new THREE.WebGLRenderer({ canvas: document.querySelector(this.canvasID) });
-        this.renderer.setSize(window.innerWidth, window.innerHeight);
+        this.Renderer = new THREE.WebGLRenderer({ canvas: document.querySelector(this.canvasID) });
+        this.Renderer.setSize(window.innerWidth, window.innerHeight);
     }
 
+    // * Get Renderer
     this.getRenderer = function getRenderer() {
-        return this.renderer;
+        return this.Renderer;
     }
 
+    // * Determine Render Aspect Ratio should update?
     this.setUpdateRenderAspectStatus = function setUpdateRenderAspectStatus(status) {
         this.shouldUpdateRenderAspect = status;
     }
 
+    // * Determine Render Resize should update?
     this.setShouldRenderResize = function setShouldRenderResize(status) {
         this.shouldResizeRenderer = status;
     }
 
-    // * Render
-    this.render = function render() {
+    // * Update Render Aspect Ratio
+    this.updateRenderAspectRatio = function updateRenderAspectRatio() {
+        this.Camera.aspect = window.innerWidth / window.innerHeight;
+        this.Camera.updateProjectionMatrix();
+        this.setUpdateRenderAspectStatus(false);
+    }
+
+    // * Update Render Resize
+    this.updateRenderResize = function updateRenderResize() {
+        let canvas = this.Renderer.domElement;
+        let width = window.innerWidth;
+        let height = window.innerHeight;
+        let needResize = canvas.width !== width || canvas.height !== height;
+
+        if (needResize) {
+            this.Renderer.setSize(width, height);
+        }
+        this.setShouldRenderResize(false);
+    }
+
+    // * Main Update Function
+    this.update = function update() {
 
         if (this.shouldUpdateRenderAspect) {
-            this.camera.aspect = window.innerWidth / window.innerHeight;
-            this.camera.updateProjectionMatrix();
-            this.setUpdateRenderAspectStatus(false);
+            this.updateRenderAspectRatio();
         }
 
         if (this.shouldResizeRenderer) {
-            let canvas = this.renderer.domElement;
-            let width = window.innerWidth;
-            let height = window.innerHeight;
-            let needResize = canvas.width !== width || canvas.height !== height;
-
-            if (needResize) {
-                this.renderer.setSize(width, height);
-            }
-            this.setShouldRenderResize(false);
+            this.updateRenderResize();
         }
 
-        // * Doing render
-        this.renderer.render(this.scene, this.camera);
+        // * Do render
+        this.Renderer.render(this.Scene, this.Camera);
     }
 
+
+    // * ------- CAMERA METHODS ------- * //
     // TODO - Export camera to a separate module, handled by the Graphics?
 
-    // * Camera
+    // * Create Camera
     this.createCamera = function createCamera(cameraData) {
         let settings = [
             cameraData.fov !== undefined ? cameraData.fov : 75,
@@ -102,25 +139,26 @@ const GraphicsManager = function GraphicsManager(data) {
             cameraData.far !== undefined ? cameraData.far : 500
         ]
 
-        this.camera = new THREE.PerspectiveCamera(...settings);
+        this.Camera = new THREE.PerspectiveCamera(...settings);
     }
 
+    // * Get Camera
     this.getCamera = function getCamera() {
-        return this.camera;
+        return this.Camera;
     }
 
-    // * Move camera TO location
+    // * Move camera to location (absolute positioning)
     this.moveCameraTo = function moveCameraTo(moveTo) {
-        this.camera.position.x = moveTo.x !== undefined ? moveTo.x : this.camera.position.x;
-        this.camera.position.y = moveTo.y !== undefined ? moveTo.y : this.camera.position.y;
-        this.camera.position.z = moveTo.z !== undefined ? moveTo.z : this.camera.position.z;
+        this.Camera.position.x = moveTo.x !== undefined ? moveTo.x : this.Camera.position.x;
+        this.Camera.position.y = moveTo.y !== undefined ? moveTo.y : this.Camera.position.y;
+        this.Camera.position.z = moveTo.z !== undefined ? moveTo.z : this.Camera.position.z;
     }
 
-    // * Move camera BY
+    // * Move camera by distance (relative positioning)
     this.moveCameraBy = function moveCameraBy(moveBy) {
-        this.camera.position.x = moveBy.x !== undefined ? this.camera.position.x + moveBy.x : this.camera.position.x;
-        this.camera.position.y = moveBy.y !== undefined ? this.camera.position.y + moveBy.y : this.camera.position.y;
-        this.camera.position.z = moveBy.z !== undefined ? this.camera.position.z + moveBy.z : this.camera.position.z;
+        this.Camera.position.x = moveBy.x !== undefined ? this.Camera.position.x + moveBy.x : this.Camera.position.x;
+        this.Camera.position.y = moveBy.y !== undefined ? this.Camera.position.y + moveBy.y : this.Camera.position.y;
+        this.Camera.position.z = moveBy.z !== undefined ? this.Camera.position.z + moveBy.z : this.Camera.position.z;
     }
 }
 

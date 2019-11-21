@@ -4,22 +4,50 @@ import ActorFactory from './ActorFactory.js';
 
 import Utilities from './../Globals/Utilities.js';
 
+// * -----------------------------------
+// *    ACTOR MANAGER
+// * -----------------------------------
 const ActorManager = function ActorManager(data) {
 
-    ManagerPrototype.call(this, data);
+    // * -----------------------------------
+    // *    GRAPHICS MANAGER PROPERTIES
+    // * -----------------------------------
 
     // * List of in game Actors
     this.actorList = [];
     // * Reference to the ActorFactory
     this.ActorFactory = null;
 
+    ManagerPrototype.call(this, data);
+
+
+    // * -----------------------------------
+    // *    GRAPHICS MANAGER METHODS
+    // * -----------------------------------
+
+    // * Override initialise function
     this.initialise = function initialise() {
-        Utilities.outputDebug('initialisg actor manager');
+        // * Create the Actor Factory
         this.ActorFactory = new ActorFactory();
-        this.isInitialised = true;
+
+        // * Call to base to do any prototype based initialising
+        ManagerPrototype.prototype.initialise.call(this);
     }
 
-    // * Create an actor
+    // * Update method
+    this.update = function update() {
+        Utilities.outputDebug('Updating Actor Manager');
+
+        // * Update all registered Actors
+        this.actorList.forEach(function forEachUpdate(updateItem) {
+            updateItem.actor.update();
+        });
+    }
+
+
+    // * ------- ACTOR MANAGEMENT METHODS ------- * //
+
+    // * Create Actor
     this.createActor = function createActor(settings) {
         return this.ActorFactory.createActor(settings);
     }
@@ -37,15 +65,13 @@ const ActorManager = function ActorManager(data) {
         actorObj.setRegisterStatus(true);
     }
 
+    // * Remove Actor
     this.removeActor = function removeActor(id) {
-        // TODO: write function
-    }
+        let idx = this.actorList.findIndex((actor) => { return actor.id === id });
 
-    this.update = function update() {
-        Utilities.outputDebug('Updating Actor Manager');
-        this.actorList.forEach(function forEachUpdate(updateItem) {
-            updateItem.actor.update();
-        });
+        if (idx > -1) {
+            this.actorList.splice(idx, 1);
+        }
     }
 
 }

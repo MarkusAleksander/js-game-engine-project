@@ -3,9 +3,14 @@ import ManagerPrototype from '../ManagerPrototype/ManagerPrototype.js';
 import Utilities from './../Globals/Utilities.js';
 import { CONTINUOUS_FRAME_RENDER, PERFORMANCE_DETAIL_ON } from '../Globals/Globals.js';
 
+// * -----------------------------------
+// *    ENGINE MANAGER
+// * -----------------------------------
 const EngineManager = function EngineManager(data) {
 
-    ManagerPrototype.call(this, data);
+    // * -----------------------------------
+    // *    ENGINE MANAGER PROPERTIES
+    // * -----------------------------------
 
     // * List of update functions
     this.updateList = [];
@@ -15,6 +20,13 @@ const EngineManager = function EngineManager(data) {
     this.render = data.renderFn;
     // * desired time step
     this.timeStep = data.timeStep;
+
+    ManagerPrototype.call(this, data);
+
+
+    // * -----------------------------------
+    // *    ENGINE MANAGER METHODS
+    // * -----------------------------------
 
     // * Start the Engine
     this.start = function start() {
@@ -49,7 +61,7 @@ const EngineManager = function EngineManager(data) {
     }
 
 
-    // * Update
+    // * Main Update Loop
     this.update = function update() {
 
         let timeStart, timeEnd;
@@ -60,12 +72,14 @@ const EngineManager = function EngineManager(data) {
 
         Utilities.outputDebug('Running Updates');
 
+        // * Update all registered Update Items
         this.updateList.forEach(function forEachUpdate(updateItem) {
             updateItem.update();
         });
 
         Utilities.outputDebug('Running Render');
 
+        // * Run registered render function
         this.render();
 
         Utilities.outputDebug('End Running Updates');
@@ -77,7 +91,11 @@ const EngineManager = function EngineManager(data) {
         if (Utilities.getPerformanceMode() === PERFORMANCE_DETAIL_ON) {
             let timeTaken = timeEnd - timeStart;
 
-            console.log('Time to update: ' + timeTaken + '. Desired time step: ' + this.timeStep + '. Time left available to render: ' + (this.timeStep - timeTaken));
+            console.log(
+                'Time to update: ' + timeTaken +
+                '. Desired time step: ' + this.timeStep +
+                '. Time left available to render: ' + (this.timeStep - timeTaken) +
+                '. Current FPS: ' + 1000 / timeTaken);
         }
 
         if (Utilities.getRenderMode() === CONTINUOUS_FRAME_RENDER) {

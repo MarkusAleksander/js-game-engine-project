@@ -8,7 +8,7 @@ const ManagerPrototype = function ManagerPrototype(data) {
 }
 
 ManagerPrototype.prototype.initialise = function initialise() {
-    Utilities.outputDebug('initialising Manager: ' + this.managerName);
+    Utilities.outputDebug('Initialising Manager: ' + this.managerName);
     this.isInitialised = true;
 }
 
