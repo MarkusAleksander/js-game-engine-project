@@ -1,3 +1,5 @@
+import Utilities from './../Globals/Utilities.js';
+
 const ActorPrototype = function ActorPrototype(data) {
     // * Unique id
     this.uID = data.id;
@@ -18,7 +20,7 @@ const ActorPrototype = function ActorPrototype(data) {
     // * update actor
     this.update = function update() {
         if (this.isActive) {
-            console.log('updating actor: ' + this.uID);
+            Utilities.outputDebug('updating actor: ' + this.uID);
             // * do something
         }
     }

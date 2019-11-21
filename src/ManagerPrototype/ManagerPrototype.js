@@ -1,3 +1,5 @@
+import Utilities from './../Globals/Utilities.js';
+
 // * ------------------- Generic System Manager Prototype
 const ManagerPrototype = function ManagerPrototype(data) {
     this.isInitialised = false;
@@ -6,16 +8,16 @@ const ManagerPrototype = function ManagerPrototype(data) {
 }
 
 ManagerPrototype.prototype.initialise = function initialise() {
-    console.log('initialising Manager: ' + this.managerName);
+    Utilities.outputDebug('initialising Manager: ' + this.managerName);
     this.isInitialised = true;
 }
 
 ManagerPrototype.prototype.update = function update() {
     if (this.isInitialised) {
-        console.log('updating Manager: ' + this.managerName);
+        Utilities.outputDebug('Updating Manager: ' + this.managerName);
     } else {
-        console.log(this.managerName + ' - Manager not initialised!');
-        // * throw error
+        Utilities.outputDebug(this.managerName + ' - Manager not initialised!');
+        // TODO: Throw assertion
     }
 }
 

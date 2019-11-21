@@ -1,6 +1,9 @@
 import ManagerPrototype from '../ManagerPrototype/ManagerPrototype.js';
 
-const EngineManager = function EngineManager(data, render) {
+import Utilities from './../Globals/Utilities.js';
+import { CONTINUOUS_FRAME_RENDER, PERFORMANCE_DETAIL_ON } from '../Globals/Globals.js';
+
+const EngineManager = function EngineManager(data) {
 
     ManagerPrototype.call(this, data);
 
@@ -8,11 +11,15 @@ const EngineManager = function EngineManager(data, render) {
     this.updateList = [];
     // * Current Unique Updater ID
     this.cUuID = 1;
+    // * Render function
+    this.render = data.renderFn;
+    // * desired time step
+    this.timeStep = data.timeStep;
 
     // * Start the Engine
     this.start = function start() {
         if (this.isInitialised) {
-            // .. do start
+            Utilities.outputDebug('Starting engine');
             this.update();
         }
     }
@@ -25,30 +32,58 @@ const EngineManager = function EngineManager(data, render) {
             update: updateFunction,
             id: id
         });
-        // * return id
+
+        // * Return id
         return id;
     }
 
     // * remove updater by ID
     this.removeUpdater = function removeUpdater(updateID) {
-        // TODO: write function
+        let idx = this.updateList.findIndex(function findIndex(el) {
+            return el.id === updateID;
+        });
+
+        if (idx !== -1) {
+            this.updateList.splice(idx, 1);
+        }
     }
 
-    // * Render
-    this.render = render;
 
     // * Update
     this.update = function update() {
-        //console.log('running updates..');
+
+        let timeStart, timeEnd;
+
+        if (Utilities.getPerformanceMode() === PERFORMANCE_DETAIL_ON) {
+            timeStart = performance.now();
+        }
+
+        Utilities.outputDebug('Running Updates');
+
         this.updateList.forEach(function forEachUpdate(updateItem) {
             updateItem.update();
         });
-        // console.log('running render...');
+
+        Utilities.outputDebug('Running Render');
+
         this.render();
 
-        //console.log('end running updates...');
-        // * run update loop again
-        requestAnimationFrame(this.update.bind(this));
+        Utilities.outputDebug('End Running Updates');
+
+        if (Utilities.getPerformanceMode() === PERFORMANCE_DETAIL_ON) {
+            timeEnd = performance.now();
+        }
+
+        if (Utilities.getPerformanceMode() === PERFORMANCE_DETAIL_ON) {
+            let timeTaken = timeEnd - timeStart;
+
+            console.log('Time to update: ' + timeTaken + '. Desired time step: ' + this.timeStep + '. Time left available to render: ' + (this.timeStep - timeTaken));
+        }
+
+        if (Utilities.getRenderMode() === CONTINUOUS_FRAME_RENDER) {
+            // * Run the update again
+            requestAnimationFrame(this.update.bind(this));
+        }
     }
 
 }

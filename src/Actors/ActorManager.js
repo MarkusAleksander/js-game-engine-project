@@ -2,6 +2,8 @@ import ManagerPrototype from '../ManagerPrototype/ManagerPrototype.js';
 import ActorPrototype from './Actor.js';
 import ActorFactory from './ActorFactory.js';
 
+import Utilities from './../Globals/Utilities.js';
+
 const ActorManager = function ActorManager(data) {
 
     ManagerPrototype.call(this, data);
@@ -12,7 +14,7 @@ const ActorManager = function ActorManager(data) {
     this.ActorFactory = null;
 
     this.initialise = function initialise() {
-        console.log('initialisg actor manager');
+        Utilities.outputDebug('initialisg actor manager');
         this.ActorFactory = new ActorFactory();
         this.isInitialised = true;
     }
@@ -25,7 +27,7 @@ const ActorManager = function ActorManager(data) {
     // * Register Actor
     this.registerActor = function registerActor(actorObj) {
         if (!(actorObj instanceof ActorPrototype)) {
-            console.log('Actor not instance of ActorPrototype!');
+            Utilities.outputDebug('Actor not instance of ActorPrototype!');
             return;
         }
         this.actorList.push({
@@ -40,7 +42,7 @@ const ActorManager = function ActorManager(data) {
     }
 
     this.update = function update() {
-        console.log('Updating Actor Manager');
+        Utilities.outputDebug('Updating Actor Manager');
         this.actorList.forEach(function forEachUpdate(updateItem) {
             updateItem.actor.update();
         });

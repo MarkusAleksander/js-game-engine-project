@@ -1,6 +1,10 @@
+/* eslint-disable no-lone-blocks */
 import EngineManager from './Engine/Engine.js';
 import GraphicsManager from './Graphics/Graphics.js';
 import ActorManager from './Actors/ActorManager.js';
+
+import Utilities from './Globals/Utilities.js';
+import { DEBUG_MODE, PROD_MODE, SINGLE_FRAME_RENDER, CONTINUOUS_FRAME_RENDER, PERFORMANCE_DETAIL_ON, PERFORMANCE_DETAIL_OFF } from './Globals/Globals.js';
 
 (function main() {
 
@@ -10,6 +14,9 @@ import ActorManager from './Actors/ActorManager.js';
         Graphics.render();
     }
 
+    Utilities.setRunningMode(PROD_MODE);
+    Utilities.setRenderMode(CONTINUOUS_FRAME_RENDER);
+    Utilities.setPerformanceMode(PERFORMANCE_DETAIL_OFF);
 
     // * -----------------------------------
     // *    SYSTEM CONSTRUCTION
@@ -18,9 +25,10 @@ import ActorManager from './Actors/ActorManager.js';
     // * Construct Engine Manager
     const Engine = new EngineManager(
         {
-            managerName: 'EngineManager'
+            managerName: 'EngineManager',
+            renderFn: render,
+            timeStep: 1000 / 60
         },
-        render
     );
 
     // * Construct Graphics Manager
@@ -55,7 +63,7 @@ import ActorManager from './Actors/ActorManager.js';
         });
 
         // * Position Camera
-        Graphics.moveCameraTo({ x: 0, y: 0, z: 100 });
+        Graphics.moveCameraTo({ x: 0, y: 0, z: 50 });
 
         // * Initialise Actor Manager
         ActorMgr.initialise();

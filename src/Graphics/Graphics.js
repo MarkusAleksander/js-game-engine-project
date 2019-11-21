@@ -1,5 +1,7 @@
 import ManagerPrototype from '../ManagerPrototype/ManagerPrototype.js';
 
+import Utilities from './../Globals/Utilities.js';
+
 // * ------------------- Graphics Manager
 const GraphicsManager = function GraphicsManager(data) {
 
@@ -13,14 +15,13 @@ const GraphicsManager = function GraphicsManager(data) {
 
     // * Override initialise function
     this.initialise = function initialise(cameraData) {
-        console.log('initialising graphics manager');
+        Utilities.outputDebug('initialising graphics manager');
 
         this.createScene();
         this.createRenderer();
         this.createCamera(cameraData);
 
         window.addEventListener('resize', () => {
-            // TODO - Still skewing
             this.setUpdateRenderAspectStatus(true);
             this.setShouldRenderResize(true);
         });
@@ -68,20 +69,18 @@ const GraphicsManager = function GraphicsManager(data) {
     // * Render
     this.render = function render() {
 
-        // TODO - Still skewing
         if (this.shouldUpdateRenderAspect) {
-            let canvas = this.renderer.domElement;
-            this.camera.aspect = canvas.clientWidth / canvas.clientHeight;
+            this.camera.aspect = window.innerWidth / window.innerHeight;
             this.camera.updateProjectionMatrix();
             this.setUpdateRenderAspectStatus(false);
         }
 
-        // TODO - Still skewing
         if (this.shouldResizeRenderer) {
             let canvas = this.renderer.domElement;
             let width = window.innerWidth;
             let height = window.innerHeight;
             let needResize = canvas.width !== width || canvas.height !== height;
+
             if (needResize) {
                 this.renderer.setSize(width, height);
             }
