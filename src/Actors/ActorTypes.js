@@ -1,4 +1,4 @@
-const ACTOR_TYPES = {
+export const ACTOR_TYPES = {
     BOX: "box",
     CIRCLE: "box",
     CONE: "cone",
@@ -13,14 +13,14 @@ const ACTOR_TYPES = {
     EDGES: "edges"
 }
 
-const ACTOR_TEMPLATES = {
+export const ACTOR_TEMPLATES = {
     BOX: {
         width: 1,
         height: 1,
         depth: 1,
         widthSegments: 1,
         heightSegments: 1,
-        depthSegments: 1,
+        depthSegments: 1
     },
     CIRCLE: {
         radius: 1,
@@ -49,10 +49,30 @@ const ACTOR_TEMPLATES = {
     },
     // EXTRUDE: {},
     // LATHE: {},
-    PLANE: {},
-    SHAPE: {},
-    SPHERE: {},
-    TORUS: {},
-    TUBE: {},
-    EDGES: {},
+    PLANE: {
+        width: 1,
+        height: 1,
+        widthSegments: 1,
+        heightSegments: 1
+    },
+    // SHAPE: {
+    // },
+    SPHERE: {
+        radius: 1,
+        widthSegments: 8,
+        heightSegments: 6,
+        phiStart: 0,
+        phiLength: 2 * Math.PI,
+        thetaStart: 0,
+        thetaLength: 2 * Math.PI
+    },
+    TORUS: {
+        radius: 1,
+        tube: 0.4,
+        radialSegments: 8,
+        tubularSegments: 6,
+        arc: 2 * Math.PI
+    }
+    // TUBE: {},
+    // EDGES: {}
 }

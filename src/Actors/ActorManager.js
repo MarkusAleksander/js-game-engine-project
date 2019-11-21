@@ -65,6 +65,11 @@ const ActorManager = function ActorManager(data) {
         actorObj.setRegisterStatus(true);
     }
 
+    // * Deregister Actor
+    this.deregisterActor = function deregisterActor(actorObj) {
+        // TODO
+    }
+
     // * Remove Actor
     this.removeActor = function removeActor(id) {
         let idx = this.actorList.findIndex((actor) => { return actor.id === id });

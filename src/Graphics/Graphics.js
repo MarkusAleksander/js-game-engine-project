@@ -67,6 +67,10 @@ const GraphicsManager = function GraphicsManager(data) {
         this.Scene.add(actor.getActorMesh());
     }
 
+    // * Remove Actor from Scene
+    this.removeActorFromScene = function removeActorFromScene(actor) {
+        // TODO
+    }
 
     // * ------- RENDERER METHODS ------- * //
 
@@ -112,7 +116,7 @@ const GraphicsManager = function GraphicsManager(data) {
     }
 
     // * Main Update Function
-    this.update = function update() {
+    this.render = function render() {
 
         if (this.shouldUpdateRenderAspect) {
             this.updateRenderAspectRatio();

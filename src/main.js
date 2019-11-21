@@ -11,13 +11,13 @@ import { DEBUG_MODE, PROD_MODE, SINGLE_FRAME_RENDER, CONTINUOUS_FRAME_RENDER, PE
     // * Main render function
     // TODO - its currently only Graphics here - can we leave this in the graphics manager and retrieve it later?
     const render = function render() {
-        Graphics.update();
+        Graphics.render();
     }
 
     // * Setup running modes
-    Utilities.setRunningMode(PROD_MODE);
-    Utilities.setRenderMode(CONTINUOUS_FRAME_RENDER);
-    Utilities.setPerformanceMode(PERFORMANCE_DETAIL_OFF);
+    Utilities.setRunningMode(DEBUG_MODE);
+    Utilities.setRenderMode(SINGLE_FRAME_RENDER);
+    Utilities.setPerformanceMode(PERFORMANCE_DETAIL_ON);
 
 
     // * -----------------------------------
