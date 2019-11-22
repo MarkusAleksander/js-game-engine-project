@@ -1,4 +1,9 @@
 export const ACTOR_TYPES = {
+    PRIMITIVE: "primitive",
+    CUSTOM: "custom"
+}
+
+export const MESH_TYPES = {
     BOX: "box",
     CIRCLE: "box",
     CONE: "cone",
@@ -13,7 +18,7 @@ export const ACTOR_TYPES = {
     EDGES: "edges"
 }
 
-export const ACTOR_TEMPLATES = {
+export const MESH_TEMPLATES = {
     BOX: {
         width: 1,
         height: 1,

@@ -11,3 +11,10 @@ TODOs:
 
 -   Object disposal
 -   Debug output mode
+
+## Usage Nots
+
+## Creating an Actor (WIP)
+
+-   Define Mesh Type - PRIMITIVE | CUSTOM
+    Primitive for basic shapes, custom for custom build

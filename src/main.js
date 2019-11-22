@@ -5,6 +5,7 @@ import ActorManager from './Actors/ActorManager.js';
 
 import Utilities from './Globals/Utilities.js';
 import { DEBUG_MODE, PROD_MODE, SINGLE_FRAME_RENDER, CONTINUOUS_FRAME_RENDER, PERFORMANCE_DETAIL_ON, PERFORMANCE_DETAIL_OFF } from './Globals/Globals.js';
+import { ACTOR_TYPES, MESH_TYPES } from './Actors/ActorTypes.js';
 
 (function main() {
 
@@ -87,15 +88,28 @@ import { DEBUG_MODE, PROD_MODE, SINGLE_FRAME_RENDER, CONTINUOUS_FRAME_RENDER, PE
 
         // * Create Player Actor
         let Player = ActorMgr.createActor({
-            name: 'Player',
+            actorType: ACTOR_TYPES.PRIMITIVE,
             meshData: {
-                type: 'CUBE',
-                dimensions: { x: 4, y: 4, z: 4 }
+                meshType: MESH_TYPES.BOX,
+                geometry: {
+                    width: 2,
+                    height: 2,
+                    depth: 2,
+                    widthSegments: 3,
+                    heightSegments: 3,
+                    depthSegments: 3
+                },
+                material: {
+                    color: 0x44aa88
+                }
             },
-            materialData: {
-                color: 0x44aa88
+            sceneData: {
+                position: { x: 0, y: 0, z: 0 }
             },
-            initialPosition: { x: 0, y: 0, z: 0 }
+            update: function update() {
+                this.actorMesh.rotation.x += 0.01;
+                this.actorMesh.rotation.y += 0.01;
+            }
         });
 
         ActorMgr.registerActor(Player);
