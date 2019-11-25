@@ -129,7 +129,7 @@ const ActorFactory = function ActorFactory() {
             material = this.createMaterial(meshData.material);
 
         // TODO - Better Material handling
-        debugger;
+        //debugger;
 
         return new THREE.Mesh(geometry, material);
 
@@ -146,12 +146,12 @@ const ActorFactory = function ActorFactory() {
         let geometry;
 
         switch (meshType) {
-        case MESH_TYPES.BOX:
-        {
-            geometry = this.createBoxGeometry(data);
-            break;
-        }
-        default:
+            case MESH_TYPES.BOX:
+                {
+                    geometry = this.createBoxGeometry(data);
+                    break;
+                }
+            default:
         }
 
         return geometry;
@@ -183,7 +183,7 @@ const ActorFactory = function ActorFactory() {
     this.setSceneDataForActor = function setSceneDataForActor(actor, sceneData) {
         // TODO - Improve this
         if (sceneData.position) {
-            actor.actorMesh.position = position;
+            // actor.actorMesh.position = sceneData.position;
         }
     }
 

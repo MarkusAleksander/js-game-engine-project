@@ -17,7 +17,7 @@ import { ACTOR_TYPES, MESH_TYPES } from './Actors/ActorTypes.js';
 
     // * Setup running modes
     Utilities.setRunningMode(DEBUG_MODE);
-    Utilities.setRenderMode(SINGLE_FRAME_RENDER);
+    Utilities.setRenderMode(CONTINUOUS_FRAME_RENDER);
     Utilities.setPerformanceMode(PERFORMANCE_DETAIL_ON);
 
 
@@ -66,7 +66,7 @@ import { ACTOR_TYPES, MESH_TYPES } from './Actors/ActorTypes.js';
         });
 
         // * Position Camera
-        Graphics.moveCameraTo({ x: 0, y: 0, z: 50 });
+        Graphics.moveCameraTo({ x: 0, y: 0, z: 30 });
 
         // * Initialise Actor Manager
         ActorMgr.initialise();
@@ -115,12 +115,16 @@ import { ACTOR_TYPES, MESH_TYPES } from './Actors/ActorTypes.js';
         ActorMgr.registerActor(Player);
         Player.setActiveStatus(true);
         Player.update = function update() {
-            this.actorMesh.rotation.x += 0.01;
-            this.actorMesh.rotation.y += 0.01;
+            this.rotateActorBy({ x: 0.01, y: 0.02 });
         }
 
         // * Add Actor to Scene
         Graphics.addActorToScene(Player);
+
+        // * Removal process
+        // Graphics.removeActorFromScene(Player);
+        // Player.setActiveStatus(false);
+        // ActorMgr.deregisterActor(Player.getID());
     }
 
 

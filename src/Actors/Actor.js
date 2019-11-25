@@ -57,6 +57,8 @@ const ActorPrototype = function ActorPrototype(data) {
 
     // * ------- ACTOR MANIPULATION ------- * //
 
+    // TODO - Store position and rotation on Actor and update after?
+
     // * Move Absolutely
     this.moveActorTo = function moveActorTo(loc) {
         this.actorMesh.position.x = loc.x !== undefined ? loc.x : this.actorMesh.position.x;
@@ -69,6 +71,20 @@ const ActorPrototype = function ActorPrototype(data) {
         this.actorMesh.position.x = loc.x !== undefined ? loc.x + this.actorMesh.position.x : this.actorMesh.position.x;
         this.actorMesh.position.y = loc.y !== undefined ? loc.y + this.actorMesh.position.y : this.actorMesh.position.y;
         this.actorMesh.position.z = loc.z !== undefined ? loc.z + this.actorMesh.position.z : this.actorMesh.position.z;
+    }
+
+    // * Rotate Absolutely
+    this.rotateActorTo = function rotateActorTo(rot) {
+        this.actorMesh.rotation.x = rot.x !== undefined ? rot.x : this.actorMesh.rotation.x;
+        this.actorMesh.rotation.y = rot.y !== undefined ? rot.y : this.actorMesh.rotation.y;
+        this.actorMesh.rotation.z = rot.z !== undefined ? rot.z : this.actorMesh.rotation.z;
+    }
+
+    // * Rotation Relatively
+    this.rotateActorBy = function rotateActorBy(rot) {
+        this.actorMesh.rotation.x = rot.x !== undefined ? rot.x + this.actorMesh.rotation.x : this.actorMesh.rotation.x;
+        this.actorMesh.rotation.y = rot.y !== undefined ? rot.y + this.actorMesh.rotation.y : this.actorMesh.rotation.y;
+        this.actorMesh.rotation.z = rot.z !== undefined ? rot.z + this.actorMesh.rotation.z : this.actorMesh.rotation.z;
     }
 
     // * Get Current Actor Position

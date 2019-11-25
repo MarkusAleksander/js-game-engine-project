@@ -15,6 +15,8 @@ const ActorManager = function ActorManager(data) {
 
     // * List of in game Actors
     this.actorList = [];
+    // * List of registered in game Actors
+    this.registeredActorList = [];
     // * Reference to the ActorFactory
     this.ActorFactory = null;
 
@@ -39,7 +41,7 @@ const ActorManager = function ActorManager(data) {
         Utilities.outputDebug('Updating Actor Manager');
 
         // * Update all registered Actors
-        this.actorList.forEach(function forEachUpdate(updateItem) {
+        this.registeredActorList.forEach(function forEachUpdate(updateItem) {
             updateItem.actor.update();
         });
     }
@@ -49,50 +51,73 @@ const ActorManager = function ActorManager(data) {
 
     // * Create Actor
     this.createActor = function createActor(settings) {
-        return this.ActorFactory.createActor(settings);
+        let newActor = this.ActorFactory.createActor(settings);
+        this.actorList.push(newActor);
+        return newActor;
     }
 
     // * Register Actor
-    this.registerActor = function registerActor(actorObj) {
-        if (!(actorObj instanceof ActorPrototype)) {
+    this.registerActor = function registerActor(actor) {
+        if (!(actor instanceof ActorPrototype)) {
             Utilities.outputDebug('Actor not instance of ActorPrototype!');
             return;
         }
-        this.actorList.push({
-            actor: actorObj,
-            id: actorObj.getID
+        this.registeredActorList.push({
+            actor: actor,
+            id: actor.getID()
         });
-        actorObj.setRegisteredStatus(true);
+        actor.setRegisteredStatus(true);
     }
 
     // * Deregister Actor
-    this.deregisterActor = function deregisterActor(actorToRemove) {
-        let idx = this.actorList.findIndex((actor) => { return actor.getID() === actorToRemove.getID(); });
+    // TODO - By object or ID or both?
+    this.deregisterActor = function deregisterActor(actorID) {
+        let idx = this.registeredActorList.findIndex((actor) => { return actorID === actor.getID(); });
 
-        if (idx > -1) {
-            this.actorList.splice(idx, 1);
-
-            // * Deactive and Deregister
-            actorToRemove.setActiveStatus(false);
-            actorToRemove.setRegisteredStatus(false);
+        // * Check actor found
+        if (idx < 0) {
+            Utilities.outputDebug('Actor not found when trying deregister.');
+            return;
         }
 
+        let actor = this.registeredActorList[idx];
+
+        // * Check Actor has been deactivated
+        if (actor.getActiveStatus()) {
+            Utilities.outputDebug('Actor not deactivated before deregistration.');
+            return;
+        }
+
+        // * Deregister Actor
+        actor.setRegisteredStatus(false);
+
+        // * Remove Actor from Registered list
+        this.registeredActorList.splice(idx, 1);
     }
 
     // * Remove Actor (destroy)
-    this.removeActor = function removeActor(actorToRemove) {
+    // TODO - By object or ID or both?
+    this.removeActor = function removeActor(actorID) {
+        let idx = this.registeredActorList.findIndex((actor) => { return actorID === actor.getID(); });
 
-        if (actorToRemove.getActiveStatus() || actorToRemove.getRegisteredStatus()) {
+        // * Check actor found
+        if (idx < 0) {
+            Utilities.outputDebug('Actor not found when trying remove.');
+            return;
+        }
+
+        let actor = this.registeredActorList[idx];
+
+        // * Check actor has been deactivated and deregistered
+        if (actor.getActiveStatus() || actor.getRegisteredStatus()) {
             Utilities.outputDebug('Actor not properly deactivated or deregistered');
+            return;
         }
 
-        let idx = this.actorList.findIndex((actor) => { return actor.id === id });
-
-        if (idx > -1) {
-            this.actorList.splice(idx, 1);
-        }
+        // * Remove actor
+        // TODO - Implement clean up process
+        this.actorList.splice(idx, 1);
     }
-
 }
 
 ActorManager.prototype = Object.create(ManagerPrototype.prototype);
