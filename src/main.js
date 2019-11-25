@@ -104,7 +104,7 @@ import { ACTOR_TYPES, MESH_TYPES } from './Actors/ActorTypes.js';
                 }
             },
             sceneData: {
-                position: { x: 0, y: 0, z: 0 }
+                position: { x: 0, y: 5, z: 0 }
             }
         });
 
