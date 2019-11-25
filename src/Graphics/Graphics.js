@@ -152,17 +152,17 @@ const GraphicsManager = function GraphicsManager(data) {
     }
 
     // * Move camera to location (absolute positioning)
-    this.moveCameraTo = function moveCameraTo(moveTo) {
-        this.Camera.position.x = moveTo.x !== undefined ? moveTo.x : this.Camera.position.x;
-        this.Camera.position.y = moveTo.y !== undefined ? moveTo.y : this.Camera.position.y;
-        this.Camera.position.z = moveTo.z !== undefined ? moveTo.z : this.Camera.position.z;
+    this.moveCameraTo = function moveCameraTo(loc) {
+        this.Camera.position.x = loc.x !== undefined ? loc.x : this.Camera.position.x;
+        this.Camera.position.y = loc.y !== undefined ? loc.y : this.Camera.position.y;
+        this.Camera.position.z = loc.z !== undefined ? loc.z : this.Camera.position.z;
     }
 
     // * Move camera by distance (relative positioning)
-    this.moveCameraBy = function moveCameraBy(moveBy) {
-        this.Camera.position.x = moveBy.x !== undefined ? this.Camera.position.x + moveBy.x : this.Camera.position.x;
-        this.Camera.position.y = moveBy.y !== undefined ? this.Camera.position.y + moveBy.y : this.Camera.position.y;
-        this.Camera.position.z = moveBy.z !== undefined ? this.Camera.position.z + moveBy.z : this.Camera.position.z;
+    this.moveCameraBy = function moveCameraBy(loc) {
+        this.Camera.position.x = loc.x !== undefined ? this.Camera.position.x + loc.x : this.Camera.position.x;
+        this.Camera.position.y = loc.y !== undefined ? this.Camera.position.y + loc.y : this.Camera.position.y;
+        this.Camera.position.z = loc.z !== undefined ? this.Camera.position.z + loc.z : this.Camera.position.z;
     }
 }
 

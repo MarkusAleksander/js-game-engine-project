@@ -10,7 +10,7 @@ import Utilities from './../Globals/Utilities.js';
 const ActorManager = function ActorManager(data) {
 
     // * -----------------------------------
-    // *    GRAPHICS MANAGER PROPERTIES
+    // *    ACTOR MANAGER PROPERTIES
     // * -----------------------------------
 
     // * List of in game Actors
@@ -22,7 +22,7 @@ const ActorManager = function ActorManager(data) {
 
 
     // * -----------------------------------
-    // *    GRAPHICS MANAGER METHODS
+    // *    ACTOR MANAGER METHODS
     // * -----------------------------------
 
     // * Override initialise function
@@ -62,16 +62,30 @@ const ActorManager = function ActorManager(data) {
             actor: actorObj,
             id: actorObj.getID
         });
-        actorObj.setRegisterStatus(true);
+        actorObj.setRegisteredStatus(true);
     }
 
     // * Deregister Actor
-    this.deregisterActor = function deregisterActor(actorObj) {
-        // TODO
+    this.deregisterActor = function deregisterActor(actorToRemove) {
+        let idx = this.actorList.findIndex((actor) => { return actor.getID() === actorToRemove.getID(); });
+
+        if (idx > -1) {
+            this.actorList.splice(idx, 1);
+
+            // * Deactive and Deregister
+            actorToRemove.setActiveStatus(false);
+            actorToRemove.setRegisteredStatus(false);
+        }
+
     }
 
-    // * Remove Actor
-    this.removeActor = function removeActor(id) {
+    // * Remove Actor (destroy)
+    this.removeActor = function removeActor(actorToRemove) {
+
+        if (actorToRemove.getActiveStatus() || actorToRemove.getRegisteredStatus()) {
+            Utilities.outputDebug('Actor not properly deactivated or deregistered');
+        }
+
         let idx = this.actorList.findIndex((actor) => { return actor.id === id });
 
         if (idx > -1) {

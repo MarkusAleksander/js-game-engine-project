@@ -1,61 +1,79 @@
 import Utilities from './../Globals/Utilities.js';
 
+// * -----------------------------------
+// *    ACTOR PROTOTYPE
+// * -----------------------------------
 const ActorPrototype = function ActorPrototype(data) {
+
+    // * -----------------------------------
+    // *    ACTOR PROTOTYPE PROPERTIES
+    // * -----------------------------------
+
     // * Unique id
     this.uID = data.id;
-    // * Give actor a name if required
+    // * Actor Name (default is id)
     this.name = data.name !== undefined ? data.name : data.id;
-    // * set Actor to initially inactive
+    // * Actor Active Status (is it recieving and processing updates?)
     this.isActive = false;
-    // * actorMeshObj
+    // * Reference to the Actor Mesh Object
     this.actorMesh = null;
-    // * is registered
+    // * Has the actor been Registered to the Actor Manager?
     this.isRegistered = false;
 
-    // * set active status
+
+    // * -----------------------------------
+    // *    ACTOR PROTOTYPE METHODS
+    // * -----------------------------------
+
+    // * Set Actor Activity Status
     this.setActiveStatus = function setActiveStatus(status) {
         this.isActive = status;
     }
 
-    // * update actor
+    // * Actor Update Function
     this.update = function update() {
+        // * Only update if Active
         if (this.isActive) {
             Utilities.outputDebug('updating actor: ' + this.uID);
             // * do something
         }
     }
 
+    // * Get ID
     this.getID = function getID() {
         return this.uID;
     }
 
+    // * Get Mesh Object
     this.getActorMesh = function getActorMesh() {
         return this.actorMesh;
     }
 
-    this.setRegisterStatus = function setRegisterStatus(status) {
+    // * Set Registered Status
+    this.setRegisteredStatus = function setRegisteredStatus(status) {
         this.isRegistered = status;
     }
 
-    // * movement
-    this.moveTo = function moveTo(moveTo) {
-        this.actorMesh.position.x = moveTo.x !== undefined ? moveTo.x : this.actorMesh.position.x;
-        this.actorMesh.position.y = moveTo.y !== undefined ? moveTo.y : this.actorMesh.position.y;
-        this.actorMesh.position.z = moveTo.z !== undefined ? moveTo.z : this.actorMesh.position.z;
+
+    // * ------- ACTOR MANIPULATION ------- * //
+
+    // * Move Absolutely
+    this.moveActorTo = function moveActorTo(loc) {
+        this.actorMesh.position.x = loc.x !== undefined ? loc.x : this.actorMesh.position.x;
+        this.actorMesh.position.y = loc.y !== undefined ? loc.y : this.actorMesh.position.y;
+        this.actorMesh.position.z = loc.z !== undefined ? loc.z : this.actorMesh.position.z;
     }
 
-    this.moveBy = function moveBy(moveBy) {
-        this.actorMesh.position.x = moveBy.x !== undefined ? moveBy.x + this.actorMesh.position.x : this.actorMesh.position.x;
-        this.actorMesh.position.y = moveBy.y !== undefined ? moveBy.y + this.actorMesh.position.y : this.actorMesh.position.y;
-        this.actorMesh.position.z = moveBy.z !== undefined ? moveBy.z + this.actorMesh.position.z : this.actorMesh.position.z;
+    // * Move Relatively
+    this.moveActorBy = function moveActorBy(loc) {
+        this.actorMesh.position.x = loc.x !== undefined ? loc.x + this.actorMesh.position.x : this.actorMesh.position.x;
+        this.actorMesh.position.y = loc.y !== undefined ? loc.y + this.actorMesh.position.y : this.actorMesh.position.y;
+        this.actorMesh.position.z = loc.z !== undefined ? loc.z + this.actorMesh.position.z : this.actorMesh.position.z;
     }
 
+    // * Get Current Actor Position
     this.getPosition = function getPosition() {
-        return {
-            x: this.actor.x,
-            y: this.actor.y,
-            z: this.actor.z
-        }
+        return this.actorMesh.position;
     }
 }
 
