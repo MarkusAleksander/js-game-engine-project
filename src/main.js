@@ -16,9 +16,9 @@ import { ACTOR_TYPES, MESH_TYPES } from './Actors/ActorTypes.js';
     }
 
     // * Setup running modes
-    Utilities.setRunningMode(DEBUG_MODE);
+    Utilities.setRunningMode(PROD_MODE);
     Utilities.setRenderMode(CONTINUOUS_FRAME_RENDER);
-    Utilities.setPerformanceMode(PERFORMANCE_DETAIL_ON);
+    Utilities.setPerformanceMode(PERFORMANCE_DETAIL_OFF);
 
 
     // * -----------------------------------
@@ -105,18 +105,20 @@ import { ACTOR_TYPES, MESH_TYPES } from './Actors/ActorTypes.js';
             },
             sceneData: {
                 position: { x: 0, y: 0, z: 0 }
-            },
-            update: function update() {
-                this.actorMesh.rotation.x += 0.01;
-                this.actorMesh.rotation.y += 0.01;
             }
         });
 
         ActorMgr.registerActor(Player);
         Player.setActiveStatus(true);
-        Player.update = function update() {
+        Player.addUpdateFunction(function () {
             this.rotateActorBy({ x: 0.01, y: 0.02 });
-        }
+        });
+        Player.addUpdateFunction(function () {
+            this.moveActorBy({ x: 0.05 });
+            if (this.getPosition().x > 0) {
+                this.moveActorTo({ x: -5 });
+            }
+        });
 
         // * Add Actor to Scene
         Graphics.addActorToScene(Player);

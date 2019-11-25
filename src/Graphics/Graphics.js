@@ -69,7 +69,7 @@ const GraphicsManager = function GraphicsManager(data) {
 
     // * Remove Actor from Scene
     this.removeActorFromScene = function removeActorFromScene(actor) {
-        // TODO
+        this.Scene.remove(actor.getActorMesh());
     }
 
     // * ------- RENDERER METHODS ------- * //

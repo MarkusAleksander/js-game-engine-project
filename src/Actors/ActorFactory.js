@@ -57,13 +57,13 @@ const ActorFactory = function ActorFactory() {
             this.setSceneDataForActor(actor, settings.sceneData);
         }
 
-        // * Apply update function if passed
-        if (
-            settings.update !== undefined &&
-            typeof settings.update === "function"
-        ) {
-            actor.update = settings.update;
-        }
+        // // * Apply update function if passed
+        // if (
+        //     settings.update !== undefined &&
+        //     typeof settings.update === "function"
+        // ) {
+        //     actor.update = settings.update;
+        // }
 
         // * Assign an ID when complete
         actor.uID = this.cAuID++;

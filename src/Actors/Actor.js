@@ -20,6 +20,12 @@ const ActorPrototype = function ActorPrototype(data) {
     // * Has the actor been Registered to the Actor Manager?
     this.isRegistered = false;
 
+    // * Actor Update Function List
+    this.actorUpdateFunctions = [];
+
+    // * Actor position and rotation
+    this.position = { x: 0, y: 0, z: 0 };
+    this.rotation = { x: 0, y: 0, z: 0 };
 
     // * -----------------------------------
     // *    ACTOR PROTOTYPE METHODS
@@ -30,13 +36,29 @@ const ActorPrototype = function ActorPrototype(data) {
         this.isActive = status;
     }
 
+    // * Get Current Actor Active Status
+    this.getActiveStatus = function getActiveStatus() {
+        return this.isActive;
+    }
+
     // * Actor Update Function
     this.update = function update() {
         // * Only update if Active
-        if (this.isActive) {
-            Utilities.outputDebug('updating actor: ' + this.uID);
-            // * do something
-        }
+        if (!this.isActive) return;
+        Utilities.outputDebug('updating actor: ' + this.uID);
+
+        // * Run registered update functions
+        this.actorUpdateFunctions.forEach((fn) => {
+            fn()
+        });
+
+        // * Synchronise Actor Mesh
+        this.updateMesh();
+    }
+
+    // * Add update function to Actor
+    this.addUpdateFunction = function addUpdateFunction(fn) {
+        this.actorUpdateFunctions.push(fn.bind(this));
     }
 
     // * Get ID
@@ -61,35 +83,51 @@ const ActorPrototype = function ActorPrototype(data) {
 
     // * Move Absolutely
     this.moveActorTo = function moveActorTo(loc) {
-        this.actorMesh.position.x = loc.x !== undefined ? loc.x : this.actorMesh.position.x;
-        this.actorMesh.position.y = loc.y !== undefined ? loc.y : this.actorMesh.position.y;
-        this.actorMesh.position.z = loc.z !== undefined ? loc.z : this.actorMesh.position.z;
+        this.position.x = loc.x !== undefined ? loc.x : this.position.x;
+        this.position.y = loc.y !== undefined ? loc.y : this.position.y;
+        this.position.z = loc.z !== undefined ? loc.z : this.position.z;
     }
 
     // * Move Relatively
     this.moveActorBy = function moveActorBy(loc) {
-        this.actorMesh.position.x = loc.x !== undefined ? loc.x + this.actorMesh.position.x : this.actorMesh.position.x;
-        this.actorMesh.position.y = loc.y !== undefined ? loc.y + this.actorMesh.position.y : this.actorMesh.position.y;
-        this.actorMesh.position.z = loc.z !== undefined ? loc.z + this.actorMesh.position.z : this.actorMesh.position.z;
+        this.position.x = loc.x !== undefined ? loc.x + this.position.x : this.position.x;
+        this.position.y = loc.y !== undefined ? loc.y + this.position.y : this.position.y;
+        this.position.z = loc.z !== undefined ? loc.z + this.position.z : this.position.z;
     }
 
     // * Rotate Absolutely
     this.rotateActorTo = function rotateActorTo(rot) {
-        this.actorMesh.rotation.x = rot.x !== undefined ? rot.x : this.actorMesh.rotation.x;
-        this.actorMesh.rotation.y = rot.y !== undefined ? rot.y : this.actorMesh.rotation.y;
-        this.actorMesh.rotation.z = rot.z !== undefined ? rot.z : this.actorMesh.rotation.z;
+        this.rotation.x = rot.x !== undefined ? rot.x : this.rotation.x;
+        this.rotation.y = rot.y !== undefined ? rot.y : this.rotation.y;
+        this.rotation.z = rot.z !== undefined ? rot.z : this.rotation.z;
     }
 
     // * Rotation Relatively
     this.rotateActorBy = function rotateActorBy(rot) {
-        this.actorMesh.rotation.x = rot.x !== undefined ? rot.x + this.actorMesh.rotation.x : this.actorMesh.rotation.x;
-        this.actorMesh.rotation.y = rot.y !== undefined ? rot.y + this.actorMesh.rotation.y : this.actorMesh.rotation.y;
-        this.actorMesh.rotation.z = rot.z !== undefined ? rot.z + this.actorMesh.rotation.z : this.actorMesh.rotation.z;
+        this.rotation.x = rot.x !== undefined ? rot.x + this.rotation.x : this.rotation.x;
+        this.rotation.y = rot.y !== undefined ? rot.y + this.rotation.y : this.rotation.y;
+        this.rotation.z = rot.z !== undefined ? rot.z + this.rotation.z : this.rotation.z;
+    }
+
+    // * Update mesh position and rotation
+    this.updateMesh = function updateMesh() {
+        this.actorMesh.position.x = this.position.x;
+        this.actorMesh.position.y = this.position.y;
+        this.actorMesh.position.z = this.position.z;
+
+        this.actorMesh.rotation.x = this.rotation.x;
+        this.actorMesh.rotation.y = this.rotation.y;
+        this.actorMesh.rotation.z = this.rotation.z;
     }
 
     // * Get Current Actor Position
     this.getPosition = function getPosition() {
-        return this.actorMesh.position;
+        return this.position;
+    }
+
+    // * Get Current Actor Rotation
+    this.getRotation = function getRotation() {
+        return this.rotation;
     }
 }
 

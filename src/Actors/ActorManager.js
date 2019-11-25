@@ -41,8 +41,8 @@ const ActorManager = function ActorManager(data) {
         Utilities.outputDebug('Updating Actor Manager');
 
         // * Update all registered Actors
-        this.registeredActorList.forEach(function forEachUpdate(updateItem) {
-            updateItem.actor.update();
+        this.registeredActorList.forEach(function forEachUpdate(actor) {
+            actor.update();
         });
     }
 
@@ -62,16 +62,14 @@ const ActorManager = function ActorManager(data) {
             Utilities.outputDebug('Actor not instance of ActorPrototype!');
             return;
         }
-        this.registeredActorList.push({
-            actor: actor,
-            id: actor.getID()
-        });
+        this.registeredActorList.push(actor);
         actor.setRegisteredStatus(true);
     }
 
     // * Deregister Actor
     // TODO - By object or ID or both?
     this.deregisterActor = function deregisterActor(actorID) {
+        debugger;
         let idx = this.registeredActorList.findIndex((actor) => { return actorID === actor.getID(); });
 
         // * Check actor found
