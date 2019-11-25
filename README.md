@@ -18,3 +18,6 @@ TODOs:
 
 -   Define Mesh Type - PRIMITIVE | CUSTOM
     Primitive for basic shapes, custom for custom build
+
+## Three JS Notes (for memory)
+- 1 ThreeJS unit equates to 1 metre

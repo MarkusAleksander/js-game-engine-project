@@ -62,11 +62,11 @@ import { ACTOR_TYPES, MESH_TYPES } from './Actors/ActorTypes.js';
             fov: 60,
             aspect: window.innerWidth / window.innerHeight,
             near: 0.1,
-            far: 1000
+            far: 100
         });
 
         // * Position Camera
-        Graphics.moveCameraTo({ x: 0, y: 0, z: 30 });
+        Graphics.moveCameraTo({ x: 0, y: 0, z: 15 });
 
         // * Initialise Actor Manager
         ActorMgr.initialise();
@@ -104,19 +104,19 @@ import { ACTOR_TYPES, MESH_TYPES } from './Actors/ActorTypes.js';
                 }
             },
             sceneData: {
-                position: { x: 0, y: 5, z: 0 }
+                position: { x: 0, y: 0, z: 0 }
             }
         });
 
         ActorMgr.registerActor(Player);
         Player.setActiveStatus(true);
         Player.addUpdateFunction(function () {
-            this.rotateActorBy({ x: 0.01, y: 0.02 });
+            this.rotateActorBy({ x: 0.01, y: 0.02, z: -0.01 });
         });
         Player.addUpdateFunction(function () {
             this.moveActorBy({ x: 0.05 });
-            if (this.getPosition().x > 0) {
-                this.moveActorTo({ x: -5 });
+            if (this.getPosition().x > 10) {
+                this.moveActorTo({ x: -10 });
             }
         });
 

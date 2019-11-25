@@ -159,7 +159,7 @@ const ActorFactory = function ActorFactory() {
 
     // * Create Box Geometry
     this.createBoxGeometry = function createBoxGeometry(data) {
-        return new THREE.BoxGeometry(
+        return new THREE.BoxBufferGeometry(
             data.width.x,
             data.height.y,
             data.depth.z,
