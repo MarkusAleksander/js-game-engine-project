@@ -59,10 +59,10 @@ import { ACTOR_TYPES, MESH_TYPES } from './Actors/ActorTypes.js';
 
         // * Initialise Graphics Manager
         Graphics.initialise({
-            fov: 40,
+            fov: 60,
             aspect: window.innerWidth / window.innerHeight,
             near: 0.1,
-            far: 2000
+            far: 1000
         });
 
         // * Position Camera

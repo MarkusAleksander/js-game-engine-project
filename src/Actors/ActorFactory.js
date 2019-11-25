@@ -183,14 +183,18 @@ const ActorFactory = function ActorFactory() {
     this.setSceneDataForActor = function setSceneDataForActor(actor, sceneData) {
         // TODO - Improve this - needs to update by Actor Method, not direct on the mesh
         if (sceneData.position) {
-            // actor.actorMesh.position = new THREE.Vector3(
-            //     sceneData.position.x || 0,
-            //     sceneData.position.y || 0,
-            //     sceneData.position.z || 0
-            // );
-            actor.position.x = sceneData.position.x || 0;
-            actor.position.y = sceneData.position.y || 0;
-            actor.position.z = sceneData.position.z || 0;
+            actor.moveActorTo({
+                x: sceneData.position.x || 0,
+                y: sceneData.position.y || 0,
+                z: sceneData.position.z || 0
+            });
+        }
+        if (sceneData.rotation) {
+            actor.rotateActorTo({
+                x: sceneData.rotation.x || 0,
+                y: sceneData.rotation.y || 0,
+                z: sceneData.rotation.z || 0
+            });
         }
     }
 

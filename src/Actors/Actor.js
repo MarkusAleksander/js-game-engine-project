@@ -111,13 +111,17 @@ const ActorPrototype = function ActorPrototype(data) {
 
     // * Update mesh position and rotation
     this.updateMesh = function updateMesh() {
-        this.actorMesh.position.x = this.position.x;
-        this.actorMesh.position.y = this.position.y;
-        this.actorMesh.position.z = this.position.z;
+        this.actorMesh.position.set(
+            this.position.x,
+            this.position.y,
+            this.position.z
+        );
 
-        this.actorMesh.rotation.x = this.rotation.x;
-        this.actorMesh.rotation.y = this.rotation.y;
-        this.actorMesh.rotation.z = this.rotation.z;
+        this.actorMesh.rotation.set(
+            this.rotation.x,
+            this.rotation.y,
+            this.rotation.z
+        );
     }
 
     // * Get Current Actor Position
