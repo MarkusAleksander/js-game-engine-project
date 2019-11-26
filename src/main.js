@@ -6,6 +6,7 @@ import ActorManager from './Actors/ActorManager.js';
 import Utilities from './Globals/Utilities.js';
 import { DEBUG_MODE, PROD_MODE, SINGLE_FRAME_RENDER, CONTINUOUS_FRAME_RENDER, PERFORMANCE_DETAIL_ON, PERFORMANCE_DETAIL_OFF } from './Globals/Globals.js';
 import { ACTOR_TYPES, MESH_TYPES } from './Actors/ActorTypes.js';
+import { LIGHT_TYPES } from './Graphics/LightTypes.js';
 
 (function main() {
 
@@ -100,7 +101,7 @@ import { ACTOR_TYPES, MESH_TYPES } from './Actors/ActorTypes.js';
                     depthSegments: 3
                 },
                 material: {
-                    color: 0x44aa88
+                    color: 0xff0000
                 }
             },
             sceneData: {
@@ -123,10 +124,19 @@ import { ACTOR_TYPES, MESH_TYPES } from './Actors/ActorTypes.js';
         // * Add Actor to Scene
         Graphics.addActorToScene(Player);
 
-        // * Removal process
+        // * Actor Removal process
         // Graphics.removeActorFromScene(Player);
         // Player.setActiveStatus(false);
         // ActorMgr.deregisterActor(Player.getID());
+
+        // * Add Lights to the scene
+        let light = Graphics.createLight({
+            type: LIGHT_TYPES.DIRECTIONAL_LIGHT,
+            position: { x: 10, y: 10, z: 10 },
+            intensity: 5.0,
+            color: 0xffffff
+        });
+        Graphics.addLightToScene(light);
     }
 
 

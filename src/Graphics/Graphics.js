@@ -1,4 +1,5 @@
 import ManagerPrototype from '../ManagerPrototype/ManagerPrototype.js';
+import LightFactory from './LightFactory.js';
 
 import Utilities from './../Globals/Utilities.js';
 
@@ -23,6 +24,10 @@ const GraphicsManager = function GraphicsManager(data) {
     this.shouldUpdateRenderAspect = false;
     // * Should Resize Renderer?
     this.shouldResizeRenderer = false;
+    // * Light factory
+    this.LightFactory = null;
+    // * Light List
+    this.Lights = []
 
     ManagerPrototype.call(this, data);
 
@@ -37,6 +42,7 @@ const GraphicsManager = function GraphicsManager(data) {
         this.createScene();
         this.createRenderer();
         this.createCamera(cameraData);
+        this.LightFactory = new LightFactory();
 
         // * Update render aspect ratio and render size on window resize
         window.addEventListener('resize', () => {
@@ -130,6 +136,20 @@ const GraphicsManager = function GraphicsManager(data) {
         this.Renderer.render(this.Scene, this.Camera);
     }
 
+    // * ------- LIGHT METHODS ------- * //
+
+    this.createLight = function createLight(settings) {
+        // TODO - Improve
+        let light = this.LightFactory.createLight(settings);
+        this.Lights.push(light);
+        return light;
+    }
+
+    this.addLightToScene = function addLightToScene(light) {
+        this.Scene.add(light);
+    }
+
+    // TODO - Additional light methods
 
     // * ------- CAMERA METHODS ------- * //
     // TODO - Export camera to a separate module, handled by the Graphics?

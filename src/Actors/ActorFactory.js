@@ -173,7 +173,7 @@ const ActorFactory = function ActorFactory() {
     this.createMaterial = function createMaterial(data) {
         let materialColor = data !== undefined ? data : { color: 0x000000 };
 
-        const material = new THREE.MeshBasicMaterial({
+        const material = new THREE.MeshStandardMaterial({
             color: materialColor.color
         });
 
