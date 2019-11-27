@@ -44,7 +44,7 @@ const ActorPrototype = function ActorPrototype(data) {
     // * Actor Update Function
     this.update = function update() {
         // * Only update if Active
-        if (!this.isActive) return;
+        if (!this.isActive) { return; }
         Utilities.outputDebug('updating actor: ' + this.uID);
 
         // * Run registered update functions
@@ -78,8 +78,6 @@ const ActorPrototype = function ActorPrototype(data) {
 
 
     // * ------- ACTOR MANIPULATION ------- * //
-
-    // TODO - Store position and rotation on Actor and update after?
 
     // * Move Absolutely
     this.moveActorTo = function moveActorTo(loc) {

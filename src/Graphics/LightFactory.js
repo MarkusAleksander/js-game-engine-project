@@ -1,4 +1,5 @@
 import { LIGHT_TYPES } from './LightTypes.js';
+import LightPrototype from './Light.js';
 
 // TODO - Improve
 
@@ -20,21 +21,35 @@ const LightFactory = function LightFactory() {
     // * -----------------------------------
 
     this.createLight = function createLight(settings) {
-        let light = null;
+        let lightObj = null;
+
+        const light = new LightPrototype({
+            id: this.cAuID++,
+            color: settings.color,
+            intensity: settings.intensity,
+            position: settings.position,
+            target: settings.target
+
+        });
 
         switch (settings.type) {
-            case LIGHT_TYPES.DIRECTIONAL_LIGHT:
-                light = new THREE.DirectionalLight(settings.color, settings.intensity);
-                break;
-            default:
-                break;
+        case LIGHT_TYPES.DIRECTIONAL:
+            lightObj = new THREE.DirectionalLight(light.getColor(), light.getIntensity());
+            break;
+        case LIGHT_TYPES.AMBIENT:
+            lightObj = new THREE.AmbientLight(light.getColor(), light.getIntensity());
+            break;
+        default:
+            break;
         }
 
-        light.position.set(
-            settings.position.x,
-            settings.position.y,
-            settings.position.z
-        )
+        light.attachLightObject(lightObj);
+
+        light.moveLightTo({
+            x: settings.position.x,
+            y: settings.position.y,
+            z: settings.position.z
+        })
 
         return light;
     }

@@ -1,5 +1,9 @@
 export const LIGHT_TYPES = {
-    DIRECTIONAL_LIGHT: "directional_light",
-    AMBIENT_LIGHT: "ambient_light",
-    HEMI_LIGHT: "hemi_light",
+    DIRECTIONAL: "directional_light",
+    AMBIENT: "ambient_light",
+    HEMISPHERE: "hemisphere_light",
+    POINT: "point_light",
+    SPOT: "spot_light",
+    RECTAREA: "rectarea_light"
 }
+

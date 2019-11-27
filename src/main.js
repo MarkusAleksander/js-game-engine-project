@@ -131,11 +131,12 @@ import { LIGHT_TYPES } from './Graphics/LightTypes.js';
 
         // * Add Lights to the scene
         let light = Graphics.createLight({
-            type: LIGHT_TYPES.DIRECTIONAL_LIGHT,
+            type: LIGHT_TYPES.DIRECTIONAL,
             position: { x: 10, y: 10, z: 10 },
             intensity: 5.0,
             color: 0xffffff
         });
+
         Graphics.addLightToScene(light);
     }
 

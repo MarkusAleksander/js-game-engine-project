@@ -146,12 +146,12 @@ const ActorFactory = function ActorFactory() {
         let geometry;
 
         switch (meshType) {
-            case MESH_TYPES.BOX:
-                {
-                    geometry = this.createBoxGeometry(data);
-                    break;
-                }
-            default:
+        case MESH_TYPES.BOX:
+        {
+            geometry = this.createBoxGeometry(data);
+            break;
+        }
+        default:
         }
 
         return geometry;
@@ -199,6 +199,7 @@ const ActorFactory = function ActorFactory() {
     }
 
     // * Set Initial Position
+    // TODO - Required?
     this.setInitialPosition = function setInitialPosition(data, actor) {
         actor.position.x = data.x !== undefined ? data.x : 0;
         actor.position.y = data.y !== undefined ? data.y : 0;
@@ -206,6 +207,7 @@ const ActorFactory = function ActorFactory() {
     }
 
     // * Set Initial Rotation
+    // TODO - Required?
     this.setInitialRotation = function setInitialRotation(data, actor) {
         // TODO
     }

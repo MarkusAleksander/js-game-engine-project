@@ -132,6 +132,9 @@ const GraphicsManager = function GraphicsManager(data) {
             this.updateRenderResize();
         }
 
+        // * Update Lights
+        this.Lights.forEach((light) => { light.update() });
+
         // * Do render
         this.Renderer.render(this.Scene, this.Camera);
     }
@@ -141,12 +144,13 @@ const GraphicsManager = function GraphicsManager(data) {
     this.createLight = function createLight(settings) {
         // TODO - Improve
         let light = this.LightFactory.createLight(settings);
+
         this.Lights.push(light);
         return light;
     }
 
     this.addLightToScene = function addLightToScene(light) {
-        this.Scene.add(light);
+        this.Scene.add(light.getLightObject());
     }
 
     // TODO - Additional light methods

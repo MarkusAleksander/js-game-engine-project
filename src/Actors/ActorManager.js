@@ -52,6 +52,7 @@ const ActorManager = function ActorManager(data) {
     // * Create Actor
     this.createActor = function createActor(settings) {
         let newActor = this.ActorFactory.createActor(settings);
+
         this.actorList.push(newActor);
         return newActor;
     }
