@@ -21,7 +21,7 @@ import { LIGHT_TYPES } from './Graphics/LightTypes.js';
     // * Setup running modes
     Utilities.setRunningMode(PROD_MODE);
     Utilities.setRenderMode(CONTINUOUS_FRAME_RENDER);
-    Utilities.setPerformanceMode(PERFORMANCE_DETAIL_OFF);
+    Utilities.setPerformanceMode(PERFORMANCE_DETAIL_ON);
 
 
     // * -----------------------------------
@@ -33,7 +33,8 @@ import { LIGHT_TYPES } from './Graphics/LightTypes.js';
         {
             managerName: 'EngineManager',
             renderFn: render,
-            timeStep: 1000 / 60
+            timeStep: 1000 / 60,
+            maxTimeStep: 1000 / 30 // TODO - actually required? - probably not
         },
     );
 

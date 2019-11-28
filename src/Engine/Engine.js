@@ -1,3 +1,4 @@
+/* eslint-disable consistent-this */
 import ManagerPrototype from '../ManagerPrototype/ManagerPrototype.js';
 
 import Utilities from './../Globals/Utilities.js';
@@ -20,8 +21,16 @@ const EngineManager = function EngineManager(data) {
     this.render = data.renderFn;
     // * desired time step
     this.timeStep = data.timeStep;
+    // * max time step
+    this.maxTimeStep = data.maxTimeStep;
     // * Number of frames rendererd
     this.numberFramesRendered = 0;
+
+    // * frame details
+    this.timeStart = 0;
+    this.timeEnd = 0;
+    this.timeTaken = 0;
+    this.timeLeft = 0;
 
     ManagerPrototype.call(this, data);
 
@@ -70,10 +79,8 @@ const EngineManager = function EngineManager(data) {
     // * Main Update Loop
     this.update = function update() {
 
-        let timeStart, timeEnd;
-
         if (Utilities.getPerformanceMode() === PERFORMANCE_DETAIL_ON) {
-            timeStart = performance.now();
+            this.timeStart = performance.now();
         }
 
         Utilities.outputDebug('Running Updates');
@@ -91,25 +98,36 @@ const EngineManager = function EngineManager(data) {
         // * Update framecount
         this.numberFramesRendered++;
 
+        if (Utilities.getPerformanceMode() === PERFORMANCE_DETAIL_ON) {
+            console.log(this.numberFramesRendered);
+        }
+
         Utilities.outputDebug('End Running Updates');
 
         if (Utilities.getPerformanceMode() === PERFORMANCE_DETAIL_ON) {
-            timeEnd = performance.now();
+            this.timeEnd = performance.now();
         }
 
         if (Utilities.getPerformanceMode() === PERFORMANCE_DETAIL_ON) {
-            let timeTaken = timeEnd - timeStart;
+            this.timeTaken = this.timeEnd - this.timeStart;
+            this.timeLeft = this.timeStep - this.timeTaken;
 
             console.log(
-                'Time to update: ' + timeTaken +
+                'Time to update: ' + this.timeTaken +
                 '. Desired time step: ' + this.timeStep +
-                '. Time left available to render: ' + (this.timeStep - timeTaken) +
-                '. Current FPS: ' + 1000 / timeTaken);
+                '. Max time step: ' + this.maxTimeStep +
+                '. Time left available to render: ' + this.timeLeft);
         }
+
+        // TODO - Improve engine loop and ensure frame rate is being acheived correctly
 
         if (Utilities.getRenderMode() === CONTINUOUS_FRAME_RENDER) {
             // * Run the update again
-            requestAnimationFrame(this.update.bind(this));
+            let _self = this;
+
+            window.setTimeout(function updateTimeout() {
+                requestAnimationFrame(_self.update.bind(_self));
+            }, this.timeStep);
         }
     }
 
