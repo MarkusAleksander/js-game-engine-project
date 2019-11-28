@@ -114,12 +114,12 @@ import { LIGHT_TYPES } from './Graphics/LightTypes.js';
         Player.addUpdateFunction(function () {
             this.rotateActorBy({ x: 0.01, y: 0.02, z: -0.01 });
         });
-        Player.addUpdateFunction(function () {
-            this.moveActorBy({ x: 0.05 });
-            if (this.getPosition().x > 10) {
-                this.moveActorTo({ x: -10 });
-            }
-        });
+        // Player.addUpdateFunction(function () {
+        //     this.moveActorBy({ x: 0.05 });
+        //     if (this.getPosition().x > 10) {
+        //         this.moveActorTo({ x: -10 });
+        //     }
+        // });
 
         // * Add Actor to Scene
         Graphics.addActorToScene(Player);
@@ -137,7 +137,20 @@ import { LIGHT_TYPES } from './Graphics/LightTypes.js';
             color: 0xffffff
         });
 
+        // debugger;
+        let light2 = Graphics.createLight({
+            type: LIGHT_TYPES.DIRECTIONAL,
+            position: { x: -20, y: -20, z: -20 },
+            intensity: 5.0,
+            color: 0xffffff
+        });
+
+        Graphics.registerLight(light);
+        // Graphics.registerLight(light2);
+        light.setActiveStatus(true);
+        // light2.setActiveStatus(true);
         Graphics.addLightToScene(light);
+        // Graphics.addLightToScene(light2);
     }
 
 

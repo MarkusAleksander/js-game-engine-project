@@ -76,6 +76,10 @@ const ActorPrototype = function ActorPrototype(data) {
         this.isRegistered = status;
     }
 
+    // * Check if Registered
+    this.checkIsRegistered = function checkIsRegistered() {
+        return this.isRegistered;
+    }
 
     // * ------- ACTOR MANIPULATION ------- * //
 

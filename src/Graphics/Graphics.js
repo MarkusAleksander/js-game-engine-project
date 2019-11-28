@@ -2,6 +2,8 @@ import ManagerPrototype from '../ManagerPrototype/ManagerPrototype.js';
 import LightFactory from './LightFactory.js';
 
 import Utilities from './../Globals/Utilities.js';
+import LightPrototype from './Light.js';
+import { ACTOR_TYPES } from '../Actors/ActorTypes.js';
 
 // * -----------------------------------
 // *    GRAPHICS MANAGER
@@ -27,7 +29,9 @@ const GraphicsManager = function GraphicsManager(data) {
     // * Light factory
     this.LightFactory = null;
     // * Light List
-    this.Lights = []
+    this.LightList = [];
+    // * Registered Light List
+    this.registeredLightList = [];
 
     ManagerPrototype.call(this, data);
 
@@ -70,7 +74,9 @@ const GraphicsManager = function GraphicsManager(data) {
 
     // * Add Actor to the Scene
     this.addActorToScene = function addActorToScene(actor) {
-        this.Scene.add(actor.getActorMesh());
+        if (actor.checkIsRegistered()) {
+            this.Scene.add(actor.getActorMesh());
+        }
     }
 
     // * Remove Actor from Scene
@@ -133,7 +139,7 @@ const GraphicsManager = function GraphicsManager(data) {
         }
 
         // * Update Lights
-        this.Lights.forEach((light) => { light.update() });
+        this.LightList.forEach((light) => { light.update() });
 
         // * Do render
         this.Renderer.render(this.Scene, this.Camera);
@@ -145,12 +151,31 @@ const GraphicsManager = function GraphicsManager(data) {
         // TODO - Improve
         let light = this.LightFactory.createLight(settings);
 
-        this.Lights.push(light);
+        this.LightList.push(light);
         return light;
     }
 
+    this.registerLight = function registerLight(light) {
+        if (!(light instanceof LightPrototype)) {
+            Utilities.outputDebug('Light not instance of LightPrototype!');
+            return;
+        }
+        this.registeredLightList.push(light);
+        light.setRegisteredStatus(true);
+    }
+
+    this.deregisterLight = function deregisterLight(lightId) {
+        // TODO
+    }
+
     this.addLightToScene = function addLightToScene(light) {
-        this.Scene.add(light.getLightObject());
+        if (light.checkIsRegistered()) {
+            this.Scene.add(light.getLightObject());
+        }
+    }
+
+    this.removeLightFromScene = function removeLightFromScene(light) {
+        // TODO
     }
 
     // TODO - Additional light methods

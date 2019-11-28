@@ -26,7 +26,11 @@ const LightPrototype = function LightPrototype(data) {
     this.updateFunctions = [];
 
     // * light position target
-    this.position = { x: 0, y: 0, z: 0 };
+    this.position = {
+        x: data.position !== undefined ? data.position.x !== undefined ? data.position.x : 0 : 0,
+        y: data.position !== undefined ? data.position.y !== undefined ? data.position.y : 0 : 0,
+        z: data.position !== undefined ? data.position.z !== undefined ? data.position.z : 0 : 0
+    };
     this.target = { x: 0, y: 0, z: 0 };
     this.intensity = data.intensity !== undefined ? data.intensity : 0;
     this.color = data.color !== undefined ? data.color : 0xffffff;
@@ -81,6 +85,11 @@ const LightPrototype = function LightPrototype(data) {
         this.isRegistered = status;
     }
 
+    // * Check if registered
+    this.checkIsRegistered = function checkIsRegistered() {
+        return this.isRegistered;
+    }
+
     // * Attach light
     this.attachLightObject = function attachLightObject(lightObj) {
         this.lightObj = lightObj;
@@ -88,7 +97,7 @@ const LightPrototype = function LightPrototype(data) {
 
     // * Get Light
     this.getLightObject = function getLightObject() {
-        this.lightObj;
+        return this.lightObj;
     }
 
     // * ------- LIGHT MANIPULATION ------- * //
@@ -149,14 +158,15 @@ const LightPrototype = function LightPrototype(data) {
             this.position.z
         );
 
-        this.lightObj.target.set(
-            this.target.x,
-            this.target.y,
-            this.target.z
-        );
+        // // this.lightObj.target.set(
+        // //     this.target.x,
+        // //     this.target.y,
+        // //     this.target.z
+        // // );
 
         this.lightObj.intensity = this.intensity;
-        this.lightObj.color = this.color;
+        // debugger;
+        this.lightObj.color.set(this.color);
     }
 }
 

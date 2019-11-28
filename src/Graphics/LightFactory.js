@@ -21,7 +21,6 @@ const LightFactory = function LightFactory() {
     // * -----------------------------------
 
     this.createLight = function createLight(settings) {
-        let lightObj = null;
 
         const light = new LightPrototype({
             id: this.cAuID++,
@@ -29,8 +28,9 @@ const LightFactory = function LightFactory() {
             intensity: settings.intensity,
             position: settings.position,
             target: settings.target
-
         });
+
+        let lightObj = null;
 
         switch (settings.type) {
         case LIGHT_TYPES.DIRECTIONAL:
@@ -44,12 +44,6 @@ const LightFactory = function LightFactory() {
         }
 
         light.attachLightObject(lightObj);
-
-        light.moveLightTo({
-            x: settings.position.x,
-            y: settings.position.y,
-            z: settings.position.z
-        })
 
         return light;
     }
