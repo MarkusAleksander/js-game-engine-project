@@ -20,6 +20,8 @@ const EngineManager = function EngineManager(data) {
     this.render = data.renderFn;
     // * desired time step
     this.timeStep = data.timeStep;
+    // * Number of frames rendererd
+    this.numberFramesRendered = 0;
 
     ManagerPrototype.call(this, data);
 
@@ -60,6 +62,10 @@ const EngineManager = function EngineManager(data) {
         }
     }
 
+    // * Get current number of frames
+    this.getNumberOfFramesRendered = function getNumberOfFramesRendered() {
+        return this.numberFramesRendered;
+    }
 
     // * Main Update Loop
     this.update = function update() {
@@ -81,6 +87,9 @@ const EngineManager = function EngineManager(data) {
 
         // * Run registered render function
         this.render();
+
+        // * Update framecount
+        this.numberFramesRendered++;
 
         Utilities.outputDebug('End Running Updates');
 

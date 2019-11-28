@@ -32,7 +32,8 @@ const LightPrototype = function LightPrototype(data) {
         z: data.position !== undefined ? data.position.z !== undefined ? data.position.z : 0 : 0
     };
     this.target = { x: 0, y: 0, z: 0 };
-    this.intensity = data.intensity !== undefined ? data.intensity : 0;
+    this.desiredIntensity = data.intensity !== undefined ? data.intensity : 1;
+    this.intensity = 0;
     this.color = data.color !== undefined ? data.color : 0xffffff;
 
 
@@ -43,6 +44,13 @@ const LightPrototype = function LightPrototype(data) {
     // * Set light Activity Status
     this.setActiveStatus = function setActiveStatus(status) {
         this.isActive = status;
+        if (status) {
+            // * Switch on
+            this.intensity = this.desiredIntensity;
+        } else {
+            // * Switch off
+            this.intensity = 0;
+        }
     }
 
     // * Get Current light Active Status
@@ -132,7 +140,10 @@ const LightPrototype = function LightPrototype(data) {
 
     // * Update intensity
     this.updateIntensity = function updateIntensity(int) {
-        this.intensity = int;
+        this.desiredIntensity = int;
+        if (this.isActive) {
+            this.intensity = this.desiredIntensity;
+        }
     }
 
     // * get intensity
@@ -167,6 +178,16 @@ const LightPrototype = function LightPrototype(data) {
         this.lightObj.intensity = this.intensity;
         // debugger;
         this.lightObj.color.set(this.color);
+    }
+
+    // * Get Current Light Position
+    this.getPosition = function getPosition() {
+        return this.position;
+    }
+
+    // * Get Current Light Rotation
+    this.getRotation = function getRotation() {
+        return this.rotation;
     }
 }
 

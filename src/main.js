@@ -1,3 +1,5 @@
+/* eslint-disable no-invalid-this */
+/* eslint-disable func-names */
 /* eslint-disable no-lone-blocks */
 import EngineManager from './Engine/Engine.js';
 import GraphicsManager from './Graphics/Graphics.js';
@@ -109,8 +111,10 @@ import { LIGHT_TYPES } from './Graphics/LightTypes.js';
             }
         });
 
+        // * Register created actor
         ActorMgr.registerActor(Player);
-        Player.setActiveStatus(true);
+
+        // * Add some updates to the actor
         Player.addUpdateFunction(function () {
             this.rotateActorBy({ x: 0.01, y: 0.02, z: -0.01 });
         });
@@ -124,33 +128,43 @@ import { LIGHT_TYPES } from './Graphics/LightTypes.js';
         // * Add Actor to Scene
         Graphics.addActorToScene(Player);
 
+        // * Set Player to be Active
+        Player.setActiveStatus(true);
+
         // * Actor Removal process
-        // Graphics.removeActorFromScene(Player);
         // Player.setActiveStatus(false);
+        // Graphics.removeActorFromScene(Player);
         // ActorMgr.deregisterActor(Player.getID());
 
-        // * Add Lights to the scene
-        let light = Graphics.createLight({
+
+        // * Create a light
+        let Light = Graphics.createLight({
             type: LIGHT_TYPES.DIRECTIONAL,
             position: { x: 10, y: 10, z: 10 },
-            intensity: 5.0,
+            intensity: 1.0,
             color: 0xffffff
         });
 
-        // debugger;
-        let light2 = Graphics.createLight({
-            type: LIGHT_TYPES.DIRECTIONAL,
-            position: { x: -20, y: -20, z: -20 },
-            intensity: 5.0,
-            color: 0xffffff
+        // * Register Light
+        Graphics.registerLight(Light);
+
+        Light.addUpdateFunction(function () {
+            this.moveLightBy({ y: 0.05 });
+            if (this.getPosition().y > 10) {
+                this.moveLightTo({ y: -10 });
+            }
         });
 
-        Graphics.registerLight(light);
-        // Graphics.registerLight(light2);
-        light.setActiveStatus(true);
-        // light2.setActiveStatus(true);
-        Graphics.addLightToScene(light);
-        // Graphics.addLightToScene(light2);
+        // * Add light to Scene
+        Graphics.addLightToScene(Light);
+
+        // * Set light to active (switch it on)
+        Light.setActiveStatus(true);
+
+        // * Removal process
+        // Light.setActiveStatus(false);
+        // Graphics.removeLightFromScene(Light);
+        // Graphics.deregisterLight(Light.getID());
     }
 
 
