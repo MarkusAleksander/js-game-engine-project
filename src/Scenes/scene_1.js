@@ -27,12 +27,12 @@ const createScene = function createScene(Graphics, ActorMgr) {
                 heightSegments: 3,
                 depthSegments: 3
             },
-            material: {
-                color: 0xff0000
+            materialData: {
+                color: "0xff0000"
             }
         },
-        sceneData: {
-            position: { x: 0, y: 0, z: 0 }
+        position: {
+            x: 0, y: 0, z: -10
         }
     });
 
@@ -49,6 +49,13 @@ const createScene = function createScene(Graphics, ActorMgr) {
         if (this.getPosition().x > 10) {
             this.moveActorTo({ x: -10 });
         }
+    });
+
+    Player.addUpdateFunction(function () {
+        // debugger;
+        // let newColor = "0x" + (parseInt(this.getMaterialColor(), 16) + 1).toString(16);
+
+        // this.updateMaterialColor(newColor);
     });
 
     // * Add Actor to Scene

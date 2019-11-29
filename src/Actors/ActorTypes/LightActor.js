@@ -1,8 +1,14 @@
 import ActorPrototype from './ActorPrototype.js';
 
+// * -----------------------------------
+// *    LIGHT ACTOR
+// * -----------------------------------
 const LightActor = function LightActor(data) {
 
-    // * Light specific properties
+    // * -----------------------------------
+    // *    LIGHT ACTOR PROPERTIES
+    // * -----------------------------------
+
     this.target = { x: 0, y: 0, z: 0 };
     // * Desired intensity setting
     this.desiredIntensity = data.intensity !== undefined ? data.intensity : 1;
@@ -57,30 +63,33 @@ const LightActor = function LightActor(data) {
         this.color = color;
     }
 
-    // * get intensity
+    // * Get current intensity
     this.getIntensity = function getIntensity() {
         return this.currentIntensity;
     }
 
-
-    // * get color
+    // * Get color
     this.getColor = function getColor() {
         return this.color;
     }
 
-    // * get target
+    // * Get target
     this.getTarget = function getTarget() {
         return this.target;
     }
 
     // * Update mesh position and rotation
     this.syncAttachedObject = function syncAttachedObject() {
+
+        LightActor.prototype.syncAttachedObject.call(this);
+        // TODO
+
         // debugger;
-        this.attachedObject.position.set(
-            this.position.x,
-            this.position.y,
-            this.position.z
-        );
+        // this.attachedObject.position.set(
+        //     this.position.x,
+        //     this.position.y,
+        //     this.position.z
+        // );
 
         // debugger;
         // this.lightObj.target.set(

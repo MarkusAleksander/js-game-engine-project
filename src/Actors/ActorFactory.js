@@ -1,5 +1,5 @@
-import ActorPrototype from './ActorTypes/ActorPrototype.js';
 import LightActor from './ActorTypes/LightActor.js';
+import MeshActor from './ActorTypes/MeshActor.js';
 import { ACTOR_TYPES, MESH_ACTOR_TYPES, MESH_TYPES, MESH_TEMPLATES, LIGHT_ACTOR_TYPES } from './ActorTypes/ActorTypes.js';
 import Utilities from '../Globals/Utilities.js';
 
@@ -28,13 +28,16 @@ const ActorFactory = function ActorFactory() {
         // * Switch to Actor building path
         switch (actorType) {
         case ACTOR_TYPES.MESH:
+            // * Create a Mesh Actor
             newActor = this.createMeshActor(settings);
             break;
         case ACTOR_TYPES.LIGHT:
+            // * Create a Light Actor
             newActor = this.createLightActor(settings);
             break;
         default:
-            return null;
+            // * Don't create anything
+            break;
         }
 
         if (!newActor) {
@@ -48,7 +51,7 @@ const ActorFactory = function ActorFactory() {
     this.createMeshActor = function createMeshActor(settings) {
 
         // * Check compatible settings
-        let isValidSettings = this.isValidActorSettings(settings);
+        let isValidSettings = this.isValidMeshActorSettings(settings);
 
         // * Do not continue if not valid object
         if (!isValidSettings) {
@@ -57,7 +60,7 @@ const ActorFactory = function ActorFactory() {
         }
 
         // * Create Actor
-        const actor = new ActorPrototype(settings);
+        const actor = new MeshActor(settings);
 
         let actorMesh = null;
 
@@ -71,17 +74,6 @@ const ActorFactory = function ActorFactory() {
 
         // * Assign mesh to Actor object
         actor.setActorObject(actorMesh);
-
-        // * Set sceneData (location, position)
-        if (
-            settings.sceneData !== undefined &&
-            settings.sceneData !== null &&
-            typeof settings.sceneData === "object" &&
-            !Array.isArray(settings.sceneData) &&
-            Object.keys(settings.sceneData).length > 0
-        ) {
-            this.setSceneDataForActor(actor, settings.sceneData);
-        }
 
         // * Assign an ID when complete
         actor.uID = this.cAuID++;
@@ -119,8 +111,8 @@ const ActorFactory = function ActorFactory() {
         return light;
     }
 
-    // * Check if Actor settings meet the standard baseline for required data
-    this.isValidActorSettings = function isValidActorSettings(meshData) {
+    // * Check if Mesh Actor settings meet the required data
+    this.isValidMeshActorSettings = function isValidMeshActorSettings(meshData) {
         let isValidObject = false;
 
         // * Check settings is a valid object and that it's not empty
@@ -171,10 +163,20 @@ const ActorFactory = function ActorFactory() {
         return isValidObject;
     }
 
+    // * Check if Light Actor settings meet the required data
+    this.isValidLightActorSettings = function isValidLightActorSettings(lightData) {
+        // TODO
+    }
+
+
+    // * -----------------------------------
+    // *    MESH ACTOR BUILDING METHODS
+    // * -----------------------------------
+
     // * Build Primitive Mesh
     this.buildPrimitiveMesh = function buildPrimitiveMesh(meshData) {
         let geometry = this.createGeometry(meshData.meshType, Object.assign(MESH_TEMPLATES.BOX, meshData.geometry)),
-            material = this.createMaterial(meshData.material);
+            material = this.createMaterial(meshData.materialData);
 
         // TODO - Better Material handling
         //debugger;
@@ -195,11 +197,10 @@ const ActorFactory = function ActorFactory() {
 
         switch (meshType) {
         case MESH_TYPES.BOX:
-        {
             geometry = this.createBoxGeometry(data);
             break;
-        }
         default:
+            break;
         }
 
         return geometry;
@@ -207,6 +208,7 @@ const ActorFactory = function ActorFactory() {
 
     // * Create Box Geometry
     this.createBoxGeometry = function createBoxGeometry(data) {
+        // TODO - Does this really need it's own function?
         return new THREE.BoxBufferGeometry(
             data.width.x,
             data.height.y,
@@ -219,45 +221,13 @@ const ActorFactory = function ActorFactory() {
 
     // * Create Material
     this.createMaterial = function createMaterial(data) {
-        let materialColor = data !== undefined ? data : { color: 0x000000 };
+        let materialColor = data.color !== undefined ? data.color : { color: 0x000000 };
 
         const material = new THREE.MeshStandardMaterial({
-            color: materialColor.color
+            color: parseInt(materialColor, 16)
         });
 
         return material;
-    }
-
-    this.setSceneDataForActor = function setSceneDataForActor(actor, sceneData) {
-        // TODO - Improve this - needs to update by Actor Method, not direct on the mesh
-        if (sceneData.position) {
-            actor.moveActorTo({
-                x: sceneData.position.x || 0,
-                y: sceneData.position.y || 0,
-                z: sceneData.position.z || 0
-            });
-        }
-        if (sceneData.rotation) {
-            actor.rotateActorTo({
-                x: sceneData.rotation.x || 0,
-                y: sceneData.rotation.y || 0,
-                z: sceneData.rotation.z || 0
-            });
-        }
-    }
-
-    // * Set Initial Position
-    // TODO - Required?
-    this.setInitialPosition = function setInitialPosition(data, actor) {
-        actor.position.x = data.x !== undefined ? data.x : 0;
-        actor.position.y = data.y !== undefined ? data.y : 0;
-        actor.position.z = data.z !== undefined ? data.z : 0
-    }
-
-    // * Set Initial Rotation
-    // TODO - Required?
-    this.setInitialRotation = function setInitialRotation(data, actor) {
-        // TODO
     }
 
 }
