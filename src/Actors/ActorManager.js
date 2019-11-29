@@ -70,7 +70,6 @@ const ActorManager = function ActorManager(data) {
     // * Deregister Actor
     // TODO - By object or ID or both?
     this.deregisterActor = function deregisterActor(actorID) {
-        debugger;
         let idx = this.registeredActorList.findIndex((actor) => { return actorID === actor.getID(); });
 
         // * Check actor found

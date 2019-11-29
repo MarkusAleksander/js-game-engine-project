@@ -22,6 +22,7 @@ const LightFactory = function LightFactory() {
 
     this.createLight = function createLight(settings) {
 
+        // TODO - Improve construction - note - color is different for hemi
         const light = new LightPrototype({
             id: this.cAuID++,
             color: settings.color,
@@ -38,6 +39,9 @@ const LightFactory = function LightFactory() {
             break;
         case LIGHT_TYPES.AMBIENT:
             lightObj = new THREE.AmbientLight(light.getColor(), light.getIntensity());
+            break;
+        case LIGHT_TYPES.HEMISPHERE:
+            lightObj = new THREE.HemisphereLight(settings.skyColor, settings.groundColor, light.getIntensity);
             break;
         default:
             break;

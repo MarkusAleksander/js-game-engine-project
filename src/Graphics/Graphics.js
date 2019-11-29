@@ -148,7 +148,6 @@ const GraphicsManager = function GraphicsManager(data) {
     // * ------- LIGHT METHODS ------- * //
 
     this.createLight = function createLight(settings) {
-        // TODO - Improve
         let light = this.LightFactory.createLight(settings);
 
         this.LightList.push(light);
@@ -164,8 +163,28 @@ const GraphicsManager = function GraphicsManager(data) {
         light.setRegisteredStatus(true);
     }
 
-    this.deregisterLight = function deregisterLight(lightId) {
-        // TODO
+    this.deregisterLight = function deregisterLight(lightID) {
+        let idx = this.registeredLightList.findIndex((light) => { return lightID === light.getID(); });
+
+        // * Check light found
+        if (idx < 0) {
+            Utilities.outputDebug('Light not found when trying deregister.');
+            return;
+        }
+
+        let light = this.registeredLightList[idx];
+
+        // * Check Actor has been deactivated
+        if (light.getActiveStatus()) {
+            Utilities.outputDebug('Light not deactivated before deregistration.');
+            return;
+        }
+
+        // * Deregister Actor
+        light.setRegisteredStatus(false);
+
+        // * Remove Actor from Registered list
+        this.registeredLightList.splice(idx, 1);
     }
 
     this.addLightToScene = function addLightToScene(light) {

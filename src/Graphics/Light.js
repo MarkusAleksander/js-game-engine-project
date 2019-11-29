@@ -163,17 +163,19 @@ const LightPrototype = function LightPrototype(data) {
 
     // * Update mesh position and rotation
     this.updateLight = function updateLight() {
+        // debugger;
         this.lightObj.position.set(
             this.position.x,
             this.position.y,
             this.position.z
         );
 
-        // // this.lightObj.target.set(
-        // //     this.target.x,
-        // //     this.target.y,
-        // //     this.target.z
-        // // );
+        // debugger;
+        // this.lightObj.target.set(
+        //     this.target.x,
+        //     this.target.y,
+        //     this.target.z
+        // );
 
         this.lightObj.intensity = this.intensity;
         // debugger;
