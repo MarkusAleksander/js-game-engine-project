@@ -73,16 +73,23 @@ const createScene = function createScene(Graphics, ActorMgr) {
 
 
     // * Create a light
-    let Light = ActorMgr.createLightActor({
+    let directionalLight = ActorMgr.createLightActor({
         type: LIGHT_ACTOR_TYPES.DIRECTIONAL,
         position: { x: -10, y: 10, z: 10 },
-        intensity: 3.0,
-        color: 0xffffff
+        intensity: 2.0,
+        color: 0xf8f8f8
     });
+
+    let ambientLight = ActorMgr.createLightActor({
+        type: LIGHT_ACTOR_TYPES.AMBIENT,
+        color: 0xaaaaaa,
+        intensity: 1
+    })
 
     // debugger;
     // * Register Light
-    ActorMgr.registerActor(Light);
+    ActorMgr.registerActor(directionalLight);
+    ActorMgr.registerActor(ambientLight);
 
     // Light.addUpdateFunction(function () {
     //     this.moveLightBy({ x: 0.1 });
@@ -92,20 +99,15 @@ const createScene = function createScene(Graphics, ActorMgr) {
     // });
 
     // * Add light to Scene
-    Graphics.addActorToScene(Light);
+    Graphics.addActorToScene(directionalLight);
+    Graphics.addActorToScene(ambientLight);
 
     // * Set light to active (switch it on)
-    Light.setActiveStatus(true);
+    directionalLight.setActiveStatus(true);
+    ambientLight.setActiveStatus(true);
 
-    // let ambientLight = Graphics.createLight({
-    //     type: LIGHT_TYPES.AMBIENT,
-    //     intensity: 2.0,
-    //     color: 0x404040
-    // });
 
-    // Graphics.registerLight(ambientLight);
     // Graphics.addLightToScene(ambientLight);
-    // ambientLight.setActiveStatus(true);
 
     // let hemisphereLight = Graphics.createLight({
     //     type: LIGHT_TYPES.HEMISPHERE,
