@@ -1,6 +1,20 @@
 export const ACTOR_TYPES = {
+    MESH: "mesh",
+    LIGHT: "light"
+};
+
+export const MESH_ACTOR_TYPES = {
     PRIMITIVE: "primitive",
     CUSTOM: "custom"
+}
+
+export const LIGHT_ACTOR_TYPES = {
+    DIRECTIONAL: "directional_light",
+    AMBIENT: "ambient_light",
+    HEMISPHERE: "hemisphere_light",
+    POINT: "point_light",
+    SPOT: "spot_light",
+    RECTAREA: "rectarea_light"
 }
 
 export const MESH_TYPES = {

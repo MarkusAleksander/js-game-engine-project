@@ -1,5 +1,4 @@
-import { ACTOR_TYPES, MESH_TYPES } from './../Actors/ActorTypes.js';
-import { LIGHT_TYPES } from './../Graphics/LightTypes.js';
+import { MESH_ACTOR_TYPES, MESH_TYPES, LIGHT_ACTOR_TYPES } from '../Actors/ActorTypes/ActorTypes.js';
 
 // * -----------------------------------
 // *    SCENE CREATION
@@ -14,9 +13,10 @@ const createScene = function createScene(Graphics, ActorMgr) {
     *   5. Add Actor to scene
     */
 
+
     // * Create Player Actor
-    let Player = ActorMgr.createActor({
-        actorType: ACTOR_TYPES.PRIMITIVE,
+    let Player = ActorMgr.createMeshActor({
+        actorType: MESH_ACTOR_TYPES.PRIMITIVE,
         meshData: {
             meshType: MESH_TYPES.BOX,
             geometry: {
@@ -64,15 +64,16 @@ const createScene = function createScene(Graphics, ActorMgr) {
 
 
     // * Create a light
-    // let Light = Graphics.createLight({
-    //     type: LIGHT_TYPES.DIRECTIONAL,
-    //     position: { x: -10, y: 10, z: 10 },
-    //     intensity: 1.0,
-    //     color: 0xffffff
-    // });
+    let Light = ActorMgr.createLightActor({
+        type: LIGHT_ACTOR_TYPES.DIRECTIONAL,
+        position: { x: -10, y: 10, z: 10 },
+        intensity: 5.0,
+        color: 0xffffff
+    });
 
+    // debugger;
     // * Register Light
-    // Graphics.registerLight(Light);
+    ActorMgr.registerActor(Light);
 
     // Light.addUpdateFunction(function () {
     //     this.moveLightBy({ x: 0.1 });
@@ -82,10 +83,10 @@ const createScene = function createScene(Graphics, ActorMgr) {
     // });
 
     // * Add light to Scene
-    // Graphics.addLightToScene(Light);
+    Graphics.addActorToScene(Light);
 
     // * Set light to active (switch it on)
-    // Light.setActiveStatus(true);
+    Light.setActiveStatus(true);
 
     // let ambientLight = Graphics.createLight({
     //     type: LIGHT_TYPES.AMBIENT,
@@ -97,16 +98,16 @@ const createScene = function createScene(Graphics, ActorMgr) {
     // Graphics.addLightToScene(ambientLight);
     // ambientLight.setActiveStatus(true);
 
-    let hemisphereLight = Graphics.createLight({
-        type: LIGHT_TYPES.HEMISPHERE,
-        intensity: 1,
-        skyColor: 0xffffff,
-        groundColor: 0xffffff
-    })
+    // let hemisphereLight = Graphics.createLight({
+    //     type: LIGHT_TYPES.HEMISPHERE,
+    //     intensity: 1,
+    //     skyColor: 0xffffff,
+    //     groundColor: 0xffffff
+    // })
 
-    Graphics.registerLight(hemisphereLight);
-    Graphics.addLightToScene(hemisphereLight);
-    hemisphereLight.setActiveStatus(true);
+    // Graphics.registerLight(hemisphereLight);
+    // Graphics.addLightToScene(hemisphereLight);
+    // hemisphereLight.setActiveStatus(true);
 
     // * Removal process
     // Light.setActiveStatus(false);

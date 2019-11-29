@@ -1,6 +1,7 @@
 import ManagerPrototype from '../ManagerPrototype/ManagerPrototype.js';
-import ActorPrototype from './Actor.js';
+import ActorPrototype from './ActorTypes/ActorPrototype.js';
 import ActorFactory from './ActorFactory.js';
+import { ACTOR_TYPES } from './ActorTypes/ActorTypes.js';
 
 import Utilities from './../Globals/Utilities.js';
 
@@ -55,6 +56,33 @@ const ActorManager = function ActorManager(data) {
 
         this.actorList.push(newActor);
         return newActor;
+    }
+
+    // * Add Actor to List
+    this.addActor = function addActor(actor) {
+        this.actorList.push(actor);
+    }
+
+    // * Create a Mesh Actor
+    this.createMeshActor = function createMeshActor(settings) {
+        let meshActor = this.ActorFactory.createActor(settings, ACTOR_TYPES.MESH);
+
+        if (!meshActor) { return; }
+
+        this.addActor(meshActor);
+
+        return meshActor;
+    }
+
+    // * Create a Light Actor
+    this.createLightActor = function createLightActor(settings) {
+        let lightActor = this.ActorFactory.createActor(settings, ACTOR_TYPES.LIGHT);
+
+        if (!lightActor) { return; }
+
+        this.addActor(lightActor);
+
+        return lightActor;
     }
 
     // * Register Actor

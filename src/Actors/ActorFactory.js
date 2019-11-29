@@ -1,5 +1,6 @@
-import ActorPrototype from './Actor.js';
-import { ACTOR_TYPES, MESH_TYPES, MESH_TEMPLATES } from './ActorTypes.js';
+import ActorPrototype from './ActorTypes/ActorPrototype.js';
+import LightActor from './ActorTypes/LightActor.js';
+import { ACTOR_TYPES, MESH_ACTOR_TYPES, MESH_TYPES, MESH_TEMPLATES, LIGHT_ACTOR_TYPES } from './ActorTypes/ActorTypes.js';
 import Utilities from '../Globals/Utilities.js';
 
 // * -----------------------------------
@@ -20,7 +21,32 @@ const ActorFactory = function ActorFactory() {
     // * -----------------------------------
 
     // * Create Actor
-    this.createActor = function createActor(settings) {
+    this.createActor = function createActor(settings, actorType) {
+
+        let newActor = null;
+
+        // * Switch to Actor building path
+        switch (actorType) {
+        case ACTOR_TYPES.MESH:
+            newActor = this.createMeshActor(settings);
+            break;
+        case ACTOR_TYPES.LIGHT:
+            newActor = this.createLightActor(settings);
+            break;
+        default:
+            return null;
+        }
+
+        if (!newActor) {
+            Utilities.outputDebug("Failed to create actor: ", settings);
+            return null;
+        }
+
+        return newActor;
+    }
+
+    this.createMeshActor = function createMeshActor(settings) {
+
         // * Check compatible settings
         let isValidSettings = this.isValidActorSettings(settings);
 
@@ -36,15 +62,15 @@ const ActorFactory = function ActorFactory() {
         let actorMesh = null;
 
         // * Build Mesh
-        if (settings.actorType === ACTOR_TYPES.PRIMITIVE) {
+        if (settings.actorType === MESH_ACTOR_TYPES.PRIMITIVE) {
             actorMesh = this.buildPrimitiveMesh(settings.meshData);
         }
-        if (settings.actorType === ACTOR_TYPES.CUSTOM) {
+        if (settings.actorType === MESH_ACTOR_TYPES.CUSTOM) {
             actorMesh = this.buildCustomMesh(settings.meshData);
         }
 
         // * Assign mesh to Actor object
-        actor.actorMesh = actorMesh;
+        actor.setActorObject(actorMesh);
 
         // * Set sceneData (location, position)
         if (
@@ -57,18 +83,40 @@ const ActorFactory = function ActorFactory() {
             this.setSceneDataForActor(actor, settings.sceneData);
         }
 
-        // // * Apply update function if passed
-        // if (
-        //     settings.update !== undefined &&
-        //     typeof settings.update === "function"
-        // ) {
-        //     actor.update = settings.update;
-        // }
-
         // * Assign an ID when complete
         actor.uID = this.cAuID++;
 
         return actor;
+    }
+
+    this.createLightActor = function createLightActor(settings) {
+        // TODO - Improve construction - note - color is different for hemi
+        const light = new LightActor({
+            id: this.cAuID++,
+            color: settings.color,
+            intensity: settings.intensity,
+            position: settings.position,
+            target: settings.target
+        });
+
+        let lightObj = null;
+
+        switch (settings.type) {
+        case LIGHT_ACTOR_TYPES.DIRECTIONAL:
+            lightObj = new THREE.DirectionalLight(light.getColor(), light.getIntensity());
+            break;
+        case LIGHT_ACTOR_TYPES.AMBIENT:
+            lightObj = new THREE.AmbientLight(light.getColor(), light.getIntensity());
+            break;
+        case LIGHT_ACTOR_TYPES.HEMISPHERE:
+            lightObj = new THREE.HemisphereLight(settings.skyColor, settings.groundColor, light.getIntensity);
+            break;
+        default:
+            break;
+        }
+        light.setActorObject(lightObj);
+
+        return light;
     }
 
     // * Check if Actor settings meet the standard baseline for required data
@@ -89,8 +137,8 @@ const ActorFactory = function ActorFactory() {
         // * Check we have a actor type to work with
         if (
             !meshData.actorType ||
-            meshData.actorType !== ACTOR_TYPES.PRIMITIVE &&
-            meshData.actorType !== ACTOR_TYPES.CUSTOM
+            meshData.actorType !== MESH_ACTOR_TYPES.PRIMITIVE &&
+            meshData.actorType !== MESH_ACTOR_TYPES.CUSTOM
         ) {
             return isValidObject;
         }

@@ -1,9 +1,5 @@
 import ManagerPrototype from '../ManagerPrototype/ManagerPrototype.js';
-import LightFactory from './LightFactory.js';
-
 import Utilities from './../Globals/Utilities.js';
-import LightPrototype from './Light.js';
-import { ACTOR_TYPES } from '../Actors/ActorTypes.js';
 
 // * -----------------------------------
 // *    GRAPHICS MANAGER
@@ -26,12 +22,6 @@ const GraphicsManager = function GraphicsManager(data) {
     this.shouldUpdateRenderAspect = false;
     // * Should Resize Renderer?
     this.shouldResizeRenderer = false;
-    // * Light factory
-    this.LightFactory = null;
-    // * Light List
-    this.LightList = [];
-    // * Registered Light List
-    this.registeredLightList = [];
 
     ManagerPrototype.call(this, data);
 
@@ -46,7 +36,6 @@ const GraphicsManager = function GraphicsManager(data) {
         this.createScene();
         this.createRenderer();
         this.createCamera(cameraData);
-        this.LightFactory = new LightFactory();
 
         // * Update render aspect ratio and render size on window resize
         window.addEventListener('resize', () => {
@@ -74,14 +63,14 @@ const GraphicsManager = function GraphicsManager(data) {
 
     // * Add Actor to the Scene
     this.addActorToScene = function addActorToScene(actor) {
-        if (actor.checkIsRegistered()) {
-            this.Scene.add(actor.getActorMesh());
+        if (actor.getRegisteredStatus()) {
+            this.Scene.add(actor.getActorObject());
         }
     }
 
     // * Remove Actor from Scene
     this.removeActorFromScene = function removeActorFromScene(actor) {
-        this.Scene.remove(actor.getActorMesh());
+        this.Scene.remove(actor.getActorObject());
     }
 
     // * ------- RENDERER METHODS ------- * //
@@ -138,66 +127,9 @@ const GraphicsManager = function GraphicsManager(data) {
             this.updateRenderResize();
         }
 
-        // * Update Lights
-        this.LightList.forEach((light) => { light.update() });
-
         // * Do render
         this.Renderer.render(this.Scene, this.Camera);
     }
-
-    // * ------- LIGHT METHODS ------- * //
-
-    this.createLight = function createLight(settings) {
-        let light = this.LightFactory.createLight(settings);
-
-        this.LightList.push(light);
-        return light;
-    }
-
-    this.registerLight = function registerLight(light) {
-        if (!(light instanceof LightPrototype)) {
-            Utilities.outputDebug('Light not instance of LightPrototype!');
-            return;
-        }
-        this.registeredLightList.push(light);
-        light.setRegisteredStatus(true);
-    }
-
-    this.deregisterLight = function deregisterLight(lightID) {
-        let idx = this.registeredLightList.findIndex((light) => { return lightID === light.getID(); });
-
-        // * Check light found
-        if (idx < 0) {
-            Utilities.outputDebug('Light not found when trying deregister.');
-            return;
-        }
-
-        let light = this.registeredLightList[idx];
-
-        // * Check Actor has been deactivated
-        if (light.getActiveStatus()) {
-            Utilities.outputDebug('Light not deactivated before deregistration.');
-            return;
-        }
-
-        // * Deregister Actor
-        light.setRegisteredStatus(false);
-
-        // * Remove Actor from Registered list
-        this.registeredLightList.splice(idx, 1);
-    }
-
-    this.addLightToScene = function addLightToScene(light) {
-        if (light.checkIsRegistered()) {
-            this.Scene.add(light.getLightObject());
-        }
-    }
-
-    this.removeLightFromScene = function removeLightFromScene(light) {
-        // TODO
-    }
-
-    // TODO - Additional light methods
 
     // * ------- CAMERA METHODS ------- * //
     // TODO - Export camera to a separate module, handled by the Graphics?
