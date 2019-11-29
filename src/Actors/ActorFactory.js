@@ -14,6 +14,8 @@ const ActorFactory = function ActorFactory() {
 
     // * Current Actor Unique ID
     this.cAuID = 1;
+    // * Texture loader
+    this.textureLoader = new THREE.TextureLoader();
 
 
     // * -----------------------------------
@@ -210,9 +212,9 @@ const ActorFactory = function ActorFactory() {
     this.createBoxGeometry = function createBoxGeometry(data) {
         // TODO - Does this really need it's own function?
         return new THREE.BoxBufferGeometry(
-            data.width.x,
-            data.height.y,
-            data.depth.z,
+            data.width,
+            data.height,
+            data.depth,
             data.widthSegments,
             data.heightSegments,
             data.depthSegments
@@ -221,11 +223,50 @@ const ActorFactory = function ActorFactory() {
 
     // * Create Material
     this.createMaterial = function createMaterial(data) {
-        let materialColor = data.color !== undefined ? data.color : { color: 0x000000 };
+        let materialColor = data.color !== undefined ? data.color : { color: 0xffffff };
+        let texture = data.texture !== undefined ? data.texture : null;
+        let bumpMap = data.bumpMap !== undefined ? data.bumpMap : null;
+        let wireframe = data.wireframe !== undefined ? data.wireframe : false;
 
-        const material = new THREE.MeshStandardMaterial({
-            color: parseInt(materialColor, 16)
-        });
+        const materialOptions = {
+            color: parseInt(materialColor, 16),
+            wireframe: wireframe
+        }
+
+        // debugger;
+
+        if (texture) {
+            texture = this.textureLoader.load(texture);
+
+            texture.encoding = THREE.sRGBEncoding;
+            // texture.anisotropy = 16;
+
+            materialOptions.map = texture;
+        }
+
+        if (bumpMap) {
+            bumpMap = this.textureLoader.load(bumpMap);
+            this.textureLoader.crossOrigin = true;
+            materialOptions.bumpMap = bumpMap;
+        }
+
+        // const material = new THREE.MeshStandardMaterial(
+        //     materialOptions
+        // );
+
+        // * Normal mapping - not affected by light
+        // const material = new THREE.MeshNormalMaterial();
+
+        // * Matte finish material
+        const material = new THREE.MeshLambertMaterial(materialOptions);
+
+        // * Shiny finish
+        // const material = new THREE.MeshPhongMaterial(materialOptions);
+        // * specular: hex
+        // * shinyness - def 30
+        // * bumpMap - texture
+
+        // wireframe: true option
 
         return material;
     }

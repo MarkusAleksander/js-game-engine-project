@@ -77,7 +77,12 @@ const GraphicsManager = function GraphicsManager(data) {
 
     // * Create Renderer
     this.createRenderer = function createRenderer() {
-        this.Renderer = new THREE.WebGLRenderer({ canvas: document.querySelector(this.canvasID) });
+        this.Renderer = new THREE.WebGLRenderer({
+            canvas: document.querySelector(this.canvasID),
+            antialias: true,
+            gammaFactor: 2.2,
+            gammaOutput: true
+        });
         this.Renderer.setSize(window.innerWidth, window.innerHeight);
     }
 

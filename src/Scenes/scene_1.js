@@ -21,18 +21,20 @@ const createScene = function createScene(Graphics, ActorMgr) {
             meshType: MESH_TYPES.BOX,
             geometry: {
                 width: 2,
-                height: 2,
-                depth: 2,
-                widthSegments: 3,
-                heightSegments: 3,
-                depthSegments: 3
+                height: 3,
+                depth: 5,
+                widthSegments: 1,
+                heightSegments: 1,
+                depthSegments: 1
             },
             materialData: {
-                color: "0xff0000"
+                color: "0xffffff",
+                texture: "src/Textures/brickwall.jpg"
+                // bumpMap: "src/Textures/brickwall.jpg"
             }
         },
         position: {
-            x: 0, y: 0, z: -10
+            x: 0, y: 0, z: 5
         }
     });
 
@@ -46,8 +48,8 @@ const createScene = function createScene(Graphics, ActorMgr) {
 
     Player.addUpdateFunction(function () {
         this.moveActorBy({ x: 0.05 });
-        if (this.getPosition().x > 10) {
-            this.moveActorTo({ x: -10 });
+        if (this.getPosition().x > 5) {
+            this.moveActorTo({ x: -5 });
         }
     });
 
@@ -74,7 +76,7 @@ const createScene = function createScene(Graphics, ActorMgr) {
     let Light = ActorMgr.createLightActor({
         type: LIGHT_ACTOR_TYPES.DIRECTIONAL,
         position: { x: -10, y: 10, z: 10 },
-        intensity: 5.0,
+        intensity: 3.0,
         color: 0xffffff
     });
 

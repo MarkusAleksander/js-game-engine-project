@@ -9,7 +9,7 @@ const MeshActor = function MeshActor(data) {
     // *    MESH ACTOR PROPERTIES
     // * -----------------------------------
 
-    this.materialColor = data.meshData.materialData !== undefined ? data.meshData.materialData.color !== undefined ? data.meshData.materialData.color : 0x000000 : 0x000000;
+    this.materialColor = data.meshData.materialData !== undefined ? data.meshData.materialData.color !== undefined ? data.meshData.materialData.color : 0xffffff : 0xffffff;
 
     ActorPrototype.call(this, data);
 
@@ -28,7 +28,9 @@ const MeshActor = function MeshActor(data) {
 
     this.syncAttachedObject = function () {
         MeshActor.prototype.syncAttachedObject.call(this);
-        this.attachedObject.material.color.set(parseInt(this.materialColor));
+        if (this.attachedObject.material.color) {
+            this.attachedObject.material.color.set(parseInt(this.materialColor));
+        }
     }
 
 }
