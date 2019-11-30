@@ -1,6 +1,6 @@
 import LightActor from './ActorTypes/LightActor.js';
 import MeshActor from './ActorTypes/MeshActor.js';
-import { ACTOR_TYPES, MESH_ACTOR_TYPES, MESH_TYPES, MESH_TEMPLATES, LIGHT_ACTOR_TYPES } from './ActorTypes/ActorTypes.js';
+import { ACTOR_TYPES, MESH_ACTOR_TYPES, MESH_TYPES, MESH_TEMPLATES, LIGHT_ACTOR_TYPES, MATERIAL_TYPES, MATERIAL_FACE_TYPES } from './ActorTypes/ActorTypes.js';
 import Utilities from '../Globals/Utilities.js';
 
 // * -----------------------------------
@@ -29,17 +29,17 @@ const ActorFactory = function ActorFactory() {
 
         // * Switch to Actor building path
         switch (actorType) {
-        case ACTOR_TYPES.MESH:
-            // * Create a Mesh Actor
-            newActor = this.createMeshActor(settings);
-            break;
-        case ACTOR_TYPES.LIGHT:
-            // * Create a Light Actor
-            newActor = this.createLightActor(settings);
-            break;
-        default:
-            // * Don't create anything
-            break;
+            case ACTOR_TYPES.MESH:
+                // * Create a Mesh Actor
+                newActor = this.createMeshActor(settings);
+                break;
+            case ACTOR_TYPES.LIGHT:
+                // * Create a Light Actor
+                newActor = this.createLightActor(settings);
+                break;
+            default:
+                // * Don't create anything
+                break;
         }
 
         if (!newActor) {
@@ -96,17 +96,17 @@ const ActorFactory = function ActorFactory() {
         let lightObj = null;
 
         switch (settings.type) {
-        case LIGHT_ACTOR_TYPES.DIRECTIONAL:
-            lightObj = new THREE.DirectionalLight(light.getColor(), light.getIntensity());
-            break;
-        case LIGHT_ACTOR_TYPES.AMBIENT:
-            lightObj = new THREE.AmbientLight(light.getColor(), light.getIntensity());
-            break;
-        case LIGHT_ACTOR_TYPES.HEMISPHERE:
-            lightObj = new THREE.HemisphereLight(settings.skyColor, settings.groundColor, light.getIntensity);
-            break;
-        default:
-            break;
+            case LIGHT_ACTOR_TYPES.DIRECTIONAL:
+                lightObj = new THREE.DirectionalLight(light.getColor(), light.getIntensity());
+                break;
+            case LIGHT_ACTOR_TYPES.AMBIENT:
+                lightObj = new THREE.AmbientLight(light.getColor(), light.getIntensity());
+                break;
+            case LIGHT_ACTOR_TYPES.HEMISPHERE:
+                lightObj = new THREE.HemisphereLight(settings.skyColor, settings.groundColor, light.getIntensity);
+                break;
+            default:
+                break;
         }
         light.setActorObject(lightObj);
 
@@ -198,11 +198,11 @@ const ActorFactory = function ActorFactory() {
         let geometry;
 
         switch (meshType) {
-        case MESH_TYPES.BOX:
-            geometry = this.createBoxGeometry(data);
-            break;
-        default:
-            break;
+            case MESH_TYPES.BOX:
+                geometry = this.createBoxGeometry(data);
+                break;
+            default:
+                break;
         }
 
         return geometry;
@@ -223,52 +223,103 @@ const ActorFactory = function ActorFactory() {
 
     // * Create Material
     this.createMaterial = function createMaterial(data) {
-        let materialColor = data.color !== undefined ? data.color : { color: 0xffffff };
-        let texture = data.texture !== undefined ? data.texture : null;
-        let bumpMap = data.bumpMap !== undefined ? data.bumpMap : null;
-        let wireframe = data.wireframe !== undefined ? data.wireframe : false;
+        let textureData = data.textureData !== undefined ? data.textureData : null;
+        let bumpMapData = data.bumpMapData !== undefined ? data.bumpMapData : null;
 
-        const materialOptions = {
-            color: parseInt(materialColor, 16),
-            wireframe: wireframe
+        let materials = [];
+
+        if (textureData.textures && Array.isArray(textureData.textures)) {
+
+            let textures = textureData.textures;
+
+            for (let i = 0; i < textures.length; i++) {
+
+                let textureSettings = textureData.settings[i];
+
+                // * Begin to Load texture
+                let texture = this.textureLoader.load(textures[i]);
+
+                texture.encoding = THREE.sRGBEncoding;
+                texture.anisotropy = 16;
+                texture.minFilter = THREE.LinearMipmapLinearFilter;
+
+                // * Material side
+                let side = THREE.FrontSide;
+
+                if (textureSettings.side) {
+                    switch (textureSettings.side) {
+                        case MATERIAL_FACE_TYPES.FRONT:
+                            side = THREE.FrontSide;
+                            break;
+                        case MATERIAL_FACE_TYPES.BACK:
+                            side = THREE.BackSide;
+                            break;
+                        case MATERIAL_FACE_TYPES.BOTH:
+                            side = THREE.DoubleSide;
+                            break;
+                        default:
+                            break;
+                    }
+                }
+
+                let newObj = {
+                    map: texture,
+                    wireframe: textureSettings.wireframe !== undefined ? textureSettings.wireframe : false,
+                    color: textureSettings.color !== undefined ? textureSettings.color : 0xffffff,
+                    side: side
+                }
+
+                let shininess = textureSettings.shininess !== undefined ? textureSettings.shininess : 30;
+                // let roughness = textureSettings.roughness !== undefined ? textureSettings.roughness : 0;
+                let emissive = textureSettings.emissive !== undefined ? textureSettings.emissive : 0x000000;
+
+                switch (textureSettings.type) {
+                    case MATERIAL_TYPES.STANDARD:
+                        materials.push(new THREE.MeshStandardMaterial(newObj));
+                        break;
+                    case MATERIAL_TYPES.LAMBERT:
+                        // * Matte finish material
+                        newObj.emissive = emissive;
+
+                        materials.push(new THREE.MeshLambertMaterial(newObj));
+                        break;
+                    case MATERIAL_TYPES.NORMAL:
+                        // * Normal mapping - not affected by light
+                        materials.push(new THREE.MeshNormalMaterial());
+                        break;
+                    case MATERIAL_TYPES.PHONG:
+                        // * Shiny finish
+
+                        newObj.shininess = shininess;
+                        newObj.emissive = emissive;
+                        // newObj.specular = specular;
+
+                        materials.push(new THREE.MeshStandardMaterial(newObj));
+                        break;
+                    case MATERIAL_TYPES.BASIC:
+                        materials.push(new THREE.MeshStandardMaterial(newObj));
+                        break;
+                    default:
+                        break;
+                }
+            }
         }
 
-        // debugger;
+        return materials;
 
-        if (texture) {
-            texture = this.textureLoader.load(texture);
+        // // * For bump map
+        // if (bumpMap) {
+        //     bumpMap = this.textureLoader.load(bumpMap);
+        //     this.textureLoader.crossOrigin = true;
+        //     materialOptions.bumpMap = bumpMap;
+        // }
 
-            texture.encoding = THREE.sRGBEncoding;
-            // texture.anisotropy = 16;
-
-            materialOptions.map = texture;
-        }
-
-        if (bumpMap) {
-            bumpMap = this.textureLoader.load(bumpMap);
-            this.textureLoader.crossOrigin = true;
-            materialOptions.bumpMap = bumpMap;
-        }
-
-        // const material = new THREE.MeshStandardMaterial(
-        //     materialOptions
-        // );
-
-        // * Normal mapping - not affected by light
-        // const material = new THREE.MeshNormalMaterial();
-
-        // * Matte finish material
-        const material = new THREE.MeshLambertMaterial(materialOptions);
-
-        // * Shiny finish
-        // const material = new THREE.MeshPhongMaterial(materialOptions);
         // * specular: hex
-        // * shinyness - def 30
+        // * shininess - def 30
         // * bumpMap - texture
 
         // wireframe: true option
 
-        return material;
     }
 
 }

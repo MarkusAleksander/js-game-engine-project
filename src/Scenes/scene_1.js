@@ -1,4 +1,4 @@
-import { MESH_ACTOR_TYPES, MESH_TYPES, LIGHT_ACTOR_TYPES } from '../Actors/ActorTypes/ActorTypes.js';
+import { MESH_ACTOR_TYPES, MESH_TYPES, LIGHT_ACTOR_TYPES, MATERIAL_TYPES, MATERIAL_FACE_TYPES } from '../Actors/ActorTypes/ActorTypes.js';
 
 // * -----------------------------------
 // *    SCENE CREATION
@@ -23,14 +23,45 @@ const createScene = function createScene(Graphics, ActorMgr) {
                 width: 2,
                 height: 3,
                 depth: 5,
-                widthSegments: 1,
-                heightSegments: 1,
-                depthSegments: 1
+                widthSegments: 2,
+                heightSegments: 2,
+                depthSegments: 2
             },
             materialData: {
                 color: "0xffffff",
-                texture: "src/Textures/brickwall.jpg"
-                // bumpMap: "src/Textures/brickwall.jpg"
+                // TODO - specify sides?
+                textureData: {
+                    textures: [
+                        "src/Textures/brickwall.jpg",
+                        "src/Textures/brickwall.jpg",
+                        "src/Textures/brickwall.jpg",
+                        "src/Textures/brickwall.jpg",
+                        "src/Textures/brickwall.jpg",
+                        "src/Textures/brickwall.jpg"
+                    ],
+                    settings: [{
+                        type: MATERIAL_TYPES.LAMBERT,
+                        side: MATERIAL_FACE_TYPES.FRONT
+                    }, {
+                        type: MATERIAL_TYPES.BASIC,
+                        wireframe: true,
+                    }, {
+                        type: MATERIAL_TYPES.PHONG,
+                        shininess: 130
+                    }, {
+                        type: MATERIAL_TYPES.LAMBERT,
+                        side: MATERIAL_FACE_TYPES.FRONT
+                    }, {
+                        type: MATERIAL_TYPES.NORMAL
+                    }, {
+                        type: MATERIAL_TYPES.PHONG,
+                        side: MATERIAL_FACE_TYPES.BACK,
+                        emissive: 0xff0000
+                    }]
+                },
+                // bumpMapData: {
+                //     bumpMaps: ["src/Textures/brickwall.jpg"]
+                // }
             }
         },
         position: {
@@ -43,14 +74,15 @@ const createScene = function createScene(Graphics, ActorMgr) {
 
     // * Add some updates to the actor
     Player.addUpdateFunction(function () {
-        this.rotateActorBy({ x: 0.01, y: 0.02, z: -0.01 });
+        // this.rotateActorBy({ x: 0.01, y: 0.01, z: -0.01 });
+        this.rotateActorBy({ x: 0.01, y: 0.01 })
     });
 
     Player.addUpdateFunction(function () {
-        this.moveActorBy({ x: 0.05 });
-        if (this.getPosition().x > 5) {
-            this.moveActorTo({ x: -5 });
-        }
+        // this.moveActorBy({ x: 0.05 });
+        // if (this.getPosition().x > 5) {
+        //     this.moveActorTo({ x: -5 });
+        // }
     });
 
     Player.addUpdateFunction(function () {

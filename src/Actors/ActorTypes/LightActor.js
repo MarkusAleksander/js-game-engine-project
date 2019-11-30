@@ -103,8 +103,10 @@ const LightActor = function LightActor(data) {
         // );
 
         this.attachedObject.intensity = this.currentIntensity;
-        // debugger;
+        this.currentIntensity = this.attachedObject.intensity;
+
         this.attachedObject.color.set(this.color);
+        this.color = this.attachedObject.color;
     }
 }
 

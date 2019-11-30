@@ -95,3 +95,17 @@ export const MESH_TEMPLATES = {
     // TUBE: {},
     // EDGES: {}
 }
+
+export const MATERIAL_TYPES = {
+    STANDARD: "standard",
+    BASIC: "basic",
+    PHONG: "phong",
+    NORMAL: "normal",
+    LAMBERT: "lambert"
+}
+
+export const MATERIAL_FACE_TYPES = {
+    FRONT: "front",
+    BACK: "back",
+    BOTH: "both"
+}

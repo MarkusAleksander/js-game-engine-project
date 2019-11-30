@@ -19,8 +19,8 @@ const ActorPrototype = function ActorPrototype(data) {
     this.attachedObject = null;
     // * Has the actor been Registered to the Actor Manager?
     this.isRegistered = false;
-    // * Check if needs update
-    this.needsUpdate = false;
+    // * Check if needs update - initially true as all objects may need to update to their new scene requirements
+    this.needsUpdate = true;
 
     // * Actor Update Function List
     this.actorUpdateFunctions = [];
@@ -55,7 +55,7 @@ ActorPrototype.prototype.getActiveStatus = function getActiveStatus() {
 // * Actor Update Function
 ActorPrototype.prototype.update = function update() {
     // * Only update if Active
-    if (!this.isActive || !this.needsUpdate) { return; }
+    if (!this.isActive) { return; }
     Utilities.outputDebug('updating actor: ' + this.uID);
 
     // * Run registered update functions
@@ -63,11 +63,13 @@ ActorPrototype.prototype.update = function update() {
         fn()
     });
 
-    // * Synchronise Attached Actor Object
-    this.syncAttachedObject();
+    // * Synchronise Attached Actor Object if required
+    if (this.needsUpdate) {
+        this.syncAttachedObject();
+        // * Set update to false
+        this.needsUpdate = false;
+    }
 
-    // * Set update to false
-    this.needsUpdate = false;
 }
 
 // * Update actor position and rotation
@@ -78,11 +80,15 @@ ActorPrototype.prototype.syncAttachedObject = function syncAttachedObject() {
         this.position.z
     );
 
+    this.position = this.attachedObject.position;
+
     this.attachedObject.rotation.set(
         this.rotation.x,
         this.rotation.y,
         this.rotation.z
     );
+
+    this.rotation = this.attachedObject.rotation;
 }
 
 // * Add update function to Actor
