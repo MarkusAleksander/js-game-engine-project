@@ -41,6 +41,7 @@ const LightActor = function LightActor(data) {
         this.target.x = loc.x !== undefined ? loc.x : this.target.x;
         this.target.y = loc.y !== undefined ? loc.y : this.target.y;
         this.target.z = loc.z !== undefined ? loc.z : this.target.z;
+        this.needsUpdate = true;
     }
 
     // * Move Target Relatively
@@ -48,6 +49,7 @@ const LightActor = function LightActor(data) {
         this.target.x = loc.x !== undefined ? loc.x + this.target.x : this.position.x;
         this.target.y = loc.y !== undefined ? loc.y + this.target.y : this.position.y;
         this.target.z = loc.z !== undefined ? loc.z + this.target.z : this.position.z;
+        this.needsUpdate = true;
     }
 
     // * Update intensity
@@ -56,11 +58,13 @@ const LightActor = function LightActor(data) {
         if (this.isActive) {
             this.currentIntensity = this.desiredIntensity;
         }
+        this.needsUpdate = true;
     }
 
     // * Update color
     this.updateColor = function updateColor(color) {
         this.color = color;
+        this.needsUpdate = true;
     }
 
     // * Get current intensity

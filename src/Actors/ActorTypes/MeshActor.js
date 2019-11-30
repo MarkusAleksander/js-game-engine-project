@@ -20,6 +20,7 @@ const MeshActor = function MeshActor(data) {
 
     this.updateMaterialColor = function updateMaterialColor(col) {
         this.materialColor = col;
+        this.needsUpdate = true;
     }
 
     this.getMaterialColor = function getMaterialColor() {

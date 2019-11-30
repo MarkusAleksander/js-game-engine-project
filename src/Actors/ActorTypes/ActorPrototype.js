@@ -19,6 +19,8 @@ const ActorPrototype = function ActorPrototype(data) {
     this.attachedObject = null;
     // * Has the actor been Registered to the Actor Manager?
     this.isRegistered = false;
+    // * Check if needs update
+    this.needsUpdate = false;
 
     // * Actor Update Function List
     this.actorUpdateFunctions = [];
@@ -53,7 +55,7 @@ ActorPrototype.prototype.getActiveStatus = function getActiveStatus() {
 // * Actor Update Function
 ActorPrototype.prototype.update = function update() {
     // * Only update if Active
-    if (!this.isActive) { return; }
+    if (!this.isActive || !this.needsUpdate) { return; }
     Utilities.outputDebug('updating actor: ' + this.uID);
 
     // * Run registered update functions
@@ -63,6 +65,9 @@ ActorPrototype.prototype.update = function update() {
 
     // * Synchronise Attached Actor Object
     this.syncAttachedObject();
+
+    // * Set update to false
+    this.needsUpdate = false;
 }
 
 // * Update actor position and rotation
@@ -117,6 +122,7 @@ ActorPrototype.prototype.moveActorTo = function moveActorTo(loc) {
     this.position.x = loc.x !== undefined ? loc.x : this.position.x;
     this.position.y = loc.y !== undefined ? loc.y : this.position.y;
     this.position.z = loc.z !== undefined ? loc.z : this.position.z;
+    this.needsUpdate = true;
 }
 
 // * Move Relatively
@@ -124,6 +130,7 @@ ActorPrototype.prototype.moveActorBy = function moveActorBy(loc) {
     this.position.x = loc.x !== undefined ? loc.x + this.position.x : this.position.x;
     this.position.y = loc.y !== undefined ? loc.y + this.position.y : this.position.y;
     this.position.z = loc.z !== undefined ? loc.z + this.position.z : this.position.z;
+    this.needsUpdate = true;
 }
 
 // * Rotate Absolutely
@@ -131,6 +138,7 @@ ActorPrototype.prototype.rotateActorTo = function rotateActorTo(rot) {
     this.rotation.x = rot.x !== undefined ? rot.x : this.rotation.x;
     this.rotation.y = rot.y !== undefined ? rot.y : this.rotation.y;
     this.rotation.z = rot.z !== undefined ? rot.z : this.rotation.z;
+    this.needsUpdate = true;
 }
 
 // * Rotation Relatively
@@ -138,6 +146,7 @@ ActorPrototype.prototype.rotateActorBy = function rotateActorBy(rot) {
     this.rotation.x = rot.x !== undefined ? rot.x + this.rotation.x : this.rotation.x;
     this.rotation.y = rot.y !== undefined ? rot.y + this.rotation.y : this.rotation.y;
     this.rotation.z = rot.z !== undefined ? rot.z + this.rotation.z : this.rotation.z;
+    this.needsUpdate = true;
 }
 
 // * Get Current Actor Position
