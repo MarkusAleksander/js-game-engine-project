@@ -29,17 +29,17 @@ const ActorFactory = function ActorFactory() {
 
         // * Switch to Actor building path
         switch (actorType) {
-            case ACTOR_TYPES.MESH:
-                // * Create a Mesh Actor
-                newActor = this.createMeshActor(settings);
-                break;
-            case ACTOR_TYPES.LIGHT:
-                // * Create a Light Actor
-                newActor = this.createLightActor(settings);
-                break;
-            default:
-                // * Don't create anything
-                break;
+        case ACTOR_TYPES.MESH:
+            // * Create a Mesh Actor
+            newActor = this.createMeshActor(settings);
+            break;
+        case ACTOR_TYPES.LIGHT:
+            // * Create a Light Actor
+            newActor = this.createLightActor(settings);
+            break;
+        default:
+            // * Don't create anything
+            break;
         }
 
         if (!newActor) {
@@ -96,17 +96,17 @@ const ActorFactory = function ActorFactory() {
         let lightObj = null;
 
         switch (settings.type) {
-            case LIGHT_ACTOR_TYPES.DIRECTIONAL:
-                lightObj = new THREE.DirectionalLight(light.getColor(), light.getIntensity());
-                break;
-            case LIGHT_ACTOR_TYPES.AMBIENT:
-                lightObj = new THREE.AmbientLight(light.getColor(), light.getIntensity());
-                break;
-            case LIGHT_ACTOR_TYPES.HEMISPHERE:
-                lightObj = new THREE.HemisphereLight(settings.skyColor, settings.groundColor, light.getIntensity);
-                break;
-            default:
-                break;
+        case LIGHT_ACTOR_TYPES.DIRECTIONAL:
+            lightObj = new THREE.DirectionalLight(light.getColor(), light.getIntensity());
+            break;
+        case LIGHT_ACTOR_TYPES.AMBIENT:
+            lightObj = new THREE.AmbientLight(light.getColor(), light.getIntensity());
+            break;
+        case LIGHT_ACTOR_TYPES.HEMISPHERE:
+            lightObj = new THREE.HemisphereLight(settings.skyColor, settings.groundColor, light.getIntensity);
+            break;
+        default:
+            break;
         }
         light.setActorObject(lightObj);
 
@@ -177,10 +177,19 @@ const ActorFactory = function ActorFactory() {
 
     // * Build Primitive Mesh
     this.buildPrimitiveMesh = function buildPrimitiveMesh(meshData) {
-        let geometry = this.createGeometry(meshData.meshType, Object.assign(MESH_TEMPLATES.BOX, meshData.geometry)),
-            material = this.createMaterial(meshData.materialData);
 
-        // TODO - Better Material handling
+        let geometry, material;
+
+        switch (meshData.meshType) {
+        case MESH_TYPES.BOX:
+            geometry = this.createBoxGeometry(Object.assign(MESH_TEMPLATES.BOX, meshData.geometry));
+            material = this.createMaterial(meshData.materialData, 6);
+            break;
+        default:
+            break;
+        }
+
+        // TODO - Better Mesh build control
         //debugger;
 
         return new THREE.Mesh(geometry, material);
@@ -190,22 +199,6 @@ const ActorFactory = function ActorFactory() {
     // * Build custom mesh
     this.buildCustomMesh = function buildCustomMesh(settings) {
         // TODO
-    }
-
-    // * Control point for Creating Primitive Geometry
-    this.createGeometry = function createGeometry(meshType, data) {
-
-        let geometry;
-
-        switch (meshType) {
-            case MESH_TYPES.BOX:
-                geometry = this.createBoxGeometry(data);
-                break;
-            default:
-                break;
-        }
-
-        return geometry;
     }
 
     // * Create Box Geometry
@@ -222,7 +215,7 @@ const ActorFactory = function ActorFactory() {
     }
 
     // * Create Material
-    this.createMaterial = function createMaterial(data) {
+    this.createMaterial = function createMaterial(data, numSides) {
         let textureData = data.textureData !== undefined ? data.textureData : null;
         let bumpMapData = data.bumpMapData !== undefined ? data.bumpMapData : null;
 
@@ -248,17 +241,17 @@ const ActorFactory = function ActorFactory() {
 
                 if (textureSettings.side) {
                     switch (textureSettings.side) {
-                        case MATERIAL_FACE_TYPES.FRONT:
-                            side = THREE.FrontSide;
-                            break;
-                        case MATERIAL_FACE_TYPES.BACK:
-                            side = THREE.BackSide;
-                            break;
-                        case MATERIAL_FACE_TYPES.BOTH:
-                            side = THREE.DoubleSide;
-                            break;
-                        default:
-                            break;
+                    case MATERIAL_FACE_TYPES.FRONT:
+                        side = THREE.FrontSide;
+                        break;
+                    case MATERIAL_FACE_TYPES.BACK:
+                        side = THREE.BackSide;
+                        break;
+                    case MATERIAL_FACE_TYPES.BOTH:
+                        side = THREE.DoubleSide;
+                        break;
+                    default:
+                        break;
                     }
                 }
 
@@ -274,33 +267,33 @@ const ActorFactory = function ActorFactory() {
                 let emissive = textureSettings.emissive !== undefined ? textureSettings.emissive : 0x000000;
 
                 switch (textureSettings.type) {
-                    case MATERIAL_TYPES.STANDARD:
-                        materials.push(new THREE.MeshStandardMaterial(newObj));
-                        break;
-                    case MATERIAL_TYPES.LAMBERT:
-                        // * Matte finish material
-                        newObj.emissive = emissive;
+                case MATERIAL_TYPES.STANDARD:
+                    materials.push(new THREE.MeshStandardMaterial(newObj));
+                    break;
+                case MATERIAL_TYPES.LAMBERT:
+                    // * Matte finish material
+                    newObj.emissive = emissive;
 
-                        materials.push(new THREE.MeshLambertMaterial(newObj));
-                        break;
-                    case MATERIAL_TYPES.NORMAL:
-                        // * Normal mapping - not affected by light
-                        materials.push(new THREE.MeshNormalMaterial());
-                        break;
-                    case MATERIAL_TYPES.PHONG:
-                        // * Shiny finish
+                    materials.push(new THREE.MeshLambertMaterial(newObj));
+                    break;
+                case MATERIAL_TYPES.NORMAL:
+                    // * Normal mapping - not affected by light
+                    materials.push(new THREE.MeshNormalMaterial());
+                    break;
+                case MATERIAL_TYPES.PHONG:
+                    // * Shiny finish
 
-                        newObj.shininess = shininess;
-                        newObj.emissive = emissive;
-                        // newObj.specular = specular;
+                    newObj.shininess = shininess;
+                    newObj.emissive = emissive;
+                    // newObj.specular = specular;
 
-                        materials.push(new THREE.MeshStandardMaterial(newObj));
-                        break;
-                    case MATERIAL_TYPES.BASIC:
-                        materials.push(new THREE.MeshStandardMaterial(newObj));
-                        break;
-                    default:
-                        break;
+                    materials.push(new THREE.MeshStandardMaterial(newObj));
+                    break;
+                case MATERIAL_TYPES.BASIC:
+                    materials.push(new THREE.MeshStandardMaterial(newObj));
+                    break;
+                default:
+                    break;
                 }
             }
         }

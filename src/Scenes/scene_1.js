@@ -20,9 +20,9 @@ const createScene = function createScene(Graphics, ActorMgr) {
         meshData: {
             meshType: MESH_TYPES.BOX,
             geometry: {
-                width: 2,
+                width: 3,
                 height: 3,
-                depth: 5,
+                depth: 3,
                 widthSegments: 2,
                 heightSegments: 2,
                 depthSegments: 2
@@ -32,33 +32,46 @@ const createScene = function createScene(Graphics, ActorMgr) {
                 // TODO - specify sides?
                 textureData: {
                     textures: [
-                        "src/Textures/brickwall.jpg",
-                        "src/Textures/brickwall.jpg",
-                        "src/Textures/brickwall.jpg",
-                        "src/Textures/brickwall.jpg",
-                        "src/Textures/brickwall.jpg",
-                        "src/Textures/brickwall.jpg"
+                        "src/Textures/side-1.jpg", // * x +
+                        "src/Textures/side-2.jpg", // * x -
+                        "src/Textures/side-3.jpg", // * y +
+                        "src/Textures/side-4.jpg", // * y -
+                        "src/Textures/side-5.jpg", // * z +
+                        "src/Textures/side-6.jpg" // * z -
                     ],
                     settings: [{
-                        type: MATERIAL_TYPES.LAMBERT,
-                        side: MATERIAL_FACE_TYPES.FRONT
+                        type: MATERIAL_TYPES.BASIC
                     }, {
-                        type: MATERIAL_TYPES.BASIC,
-                        wireframe: true,
+                        type: MATERIAL_TYPES.BASIC
                     }, {
-                        type: MATERIAL_TYPES.PHONG,
-                        shininess: 130
+                        type: MATERIAL_TYPES.BASIC
                     }, {
-                        type: MATERIAL_TYPES.LAMBERT,
-                        side: MATERIAL_FACE_TYPES.FRONT
+                        type: MATERIAL_TYPES.BASIC
                     }, {
-                        type: MATERIAL_TYPES.NORMAL
+                        type: MATERIAL_TYPES.BASIC
                     }, {
-                        type: MATERIAL_TYPES.PHONG,
-                        side: MATERIAL_FACE_TYPES.BACK,
-                        emissive: 0xff0000
+                        type: MATERIAL_TYPES.BASIC
                     }]
-                },
+                    // settings: [{
+                    //     type: MATERIAL_TYPES.LAMBERT,
+                    //     side: MATERIAL_FACE_TYPES.FRONT
+                    // }, {
+                    //     type: MATERIAL_TYPES.BASIC,
+                    //     wireframe: true,
+                    // }, {
+                    //     type: MATERIAL_TYPES.PHONG,
+                    //     shininess: 130
+                    // }, {
+                    //     type: MATERIAL_TYPES.LAMBERT,
+                    //     side: MATERIAL_FACE_TYPES.FRONT
+                    // }, {
+                    //     type: MATERIAL_TYPES.NORMAL
+                    // }, {
+                    //     type: MATERIAL_TYPES.PHONG,
+                    //     side: MATERIAL_FACE_TYPES.BACK,
+                    //     emissive: 0xff0000
+                    // }]
+                }
                 // bumpMapData: {
                 //     bumpMaps: ["src/Textures/brickwall.jpg"]
                 // }
@@ -75,7 +88,7 @@ const createScene = function createScene(Graphics, ActorMgr) {
     // * Add some updates to the actor
     Player.addUpdateFunction(function () {
         // this.rotateActorBy({ x: 0.01, y: 0.01, z: -0.01 });
-        this.rotateActorBy({ x: 0.01, y: 0.01 })
+        this.rotateActorBy({ y: 0.01 })
     });
 
     Player.addUpdateFunction(function () {
