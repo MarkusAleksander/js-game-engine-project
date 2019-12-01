@@ -36,6 +36,12 @@ const ActorPrototype = function ActorPrototype(data) {
         y: data.rotation !== undefined ? data.rotation.y : 0,
         z: data.rotation !== undefined ? data.rotation.z : 0
     };
+    this.quaternion = {
+        x: data.quaternion !== undefined ? data.quaternion.x : 0,
+        y: data.quaternion !== undefined ? data.quaternion.y : 0,
+        z: data.quaternion !== undefined ? data.quaternion.z : 0,
+        w: data.quaternion !== undefined ? data.quaternion.w : 0
+    }
 }
 
 // * -----------------------------------
@@ -74,6 +80,9 @@ ActorPrototype.prototype.update = function update() {
 
 // * Update actor position and rotation
 ActorPrototype.prototype.syncAttachedObject = function syncAttachedObject() {
+
+    console.log(this.attachedObject.rotation);
+
     this.attachedObject.position.set(
         this.position.x,
         this.position.y,
@@ -87,6 +96,8 @@ ActorPrototype.prototype.syncAttachedObject = function syncAttachedObject() {
         this.rotation.y,
         this.rotation.z
     );
+
+    // this.attachedObject.quaternion.set({})
 
     this.rotation = this.attachedObject.rotation;
 }
@@ -152,6 +163,19 @@ ActorPrototype.prototype.rotateActorBy = function rotateActorBy(rot) {
     this.rotation.x = rot.x !== undefined ? rot.x + this.rotation.x : this.rotation.x;
     this.rotation.y = rot.y !== undefined ? rot.y + this.rotation.y : this.rotation.y;
     this.rotation.z = rot.z !== undefined ? rot.z + this.rotation.z : this.rotation.z;
+    this.needsUpdate = true;
+}
+
+// * Update quaternion
+ActorPrototype.prototype.rotateQuaternionBy = function rotateQuaternionBy() {
+
+}
+
+ActorPrototype.prototype.rotateQuaternionTo = function rotateQuaternionTo(quat) {
+    this.quaternion.x = quat.x !== undefined ? quat.x : this.quaternion.x;
+    this.quaternion.y = quat.y !== undefined ? quat.y : this.quaternion.y;
+    this.quaternion.z = quat.z !== undefined ? quat.z : this.quaternion.z;
+    this.quaternion.w = quat.w !== undefined ? quat.w : this.quaternion.w;
     this.needsUpdate = true;
 }
 

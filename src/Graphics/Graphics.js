@@ -163,6 +163,11 @@ const GraphicsManager = function GraphicsManager(data) {
         this.Camera.position.z = loc.z !== undefined ? loc.z : this.Camera.position.z;
     }
 
+    // * Set Camera Target
+    this.setCameraTargetTo = function setCameraTargetTo(target) {
+        this.Camera.lookAt(target.x, target.y, target.z);
+    }
+
     // * Move camera by distance (relative positioning)
     this.moveCameraBy = function moveCameraBy(loc) {
         this.Camera.position.x = loc.x !== undefined ? this.Camera.position.x + loc.x : this.Camera.position.x;

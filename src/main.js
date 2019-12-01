@@ -10,7 +10,7 @@ import ControllerManager from './Controller/Controller.js';
 
 import Utilities from './Globals/Utilities.js';
 import { DEBUG_MODE, PROD_MODE, SINGLE_FRAME_RENDER, CONTINUOUS_FRAME_RENDER, PERFORMANCE_DETAIL_ON, PERFORMANCE_DETAIL_OFF } from './Globals/Globals.js';
-import createScene from './Scenes/scene_2.js';
+import createScene from './Scenes/scene_3.js';
 
 (function main() {
 
@@ -85,7 +85,8 @@ import createScene from './Scenes/scene_2.js';
         });
 
         // * Position Camera
-        Graphics.moveCameraTo({ x: 0, y: 0, z: 15 });
+        Graphics.moveCameraTo({ x: -15, y: 15, z: 15 });
+        Graphics.setCameraTargetTo({ x: 0, y: 0, z: 0 });
 
         // * Initialise Actor Manager
         ActorMgr.initialise();
