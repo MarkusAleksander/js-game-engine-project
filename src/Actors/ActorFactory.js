@@ -183,7 +183,7 @@ const ActorFactory = function ActorFactory() {
         switch (meshData.meshType) {
         case MESH_TYPES.BOX:
             geometry = this.createBoxGeometry(Object.assign(MESH_TEMPLATES.BOX, meshData.geometry));
-            material = this.createMaterial(meshData.materialData, 6);
+            material = this.buildMaterial(meshData.materialData, 6);
             break;
         default:
             break;
@@ -214,91 +214,57 @@ const ActorFactory = function ActorFactory() {
         );
     }
 
-    // * Create Material
-    this.createMaterial = function createMaterial(data, numSides) {
+    // * Build Material
+    this.buildMaterial = function buildMaterial(data, numSides) {
         let textureData = data.textureData !== undefined ? data.textureData : null;
-        let bumpMapData = data.bumpMapData !== undefined ? data.bumpMapData : null;
+        // let bumpMapData = data.bumpMapData !== undefined ? data.bumpMapData : null;
 
-        let materials = [];
+        let materialData;
 
-        if (textureData.textures && Array.isArray(textureData.textures)) {
+        // * Check settings data as array
+        if (textureData.settings && Array.isArray(textureData.settings)) {
+            let settings = [],
+                idx = 0;
 
-            let textures = textureData.textures;
-
-            for (let i = 0; i < textures.length; i++) {
-
-                let textureSettings = textureData.settings[i];
-
-                // * Begin to Load texture
-                let texture = this.textureLoader.load(textures[i]);
-
-                texture.encoding = THREE.sRGBEncoding;
-                texture.anisotropy = 16;
-                texture.minFilter = THREE.LinearMipmapLinearFilter;
-
-                // * Material side
-                let side = THREE.FrontSide;
-
-                if (textureSettings.side) {
-                    switch (textureSettings.side) {
-                    case MATERIAL_FACE_TYPES.FRONT:
-                        side = THREE.FrontSide;
-                        break;
-                    case MATERIAL_FACE_TYPES.BACK:
-                        side = THREE.BackSide;
-                        break;
-                    case MATERIAL_FACE_TYPES.BOTH:
-                        side = THREE.DoubleSide;
-                        break;
-                    default:
-                        break;
-                    }
-                }
-
-                let newObj = {
-                    map: texture,
-                    wireframe: textureSettings.wireframe !== undefined ? textureSettings.wireframe : false,
-                    color: textureSettings.color !== undefined ? textureSettings.color : 0xffffff,
-                    side: side
-                }
-
-                let shininess = textureSettings.shininess !== undefined ? textureSettings.shininess : 30;
-                // let roughness = textureSettings.roughness !== undefined ? textureSettings.roughness : 0;
-                let emissive = textureSettings.emissive !== undefined ? textureSettings.emissive : 0x000000;
-
-                switch (textureSettings.type) {
-                case MATERIAL_TYPES.STANDARD:
-                    materials.push(new THREE.MeshStandardMaterial(newObj));
-                    break;
-                case MATERIAL_TYPES.LAMBERT:
-                    // * Matte finish material
-                    newObj.emissive = emissive;
-
-                    materials.push(new THREE.MeshLambertMaterial(newObj));
-                    break;
-                case MATERIAL_TYPES.NORMAL:
-                    // * Normal mapping - not affected by light
-                    materials.push(new THREE.MeshNormalMaterial());
-                    break;
-                case MATERIAL_TYPES.PHONG:
-                    // * Shiny finish
-
-                    newObj.shininess = shininess;
-                    newObj.emissive = emissive;
-                    // newObj.specular = specular;
-
-                    materials.push(new THREE.MeshStandardMaterial(newObj));
-                    break;
-                case MATERIAL_TYPES.BASIC:
-                    materials.push(new THREE.MeshStandardMaterial(newObj));
-                    break;
-                default:
-                    break;
-                }
+            // * ensure there are enough settings for each side, populate from the beginning
+            while (settings.length < numSides) {
+                settings.push(settings[idx]);
+                idx++;
             }
         }
 
-        return materials;
+        // * Check if passed texture data is in Array format or not
+        if (textureData.textures && Array.isArray(textureData.textures)) {
+            let textures = textureData.textures,
+                idx = 0,
+                currentSettings = null;
+
+            // * Material data should be an array
+            materialData = [];
+
+            // * if provided data is less than the number of mesh sides, then duplicate content
+            while (textures.length < numSides) {
+                textures.push(textures[idx]);
+                idx++;
+            }
+
+            for (let i = 0; i < textures.length; i++) {
+                // * is settings an array or single item?
+                if (Array.isArray(textureData.settings)) {
+                    currentSettings = textureData.settings[i];
+                } else {
+                    currentSettings = textureData.settings;
+                }
+                materialData.push(this.createMaterial(textures[i], currentSettings));
+            }
+        } else if (textureData.texture && !Array.isArray(textureData.texture)) {
+            materialData = this.createMaterial(textureData.texture, textureData.settings !== undefined ? textureData.settings : null);
+
+            return materialData;
+        }
+
+        return materialData;
+        // return materials;
 
         // // * For bump map
         // if (bumpMap) {
@@ -313,6 +279,85 @@ const ActorFactory = function ActorFactory() {
 
         // wireframe: true option
 
+    }
+
+    this.createMaterial = function createMaterial(textureString, textureSettings) {
+
+        if (textureSettings === null || textureSettings.type == MATERIAL_TYPES.NONE) { return null; }
+
+        // * Begin to Load texture
+        let texture = this.textureLoader.load(textureString);
+
+        texture.encoding = THREE.sRGBEncoding;
+        texture.anisotropy = 16;
+        // TODO - Can this be changed to improve rendering?
+        texture.minFilter = THREE.LinearMipmapLinearFilter;
+
+        // * Material side to apply to
+        let side;
+
+        if (textureSettings.side) {
+            switch (textureSettings.side) {
+            case MATERIAL_FACE_TYPES.FRONT:
+                side = THREE.FrontSide;
+                break;
+            case MATERIAL_FACE_TYPES.BACK:
+                side = THREE.BackSide;
+                break;
+            case MATERIAL_FACE_TYPES.BOTH:
+                side = THREE.DoubleSide;
+                break;
+            default:
+                side = THREE.FrontSide;
+                break;
+            }
+        }
+
+        let newObj = {
+            map: texture,
+            wireframe: textureSettings.wireframe !== undefined ? textureSettings.wireframe : false,
+            color: textureSettings.color !== undefined ? textureSettings.color : 0xffffff,
+            side: side
+        }
+
+        let shininess = textureSettings.shininess !== undefined ? textureSettings.shininess : 30;
+        // let roughness = textureSettings.roughness !== undefined ? textureSettings.roughness : 0;
+        let emissive = textureSettings.emissive !== undefined ? textureSettings.emissive : 0x000000;
+
+        let material;
+
+        switch (textureSettings.type) {
+        case MATERIAL_TYPES.STANDARD:
+            material = new THREE.MeshStandardMaterial(newObj);
+            break;
+        case MATERIAL_TYPES.LAMBERT:
+            // * Matte finish material
+            newObj.emissive = emissive;
+
+            material = new THREE.MeshLambertMaterial(newObj);
+            break;
+        case MATERIAL_TYPES.NORMAL:
+            // * Normal mapping - not affected by light
+            material = new THREE.MeshNormalMaterial();
+            break;
+        case MATERIAL_TYPES.PHONG:
+            // * Shiny finish
+
+            newObj.shininess = shininess;
+            newObj.emissive = emissive;
+            // newObj.specular = specular;
+
+            material = new THREE.MeshStandardMaterial(newObj);
+            break;
+        case MATERIAL_TYPES.BASIC:
+            material = new THREE.MeshBasicMaterial(newObj);
+            break;
+        default:
+            material = new THREE.MeshBasicMaterial();
+            break;
+        }
+
+        return material;
     }
 
 }

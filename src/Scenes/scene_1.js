@@ -34,23 +34,28 @@ const createScene = function createScene(Graphics, ActorMgr) {
                     textures: [
                         "src/Textures/side-1.jpg", // * x +
                         "src/Textures/side-2.jpg", // * x -
-                        "src/Textures/side-3.jpg", // * y +
-                        "src/Textures/side-4.jpg", // * y -
-                        "src/Textures/side-5.jpg", // * z +
-                        "src/Textures/side-6.jpg" // * z -
+                        "src/Textures/side-3.jpg" // * y +
+                        // "src/Textures/side-4.jpg", // * y -
+                        // "src/Textures/side-5.jpg" // * z +
+                        // "src/Textures/side-6.jpg" // * z -
                     ],
                     settings: [{
-                        type: MATERIAL_TYPES.BASIC
+                        type: MATERIAL_TYPES.NONE
                     }, {
-                        type: MATERIAL_TYPES.BASIC
+                        type: MATERIAL_TYPES.BASIC,
+                        side: MATERIAL_FACE_TYPES.BOTH
                     }, {
-                        type: MATERIAL_TYPES.BASIC
+                        type: MATERIAL_TYPES.BASIC,
+                        side: MATERIAL_FACE_TYPES.BOTH
                     }, {
-                        type: MATERIAL_TYPES.BASIC
+                        type: MATERIAL_TYPES.BASIC,
+                        side: MATERIAL_FACE_TYPES.BOTH
                     }, {
-                        type: MATERIAL_TYPES.BASIC
+                        type: MATERIAL_TYPES.BASIC,
+                        side: MATERIAL_FACE_TYPES.BOTH
                     }, {
-                        type: MATERIAL_TYPES.BASIC
+                        type: MATERIAL_TYPES.BASIC,
+                        side: MATERIAL_FACE_TYPES.BOTH
                     }]
                     // settings: [{
                     //     type: MATERIAL_TYPES.LAMBERT,

@@ -101,7 +101,8 @@ export const MATERIAL_TYPES = {
     BASIC: "basic",
     PHONG: "phong",
     NORMAL: "normal",
-    LAMBERT: "lambert"
+    LAMBERT: "lambert",
+    NONE: "none"
 }
 
 export const MATERIAL_FACE_TYPES = {
