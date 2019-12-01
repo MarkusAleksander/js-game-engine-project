@@ -4,6 +4,7 @@
 import EngineManager from './Engine/Engine.js';
 import GraphicsManager from './Graphics/Graphics.js';
 import ActorManager from './Actors/ActorManager.js';
+import ControllerManager from './Controller/Controller.js';
 
 // import createScene from './Scenes/scene_1.js';
 
@@ -59,6 +60,13 @@ import createScene from './Scenes/scene_2.js';
             managerName: 'ActorManager'
         }
     );
+
+    // * Construct Controller Manager
+    const Controller = new ControllerManager(
+        {
+            managerName: "ControllerManager"
+        }
+    )
 
 
     // * -----------------------------------
@@ -116,13 +124,14 @@ import createScene from './Scenes/scene_2.js';
     // * -----------------------------------
     // *    SCENE CREATION
     // * -----------------------------------
-    createScene(Graphics, ActorMgr);
+    createScene(Graphics, ActorMgr, Controller);
 
     // * -----------------------------------
     // *    ENGINE READY AND GO
     // * -----------------------------------
     Engine.registerUpdater(Graphics.update.bind(Graphics));
     Engine.registerUpdater(ActorMgr.update.bind(ActorMgr));
+    Engine.registerUpdater(Controller.update.bind(Controller));
 
     // * Run
     Engine.start();

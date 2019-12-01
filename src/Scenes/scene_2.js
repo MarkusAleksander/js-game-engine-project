@@ -3,7 +3,7 @@ import { MESH_ACTOR_TYPES, MESH_TYPES, LIGHT_ACTOR_TYPES, MATERIAL_TYPES, MATERI
 // * -----------------------------------
 // *    SCENE CREATION
 // * -----------------------------------
-const createScene = function createScene(Graphics, ActorMgr) {
+const createScene = function createScene(Graphics, ActorMgr, Controller) {
 
     let ActorGridSize = 3,
         actorSize = 2,
@@ -68,6 +68,11 @@ const createScene = function createScene(Graphics, ActorMgr) {
     ActorMgr.registerActor(light);
     Graphics.addActorToScene(light);
     light.setActiveStatus(true);
+
+    // * Controller setup
+    Controller.registerInputEvent(87, "keydown", function onKeyDown() {
+        console.log("Key is down!");
+    })
 
 }
 
