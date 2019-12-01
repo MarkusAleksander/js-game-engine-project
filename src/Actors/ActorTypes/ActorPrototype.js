@@ -25,23 +25,24 @@ const ActorPrototype = function ActorPrototype(data) {
     // * Actor Update Function List
     this.actorUpdateFunctions = [];
 
+    // ! REMOVE THE TRANSFORM ABSTRACTION - UNNECESSARY
     // * Actor position and rotation
-    this.position = {
-        x: data.position !== undefined ? data.position.x : 0,
-        y: data.position !== undefined ? data.position.y : 0,
-        z: data.position !== undefined ? data.position.z : 0
-    };
-    this.rotation = {
-        x: data.rotation !== undefined ? data.rotation.x : 0,
-        y: data.rotation !== undefined ? data.rotation.y : 0,
-        z: data.rotation !== undefined ? data.rotation.z : 0
-    };
-    this.quaternion = {
-        x: data.quaternion !== undefined ? data.quaternion.x : 0,
-        y: data.quaternion !== undefined ? data.quaternion.y : 0,
-        z: data.quaternion !== undefined ? data.quaternion.z : 0,
-        w: data.quaternion !== undefined ? data.quaternion.w : 0
-    }
+    // this.position = {
+    //     x: data.position !== undefined ? data.position.x : 0,
+    //     y: data.position !== undefined ? data.position.y : 0,
+    //     z: data.position !== undefined ? data.position.z : 0
+    // };
+    // this.rotation = {
+    //     x: data.rotation !== undefined ? data.rotation.x : 0,
+    //     y: data.rotation !== undefined ? data.rotation.y : 0,
+    //     z: data.rotation !== undefined ? data.rotation.z : 0
+    // };
+    // this.quaternion = {
+    //     x: data.quaternion !== undefined ? data.quaternion.x : 0,
+    //     y: data.quaternion !== undefined ? data.quaternion.y : 0,
+    //     z: data.quaternion !== undefined ? data.quaternion.z : 0,
+    //     w: data.quaternion !== undefined ? data.quaternion.w : 0
+    // }
 }
 
 // * -----------------------------------
@@ -70,11 +71,11 @@ ActorPrototype.prototype.update = function update() {
     });
 
     // * Synchronise Attached Actor Object if required
-    if (this.needsUpdate) {
-        this.syncAttachedObject();
-        // * Set update to false
-        this.needsUpdate = false;
-    }
+    // if (this.needsUpdate) {
+    //     this.syncAttachedObject();
+    //     // * Set update to false
+    //     this.needsUpdate = false;
+    // }
 
 }
 
@@ -136,18 +137,24 @@ ActorPrototype.prototype.getRegisteredStatus = function getRegisteredStatus() {
 
 // * Move Absolutely
 ActorPrototype.prototype.moveActorTo = function moveActorTo(loc) {
-    this.position.x = loc.x !== undefined ? loc.x : this.position.x;
-    this.position.y = loc.y !== undefined ? loc.y : this.position.y;
-    this.position.z = loc.z !== undefined ? loc.z : this.position.z;
-    this.needsUpdate = true;
+    let o = this.attachedObject;
+
+    o.position.set(
+        loc.x !== undefined ? loc.x : o.position.x,
+        loc.y !== undefined ? loc.y : o.position.y,
+        loc.z !== undefined ? loc.z : o.position.z
+    );
 }
 
 // * Move Relatively
 ActorPrototype.prototype.moveActorBy = function moveActorBy(loc) {
-    this.position.x = loc.x !== undefined ? loc.x + this.position.x : this.position.x;
-    this.position.y = loc.y !== undefined ? loc.y + this.position.y : this.position.y;
-    this.position.z = loc.z !== undefined ? loc.z + this.position.z : this.position.z;
-    this.needsUpdate = true;
+    let o = this.attachedObject;
+
+    o.position.set(
+        loc.x !== undefined ? loc.x + o.position.x : o.position.x,
+        loc.y !== undefined ? loc.y + o.position.y : o.position.y,
+        loc.z !== undefined ? loc.z + o.position.z : o.position.z
+    );
 }
 
 // * Rotate Absolutely
