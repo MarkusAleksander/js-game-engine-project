@@ -11,6 +11,7 @@ TODOs:
 
 -   Object disposal
 -   Debug output mode
+-   Write Scene Creation Guide
 
 ## Usage Nots
 
@@ -20,4 +21,5 @@ TODOs:
     Primitive for basic shapes, custom for custom build
 
 ## Three JS Notes (for memory)
-- 1 ThreeJS unit equates to 1 metre
+
+-   1 ThreeJS unit equates to 1 metre
