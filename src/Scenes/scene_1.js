@@ -44,18 +44,6 @@ const createScene = function createScene(Graphics, ActorMgr) {
                     }, {
                         type: MATERIAL_TYPES.BASIC,
                         side: MATERIAL_FACE_TYPES.BOTH
-                    }, {
-                        type: MATERIAL_TYPES.BASIC,
-                        side: MATERIAL_FACE_TYPES.BOTH
-                    }, {
-                        type: MATERIAL_TYPES.BASIC,
-                        side: MATERIAL_FACE_TYPES.BOTH
-                    }, {
-                        type: MATERIAL_TYPES.BASIC,
-                        side: MATERIAL_FACE_TYPES.BOTH
-                    }, {
-                        type: MATERIAL_TYPES.BASIC,
-                        side: MATERIAL_FACE_TYPES.BOTH
                     }]
                     // settings: [{
                     //     type: MATERIAL_TYPES.LAMBERT,

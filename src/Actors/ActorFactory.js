@@ -223,7 +223,7 @@ const ActorFactory = function ActorFactory() {
 
         // * Check settings data as array
         if (textureData.settings && Array.isArray(textureData.settings)) {
-            let settings = [],
+            let settings = textureData.settings,
                 idx = 0;
 
             // * ensure there are enough settings for each side, populate from the beginning
@@ -251,11 +251,10 @@ const ActorFactory = function ActorFactory() {
             for (let i = 0; i < textures.length; i++) {
                 // * is settings an array or single item?
                 if (Array.isArray(textureData.settings)) {
-                    currentSettings = textureData.settings[i];
+                    materialData.push(this.createMaterial(textures[i], textureData.settings[i]));
                 } else {
-                    currentSettings = textureData.settings;
+                    materialData.push(this.createMaterial(textures[i], textureData.settings));
                 }
-                materialData.push(this.createMaterial(textures[i], currentSettings));
             }
         } else if (textureData.texture && !Array.isArray(textureData.texture)) {
             materialData = this.createMaterial(textureData.texture, textureData.settings !== undefined ? textureData.settings : null);
