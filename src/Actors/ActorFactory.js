@@ -295,21 +295,19 @@ const ActorFactory = function ActorFactory() {
         // * Material side to apply to
         let side;
 
-        if (textureSettings.side) {
-            switch (textureSettings.side) {
-            case MATERIAL_FACE_TYPES.FRONT:
-                side = THREE.FrontSide;
-                break;
-            case MATERIAL_FACE_TYPES.BACK:
-                side = THREE.BackSide;
-                break;
-            case MATERIAL_FACE_TYPES.BOTH:
-                side = THREE.DoubleSide;
-                break;
-            default:
-                side = THREE.FrontSide;
-                break;
-            }
+        switch (textureSettings.side) {
+        case MATERIAL_FACE_TYPES.FRONT:
+            side = THREE.FrontSide;
+            break;
+        case MATERIAL_FACE_TYPES.BACK:
+            side = THREE.BackSide;
+            break;
+        case MATERIAL_FACE_TYPES.BOTH:
+            side = THREE.DoubleSide;
+            break;
+        default:
+            side = THREE.FrontSide;
+            break;
         }
 
         let newObj = {

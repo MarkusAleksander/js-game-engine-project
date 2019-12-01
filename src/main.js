@@ -9,14 +9,15 @@ import ActorManager from './Actors/ActorManager.js';
 
 import Utilities from './Globals/Utilities.js';
 import { DEBUG_MODE, PROD_MODE, SINGLE_FRAME_RENDER, CONTINUOUS_FRAME_RENDER, PERFORMANCE_DETAIL_ON, PERFORMANCE_DETAIL_OFF } from './Globals/Globals.js';
+import createScene from './Scenes/scene_2.js';
 
 (function main() {
 
     // * Check scene function exists
-    // if (!createScene || typeof createScene !== "function") {
-    //     console.log('Scene Creation function does not exist');
-    //     return;
-    // }
+    if (!createScene || typeof createScene !== "function") {
+        console.log('Scene Creation function does not exist');
+        return;
+    }
 
     // * Main render function
     // TODO - its currently only Graphics here - can we leave this in the graphics manager and retrieve it later?
@@ -85,31 +86,45 @@ import { DEBUG_MODE, PROD_MODE, SINGLE_FRAME_RENDER, CONTINUOUS_FRAME_RENDER, PE
     // * Load scene async and run engine
 
     // * Scene to load
-    let currentHash = location.hash !== "" ? location.hash.slice(1) : "1";
-    let sceneNum = Number(currentHash);
+    // * BREAKING DEV TOOLS
+    // let currentHash = location.hash !== "" ? location.hash.slice(1) : "1";
+    // let sceneNum = Number(currentHash);
 
-    if (isNaN(sceneNum)) {
-        sceneNum = 1;
-    }
+    // if (isNaN(sceneNum)) {
+    //     sceneNum = 1;
+    // }
 
-    import("./Scenes/scene_" + sceneNum + ".js")
-        // TODO - on success or error
-        .then((module) => {
-            // * -----------------------------------
-            // *    SCENE CREATION
-            // * -----------------------------------
-            module.default(Graphics, ActorMgr);
+    // // * import dynamically
+    // import("./Scenes/scene_" + sceneNum + ".js")
+    //     // TODO - on success or error
+    //     .then((module) => {
+    //         // * -----------------------------------
+    //         // *    SCENE CREATION
+    //         // * -----------------------------------
+    //         module.default(Graphics, ActorMgr);
 
+    //         // * -----------------------------------
+    //         // *    ENGINE READY AND GO
+    //         // * -----------------------------------
+    //         Engine.registerUpdater(Graphics.update.bind(Graphics));
+    //         Engine.registerUpdater(ActorMgr.update.bind(ActorMgr));
 
-            // * -----------------------------------
-            // *    ENGINE READY AND GO
-            // * -----------------------------------
-            Engine.registerUpdater(Graphics.update.bind(Graphics));
-            Engine.registerUpdater(ActorMgr.update.bind(ActorMgr));
+    //         // * Run
+    //         Engine.start();
+    //     });
 
-            // * Run
-            Engine.start();
-        });
+    // * -----------------------------------
+    // *    SCENE CREATION
+    // * -----------------------------------
+    createScene(Graphics, ActorMgr);
 
+    // * -----------------------------------
+    // *    ENGINE READY AND GO
+    // * -----------------------------------
+    Engine.registerUpdater(Graphics.update.bind(Graphics));
+    Engine.registerUpdater(ActorMgr.update.bind(ActorMgr));
+
+    // * Run
+    Engine.start();
 
 })();
