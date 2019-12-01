@@ -1,4 +1,5 @@
 import { MESH_ACTOR_TYPES, MESH_TYPES, LIGHT_ACTOR_TYPES, MATERIAL_TYPES, MATERIAL_FACE_TYPES } from '../Actors/ActorTypes/ActorTypes.js';
+import KEYCODES from './../Controller/KeyCodes.js';
 
 // * -----------------------------------
 // *    SCENE CREATION
@@ -70,9 +71,18 @@ const createScene = function createScene(Graphics, ActorMgr, Controller) {
     light.setActiveStatus(true);
 
     // * Controller setup
-    Controller.registerInputEvent(87, "keydown", function onKeyDown() {
-        console.log("Key is down!");
-    })
+    Controller.registerInputEvent(KEYCODES.key_W, "keydown", function onKeyDown() {
+        console.log("W Key is down!");
+    });
+    Controller.registerInputEvent(KEYCODES.key_S, "keydown", function onKeyDown() {
+        console.log("S Key is down!");
+    });
+    Controller.registerInputEvent(KEYCODES.key_A, "keydown", function onKeyDown() {
+        console.log("A Key is down!");
+    });
+    Controller.registerInputEvent(KEYCODES.key_D, "keydown", function onKeyDown() {
+        console.log("D Key is down!");
+    });
 
 }
 
