@@ -81,33 +81,6 @@ const LightActor = function LightActor(data) {
     this.getTarget = function getTarget() {
         return this.target;
     }
-
-    // * Update mesh position and rotation
-    this.syncAttachedObject = function syncAttachedObject() {
-
-        LightActor.prototype.syncAttachedObject.call(this);
-        // TODO
-
-        // debugger;
-        // this.attachedObject.position.set(
-        //     this.position.x,
-        //     this.position.y,
-        //     this.position.z
-        // );
-
-        // debugger;
-        // this.lightObj.target.set(
-        //     this.target.x,
-        //     this.target.y,
-        //     this.target.z
-        // );
-
-        this.attachedObject.intensity = this.currentIntensity;
-        this.currentIntensity = this.attachedObject.intensity;
-
-        this.attachedObject.color.set(this.color);
-        this.color = this.attachedObject.color;
-    }
 }
 
 LightActor.prototype = Object.create(ActorPrototype.prototype);

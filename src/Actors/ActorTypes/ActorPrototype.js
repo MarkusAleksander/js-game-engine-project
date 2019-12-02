@@ -24,25 +24,6 @@ const ActorPrototype = function ActorPrototype(data) {
 
     // * Actor Update Function List
     this.actorUpdateFunctions = [];
-
-    // ! REMOVE THE TRANSFORM ABSTRACTION - UNNECESSARY
-    // * Actor position and rotation
-    // this.position = {
-    //     x: data.position !== undefined ? data.position.x : 0,
-    //     y: data.position !== undefined ? data.position.y : 0,
-    //     z: data.position !== undefined ? data.position.z : 0
-    // };
-    // this.rotation = {
-    //     x: data.rotation !== undefined ? data.rotation.x : 0,
-    //     y: data.rotation !== undefined ? data.rotation.y : 0,
-    //     z: data.rotation !== undefined ? data.rotation.z : 0
-    // };
-    // this.quaternion = {
-    //     x: data.quaternion !== undefined ? data.quaternion.x : 0,
-    //     y: data.quaternion !== undefined ? data.quaternion.y : 0,
-    //     z: data.quaternion !== undefined ? data.quaternion.z : 0,
-    //     w: data.quaternion !== undefined ? data.quaternion.w : 0
-    // }
 }
 
 // * -----------------------------------
@@ -69,38 +50,6 @@ ActorPrototype.prototype.update = function update() {
     this.actorUpdateFunctions.forEach((fn) => {
         fn()
     });
-
-    // * Synchronise Attached Actor Object if required
-    // if (this.needsUpdate) {
-    //     this.syncAttachedObject();
-    //     // * Set update to false
-    //     this.needsUpdate = false;
-    // }
-
-}
-
-// * Update actor position and rotation
-ActorPrototype.prototype.syncAttachedObject = function syncAttachedObject() {
-
-    console.log(this.attachedObject.rotation);
-
-    this.attachedObject.position.set(
-        this.position.x,
-        this.position.y,
-        this.position.z
-    );
-
-    this.position = this.attachedObject.position;
-
-    this.attachedObject.rotation.set(
-        this.rotation.x,
-        this.rotation.y,
-        this.rotation.z
-    );
-
-    // this.attachedObject.quaternion.set({})
-
-    this.rotation = this.attachedObject.rotation;
 }
 
 // * Add update function to Actor
@@ -146,54 +95,50 @@ ActorPrototype.prototype.moveActorTo = function moveActorTo(loc) {
     );
 }
 
-// * Move Relatively
-ActorPrototype.prototype.moveActorBy = function moveActorBy(loc) {
+// * Move Relatively on Axis
+ActorPrototype.prototype.moveActorBy = function moveActorBy(vector, distance) {
     let o = this.attachedObject;
 
-    o.position.set(
-        loc.x !== undefined ? loc.x + o.position.x : o.position.x,
-        loc.y !== undefined ? loc.y + o.position.y : o.position.y,
-        loc.z !== undefined ? loc.z + o.position.z : o.position.z
-    );
+    o.translateOnAxis(new THREE.Vector3(
+        vector.x !== undefined ? vector.x : 0,
+        vector.y !== undefined ? vector.y : 0,
+        vector.z !== undefined ? vector.z : 0
+    ), distance);
 }
 
 // * Rotate Absolutely
 ActorPrototype.prototype.rotateActorTo = function rotateActorTo(rot) {
-    this.rotation.x = rot.x !== undefined ? rot.x : this.rotation.x;
-    this.rotation.y = rot.y !== undefined ? rot.y : this.rotation.y;
-    this.rotation.z = rot.z !== undefined ? rot.z : this.rotation.z;
-    this.needsUpdate = true;
+    let o = this.attachedObject;
+
+    o.rotation.x = rot.x !== undefined ? rot.x : o.x;
+    o.rotation.y = rot.y !== undefined ? rot.y : o.y;
+    o.rotation.z = rot.z !== undefined ? rot.z : o.z;
 }
 
 // * Rotation Relatively
-ActorPrototype.prototype.rotateActorBy = function rotateActorBy(rot) {
-    this.rotation.x = rot.x !== undefined ? rot.x + this.rotation.x : this.rotation.x;
-    this.rotation.y = rot.y !== undefined ? rot.y + this.rotation.y : this.rotation.y;
-    this.rotation.z = rot.z !== undefined ? rot.z + this.rotation.z : this.rotation.z;
-    this.needsUpdate = true;
-}
+ActorPrototype.prototype.rotateActorBy = function rotateActorBy(vector, rotation) {
+    let o = this.attachedObject,
+        quat = new THREE.Quaternion();
 
-// * Update quaternion
-ActorPrototype.prototype.rotateQuaternionBy = function rotateQuaternionBy() {
+    quat.setFromAxisAngle(new THREE.Vector3(
+        vector.x !== undefined ? vector.x : 0,
+        vector.y !== undefined ? vector.y : 0,
+        vector.z !== undefined ? vector.z : 0
+    ), Utilities.degToRad(rotation));
 
-}
-
-ActorPrototype.prototype.rotateQuaternionTo = function rotateQuaternionTo(quat) {
-    this.quaternion.x = quat.x !== undefined ? quat.x : this.quaternion.x;
-    this.quaternion.y = quat.y !== undefined ? quat.y : this.quaternion.y;
-    this.quaternion.z = quat.z !== undefined ? quat.z : this.quaternion.z;
-    this.quaternion.w = quat.w !== undefined ? quat.w : this.quaternion.w;
-    this.needsUpdate = true;
+    o.applyQuaternion(quat);
 }
 
 // * Get Current Actor Position
 ActorPrototype.prototype.getPosition = function getPosition() {
-    return this.position;
+    // TODO
+    // return this.position;
 }
 
 // * Get Current Actor Rotation
 ActorPrototype.prototype.getRotation = function getRotation() {
-    return this.rotation;
+    // TODO
+    // return this.rotation;
 }
 
 export default ActorPrototype;

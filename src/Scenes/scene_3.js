@@ -21,10 +21,16 @@ const createScene = function createScene(Graphics, ActorMgr, Controller) {
                 color: "0xffffff",
                 textureData: {
                     textures: [
-                        "src/Textures/brickwall.jpg"
+                        // "src/Textures/brickwall.jpg"
+                        "src/Textures/side-1.jpg", //
+                        "src/Textures/side-2.jpg",
+                        "src/Textures/side-3.jpg",
+                        "src/Textures/side-4.jpg",
+                        "src/Textures/side-5.jpg",
+                        "src/Textures/side-6.jpg"
                     ],
                     settings: {
-                        type: MATERIAL_TYPES.LAMBERT
+                        type: MATERIAL_TYPES.BASIC
                     }
                 }
             }
@@ -35,6 +41,8 @@ const createScene = function createScene(Graphics, ActorMgr, Controller) {
             z: 0
         }
     });
+
+    window.actor = actor;
 
     ActorMgr.registerActor(actor);
     Graphics.addActorToScene(actor);
@@ -53,19 +61,19 @@ const createScene = function createScene(Graphics, ActorMgr, Controller) {
     // * Controller setup
     Controller.registerInputEvent(KEYCODES.key_W, "keydown", function onKeyDown() {
         // * Forward
-        actor.moveActorBy({ z: -0.05 });
+        actor.moveActorBy({ z: 1 }, 0.1);
     });
     Controller.registerInputEvent(KEYCODES.key_S, "keydown", function onKeyDown() {
         // * Backward
-        actor.moveActorBy({ z: 0.05 });
+        actor.moveActorBy({ z: -1 }, 0.1);
     });
     Controller.registerInputEvent(KEYCODES.key_A, "keydown", function onKeyDown() {
         // * Rotate Left
-        actor.rotateActorBy({ y: 0.05 });
+        actor.rotateActorBy({ y: 1 }, 5);
     });
     Controller.registerInputEvent(KEYCODES.key_D, "keydown", function onKeyDown() {
         // * Rotate Right
-        actor.rotateActorBy({ y: -0.05 });
+        actor.rotateActorBy({ y: 1 }, -5);
     });
 
 }

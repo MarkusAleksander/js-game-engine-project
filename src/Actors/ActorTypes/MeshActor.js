@@ -27,16 +27,6 @@ const MeshActor = function MeshActor(data) {
         return this.materialColor;
     }
 
-    this.syncAttachedObject = function () {
-        MeshActor.prototype.syncAttachedObject.call(this);
-        if (this.attachedObject.material.color) {
-            this.attachedObject.material.color.set(parseInt(this.materialColor));
-
-            // * Ensure object is in correct sync with attached
-            this.materialColor = this.attachedObject.material.color;
-        }
-    }
-
 }
 
 MeshActor.prototype = Object.create(ActorPrototype.prototype);
