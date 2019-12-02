@@ -1,4 +1,4 @@
-import { MESH_ACTOR_TYPES, MESH_TYPES, LIGHT_ACTOR_TYPES, MATERIAL_TYPES, MATERIAL_FACE_TYPES } from '../Actors/ActorTypes/ActorTypes.js';
+import { MESH_ACTOR_TYPES, MESH_TYPES, LIGHT_ACTOR_TYPES, MATERIAL_TYPES, MATERIAL_FACE_TYPES, MATERIAL_REPEAT_TYPES } from '../Actors/ActorTypes/ActorTypes.js';
 import applyController from './sceneControllers.js';
 
 // * -----------------------------------
@@ -70,7 +70,11 @@ const createScene = function createScene(Graphics, ActorMgr, Controller) {
                 textureData: {
                     texture: "src/Textures/brickwall.jpg",
                     settings: {
-                        type: MATERIAL_TYPES.LAMBERT
+                        type: MATERIAL_TYPES.LAMBERT,
+                        wrapU: MATERIAL_REPEAT_TYPES.REPEAT,
+                        wrapV: MATERIAL_REPEAT_TYPES.REPEAT,
+                        wrapUtimes: 4,
+                        wrapVtimes: 4
                     }
                 }
             }

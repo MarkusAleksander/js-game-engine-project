@@ -1,3 +1,5 @@
+// TODO - This file needs reworking
+
 export const ACTOR_TYPES = {
     MESH: "mesh",
     LIGHT: "light"
@@ -109,4 +111,10 @@ export const MATERIAL_FACE_TYPES = {
     FRONT: "front",
     BACK: "back",
     BOTH: "both"
+}
+
+export const MATERIAL_REPEAT_TYPES = {
+    CLAMP: "clamp",
+    REPEAT: "repeat",
+    MIRRORREPEAT: "mirror_repeat"
 }

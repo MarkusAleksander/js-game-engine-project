@@ -1,6 +1,6 @@
 import LightActor from './ActorTypes/LightActor.js';
 import MeshActor from './ActorTypes/MeshActor.js';
-import { ACTOR_TYPES, MESH_ACTOR_TYPES, MESH_TYPES, MESH_TEMPLATES, LIGHT_ACTOR_TYPES, MATERIAL_TYPES, MATERIAL_FACE_TYPES } from './ActorTypes/ActorTypes.js';
+import { ACTOR_TYPES, MESH_ACTOR_TYPES, MESH_TYPES, MESH_TEMPLATES, LIGHT_ACTOR_TYPES, MATERIAL_TYPES, MATERIAL_FACE_TYPES, MATERIAL_REPEAT_TYPES } from './ActorTypes/ActorTypes.js';
 import Utilities from '../Globals/Utilities.js';
 
 // * -----------------------------------
@@ -28,6 +28,9 @@ const ActorFactory = function ActorFactory() {
         let newActor = null;
 
         // * Switch to Actor building path
+
+        // TODO - only works for single mesh actors
+
         switch (actorType) {
         case ACTOR_TYPES.MESH:
             // * Create a Mesh Actor
@@ -313,6 +316,48 @@ const ActorFactory = function ActorFactory() {
         // TODO - Can this be changed to improve rendering?
         texture.minFilter = THREE.LinearMipmapLinearFilter;
 
+        // * Repeat texture
+        let wrapU, // * S == U in UV
+            wrapV, // * T == V in UV
+            wrapUtimes = textureSettings.wrapUtimes !== undefined ? textureSettings.wrapUtimes : 1,
+            wrapVtimes = textureSettings.wrapVtimes !== undefined ? textureSettings.wrapVtimes : 1;
+
+        texture.repeat.set(wrapUtimes, wrapVtimes);
+
+        // TODO - Offset and Rotation
+
+        switch (textureSettings.wrapU) {
+        case MATERIAL_REPEAT_TYPES.CLAMP:
+            wrapU = THREE.ClampToEdgeWrapping;
+            break;
+        case MATERIAL_REPEAT_TYPES.REPEAT:
+            wrapU = THREE.RepeatWrapping;
+            break;
+        case MATERIAL_REPEAT_TYPES.MIRRORREPEAT:
+            wrapU = THREE.MirroredRepeatWrapping;
+            break;
+        default:
+            wrapU = THREE.ClampToEdgeWrapping;
+            break;
+        }
+        texture.wrapS = wrapU;
+
+        switch (textureSettings.wrapV) {
+        case MATERIAL_REPEAT_TYPES.CLAMP:
+            wrapV = THREE.ClampToEdgeWrapping;
+            break;
+        case MATERIAL_REPEAT_TYPES.REPEAT:
+            wrapV = THREE.RepeatWrapping;
+            break;
+        case MATERIAL_REPEAT_TYPES.MIRRORREPEAT:
+            wrapV = THREE.MirroredRepeatWrapping;
+            break;
+        default:
+            wrapV = THREE.ClampToEdgeWrapping;
+            break;
+        }
+        texture.wrapT = wrapV;
+
         // * Material side to apply to
         let side;
 
@@ -335,9 +380,11 @@ const ActorFactory = function ActorFactory() {
             map: texture,
             wireframe: textureSettings.wireframe !== undefined ? textureSettings.wireframe : false,
             color: textureSettings.color !== undefined ? textureSettings.color : 0xffffff,
-            side: side
+            side: side,
+            flatShading: textureSettings.flatShading !== undefined ? textureSettings.flatShading : false
         }
 
+        // debugger;
         let shininess = textureSettings.shininess !== undefined ? textureSettings.shininess : 30;
         // let roughness = textureSettings.roughness !== undefined ? textureSettings.roughness : 0;
         let emissive = textureSettings.emissive !== undefined ? textureSettings.emissive : 0x000000;
