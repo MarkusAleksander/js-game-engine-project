@@ -24,6 +24,9 @@ const ActorPrototype = function ActorPrototype(data) {
 
     // * Actor Update Function List
     this.actorUpdateFunctions = [];
+
+    // TODO
+    // * - Set velocity , then update position internally based on that?
 }
 
 // * -----------------------------------

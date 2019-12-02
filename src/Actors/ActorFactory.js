@@ -41,10 +41,17 @@ const ActorFactory = function ActorFactory() {
             // * Don't create anything
             break;
         }
-
         if (!newActor) {
             Utilities.outputDebug("Failed to create actor: ", settings);
             return null;
+        }
+        // debugger;
+        if (settings.position) {
+            newActor.moveActorTo(settings.position);
+        }
+
+        if (settings.rotation) {
+            newActor.rotateActorTo(settings.rotation);
         }
 
         return newActor;
@@ -185,6 +192,10 @@ const ActorFactory = function ActorFactory() {
             geometry = this.createBoxGeometry(Object.assign(MESH_TEMPLATES.BOX, meshData.geometry));
             material = this.buildMaterial(meshData.materialData, 6);
             break;
+        case MESH_TYPES.PLANE:
+            geometry = this.createPlaneGeometry(Object.assign(MESH_TEMPLATES.PLANE, meshData.geometry));
+            material = this.buildMaterial(meshData.materialData, 1);
+            break;
         default:
             break;
         }
@@ -211,6 +222,16 @@ const ActorFactory = function ActorFactory() {
             data.widthSegments,
             data.heightSegments,
             data.depthSegments
+        );
+    }
+
+    // * Create Plane Geometery
+    this.createPlaneGeometry = function createPlaneGeometry(data) {
+        return new THREE.PlaneBufferGeometry(
+            data.width,
+            data.height,
+            data.widthSegments,
+            data.heightSegments
         );
     }
 

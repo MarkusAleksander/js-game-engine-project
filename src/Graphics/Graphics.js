@@ -83,6 +83,7 @@ const GraphicsManager = function GraphicsManager(data) {
             gammaFactor: 2.2,
             gammaOutput: true
         });
+        this.Renderer.shadowMap.enabled = true;
         this.Renderer.setSize(window.innerWidth, window.innerHeight);
     }
 

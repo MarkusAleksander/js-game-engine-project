@@ -27,13 +27,7 @@ const LightActor = function LightActor(data) {
     // * Set light Activity Status
     this.setActiveStatus = function setActiveStatus(status) {
         LightActor.prototype.setActiveStatus.call(this, status);
-        if (this.isActive) {
-            // * Switch on
-            this.currentIntensity = this.desiredIntensity;
-        } else {
-            // * Switch off
-            this.currentIntensity = 0;
-        }
+        this.updateIntensity(this.desiredIntensity);
     }
 
     // * Move Target Absolutely
@@ -56,15 +50,13 @@ const LightActor = function LightActor(data) {
     this.updateIntensity = function updateIntensity(int) {
         this.desiredIntensity = int;
         if (this.isActive) {
-            this.currentIntensity = this.desiredIntensity;
+            this.attachedObject.intensity = this.desiredIntensity;
         }
-        this.needsUpdate = true;
     }
 
     // * Update color
     this.updateColor = function updateColor(color) {
-        this.color = color;
-        this.needsUpdate = true;
+        this.attachedObject.color.set(color);
     }
 
     // * Get current intensity
