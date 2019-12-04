@@ -81,7 +81,7 @@ const CameraManager = function CameraManager(data) {
 
         this.Spherical.makeSafe();
 
-        this.Spherical.radius = Math.max(0, Math.min(Infinity, this.Spherical.radius));
+        this.Spherical.radius = Math.max(0, Math.min(20, this.Spherical.radius));
 
         // * If panning - move target by panOffset
 
@@ -124,10 +124,8 @@ const CameraManager = function CameraManager(data) {
         this.SphericalDelta.theta -= angle;
     }
 
+    // TODO - Improve name
     this.moveCamera = function moveCamera(x, y) {
-
-        // debugger;
-
         this.rotateStart.set(this.Camera.position.x, this.Camera.position.y);
 
         // debugger;
@@ -146,24 +144,9 @@ const CameraManager = function CameraManager(data) {
 
     // * Set Camera Target
     this.setCameraTargetTo = function setCameraTargetTo(target) {
-        // debugger;
-        this.Camera.lookAt(
-            target.x !== undefined ? target.x : 0,
-            target.y !== undefined ? target.y : 0,
-            target.z !== undefined ? target.z : 0
-        );
+        this.target.set(target.x, target.y, target.z);
+        this.update();
     }
-
-    // * Move camera by distance (relative positioning)
-    // this.moveCameraBy = function moveCameraBy(vector, distance) {
-    //     let c = this.Camera;
-
-    //     c.translateOnAxis(new THREE.Vector3(
-    //         vector.x !== undefined ? vector.x + vector.x : 0,
-    //         vector.y !== undefined ? vector.y + vector.y : 0,
-    //         vector.z !== undefined ? vector.z + vector.z : 0
-    //     ), distance);
-    // }
 
     // * Get current rotation
     this.getCameraRotation = function getCameraRotation() {

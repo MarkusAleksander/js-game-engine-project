@@ -51,6 +51,11 @@ const createScene = function createScene(Graphics, ActorMgr, Controller) {
     applyController(Player, Controller, Graphics.getCamera());
     window.Player = Player;
 
+
+    // * Position Camera
+    Graphics.getCamera().moveCameraTo({ x: -15, y: 15, z: 15 });
+    Graphics.getCamera().setCameraTargetTo(Player.getPosition());
+
     // * -----------------------------------
     // *    Create Ground
     // * -----------------------------------

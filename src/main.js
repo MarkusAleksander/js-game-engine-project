@@ -84,11 +84,6 @@ import createScene from './Scenes/scene_4.js';
             far: 100
         });
 
-        // * Position Camera
-        // debugger;
-        Graphics.getCamera().moveCameraTo({ x: -15, y: 15, z: 15 });
-        Graphics.getCamera().setCameraTargetTo({ x: 0, y: 0, z: 0 });
-
         // * Initialise Actor Manager
         ActorMgr.initialise();
     }

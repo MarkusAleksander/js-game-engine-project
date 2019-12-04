@@ -136,6 +136,7 @@ ActorPrototype.prototype.rotateActorBy = function rotateActorBy(vector, rotation
 ActorPrototype.prototype.getPosition = function getPosition() {
     // TODO
     // return this.position;
+    return this.attachedObject.position;
 }
 
 // * Get Current Actor Rotation
