@@ -157,6 +157,12 @@ const GraphicsManager = function GraphicsManager(data) {
     this.getCamera = function getCamera() {
         return this.CameraManager;
     }
+
+
+    // * ------- UPDATE METHOD ------- * //
+    // this.update = function update() {
+    //     this.CameraManager.update.call(this.CameraManager);
+    // }
 }
 
 GraphicsManager.prototype = Object.create(ManagerPrototype.prototype);
