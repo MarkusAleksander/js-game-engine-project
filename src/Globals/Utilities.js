@@ -62,6 +62,15 @@ const Utilities = (function Utilities() {
         return degrees * (Math.PI / 180);
     }
 
+    // * -----------------------------------
+    // *    HELPERS
+    // * -----------------------------------
+
+    // * Check if undefined and return item or predefined value
+    function _checkUndefinedAndReturn(itemToCheck, returnIfUndefined) {
+        return itemToCheck !== undefined ? itemToCheck : returnIfUndefined;
+    }
+
     return {
         // * -----------------------------------
         // *    SYSTEM UTILITIES
@@ -81,7 +90,12 @@ const Utilities = (function Utilities() {
         // *    MATHS
         // * -----------------------------------
         radToDeg: _radToDeg,
-        degToRad: _degToRad
+        degToRad: _degToRad,
+
+        // * -----------------------------------
+        // *    HELPERS
+        // * -----------------------------------
+        checkUndefinedAndReturn: _checkUndefinedAndReturn
     }
 
 })();

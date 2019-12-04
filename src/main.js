@@ -1,29 +1,33 @@
-/* eslint-disable no-invalid-this */
-/* eslint-disable func-names */
-/* eslint-disable no-lone-blocks */
-import EngineManager from './Engine/Engine.js';
+/*
+*   main.js
+*   Entry point of the Game Engine - Here the Running Modes are set, the Managers are created and Initialised, the Scene is created and the Engine is Run()
+*/
+import EngineManager from './Engine/EngineManager.js';
 import GraphicsManager from './Graphics/Graphics.js';
 import ActorManager from './Actors/ActorManager.js';
 import ControllerManager from './Controller/Controller.js';
 
-// import createScene from './Scenes/scene_1.js';
-
 import Utilities from './Globals/Utilities.js';
 import { DEBUG_MODE, PROD_MODE, SINGLE_FRAME_RENDER, CONTINUOUS_FRAME_RENDER, PERFORMANCE_DETAIL_ON, PERFORMANCE_DETAIL_OFF } from './Globals/Globals.js';
+
 import createScene from './Scenes/scene_4.js';
 
+// * -----------------------------------
+// *    MAIN
+// * -----------------------------------
 (function main() {
 
     // * Check scene function exists
     if (!createScene || typeof createScene !== "function") {
-        console.log('Scene Creation function does not exist');
+        Utilities.outputDebug('Scene Creation function does not exist');
         return;
     }
 
-    // * Main render function
-    // TODO - its currently only Graphics here - can we leave this in the graphics manager and retrieve it later?
+    // * Main Render function
+    // * Leaving this here before system set up so that Managers are not dependent on another being first
+    // * And other functions can be called from here aswell
     const render = function render() {
-        Graphics.render();
+        GraphicsMgr.render();
     }
 
     // * Setup running modes
@@ -37,17 +41,16 @@ import createScene from './Scenes/scene_4.js';
     // * -----------------------------------
 
     // * Construct Engine Manager
-    const Engine = new EngineManager(
+    const EngineMgr = new EngineManager(
         {
             managerName: 'EngineManager',
             renderFn: render,
-            timeStep: 1000 / 60,
-            maxTimeStep: 1000 / 30 // TODO - actually required? - probably not
+            timeStep: 1000 / 60
         },
     );
 
     // * Construct Graphics Manager
-    const Graphics = new GraphicsManager(
+    const GraphicsMgr = new GraphicsManager(
         {
             managerName: 'GraphicsManager',
             canvasID: '#canvas'
@@ -62,7 +65,7 @@ import createScene from './Scenes/scene_4.js';
     );
 
     // * Construct Controller Manager
-    const Controller = new ControllerManager(
+    const ControllerMgr = new ControllerManager(
         {
             managerName: "ControllerManager"
         }
@@ -72,65 +75,38 @@ import createScene from './Scenes/scene_4.js';
     // * -----------------------------------
     // *    SYSTEM INITIALISATIONS
     // * -----------------------------------
-    {
-        // * Initialise Engine Manager
-        Engine.initialise();
+    // * Initialise Engine Manager
+    EngineMgr.initialise();
 
-        // * Initialise Graphics Manager
-        Graphics.initialise({
-            fov: 60,
-            aspect: window.innerWidth / window.innerHeight,
-            near: 0.1,
-            far: 100
-        });
+    // * Initialise Graphics Manager
+    GraphicsMgr.initialise({
+        fov: 60,
+        aspect: window.innerWidth / window.innerHeight,
+        near: 0.1,
+        far: 100
+    });
 
-        // * Initialise Actor Manager
-        ActorMgr.initialise();
-    }
+    // * Initialise Actor Manager
+    ActorMgr.initialise();
 
-    // * Load scene async and run engine
+    // * Initialise Controller Manager
+    ControllerMgr.initialise();
 
-    // * Scene to load
-    // * BREAKING DEV TOOLS
-    // let currentHash = location.hash !== "" ? location.hash.slice(1) : "1";
-    // let sceneNum = Number(currentHash);
-
-    // if (isNaN(sceneNum)) {
-    //     sceneNum = 1;
-    // }
-
-    // // * import dynamically
-    // import("./Scenes/scene_" + sceneNum + ".js")
-    //     // TODO - on success or error
-    //     .then((module) => {
-    //         // * -----------------------------------
-    //         // *    SCENE CREATION
-    //         // * -----------------------------------
-    //         module.default(Graphics, ActorMgr);
-
-    //         // * -----------------------------------
-    //         // *    ENGINE READY AND GO
-    //         // * -----------------------------------
-    //         Engine.registerUpdater(Graphics.update.bind(Graphics));
-    //         Engine.registerUpdater(ActorMgr.update.bind(ActorMgr));
-
-    //         // * Run
-    //         Engine.start();
-    //     });
 
     // * -----------------------------------
     // *    SCENE CREATION
     // * -----------------------------------
-    createScene(Graphics, ActorMgr, Controller);
+    createScene(GraphicsMgr, ActorMgr, ControllerMgr);
+
+    // * Register Other Manager updaters to the Engine
+    let GraphicsManagerUpdaterID = EngineMgr.registerUpdater(GraphicsMgr.update.bind(GraphicsMgr));
+    let ActorManagerUpdaterID = EngineMgr.registerUpdater(ActorMgr.update.bind(ActorMgr));
+    let ControllerManagerUpdaterID = EngineMgr.registerUpdater(ControllerMgr.update.bind(ControllerMgr));
+
 
     // * -----------------------------------
     // *    ENGINE READY AND GO
     // * -----------------------------------
-    Engine.registerUpdater(Graphics.update.bind(Graphics));
-    Engine.registerUpdater(ActorMgr.update.bind(ActorMgr));
-    Engine.registerUpdater(Controller.update.bind(Controller));
-
-    // * Run
-    Engine.start();
+    EngineMgr.start();
 
 })();

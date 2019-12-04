@@ -18,10 +18,10 @@ const ControllerManager = function ControllerManager(data) {
     }
 
     // * on update
-    this.update = function update() {
-        this.inputs.forEach(function (k) {
+    this.update = function update(tDelta) {
+        this.inputs.forEach((k) => {
             if (k.eventObj.getActiveStatus()) {
-                k.eventObj.runEvent();
+                k.eventObj.runEvent(tDelta);
             }
         });
     }

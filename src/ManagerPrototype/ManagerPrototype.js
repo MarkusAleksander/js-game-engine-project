@@ -24,7 +24,7 @@ ManagerPrototype.prototype.initialise = function initialise() {
 }
 
 // * Update the Manager
-ManagerPrototype.prototype.update = function update() {
+ManagerPrototype.prototype.update = function update(tDelta) {
     Utilities.outputDebug(
         this.isInitialised
             ? 'Updating Manager: ' + this.managerName

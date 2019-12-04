@@ -38,12 +38,12 @@ const ActorManager = function ActorManager(data) {
     }
 
     // * Update method
-    this.update = function update() {
+    this.update = function update(tDelta) {
         Utilities.outputDebug('Updating Actor Manager');
 
         // * Update all registered Actors
-        this.registeredActorList.forEach(function forEachUpdate(actor) {
-            actor.update();
+        this.registeredActorList.forEach((actor) => {
+            actor.update(tDelta);
         });
     }
 
