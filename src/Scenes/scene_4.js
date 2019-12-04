@@ -5,7 +5,7 @@ import applyController from './sceneControllers.js';
 // *    SCENE CREATION
 // * -----------------------------------
 const createScene = function createScene(Graphics, ActorMgr, Controller) {
-
+    // debugger;
     // * -----------------------------------
     // *    Create player actor
     // * -----------------------------------
@@ -14,28 +14,28 @@ const createScene = function createScene(Graphics, ActorMgr, Controller) {
     let Player = ActorMgr.createMeshActor({
         actorType: MESH_ACTOR_TYPES.PRIMITIVE,
         meshData: {
-            meshType: MESH_TYPES.BOX,
+            meshType: MESH_TYPES.SPHERE,
             geometry: {
-                width: PlayerSize,
-                height: PlayerSize,
-                depth: PlayerSize
+                radius: PlayerSize,
+                widthSegments: 25,
+                heightSegments: 25
             },
             materialData: {
-                color: "0xffffff",
-                textureData: {
-                    textures: [
-                        // "src/Textures/brickwall.jpg"
-                        "src/Textures/side-1.jpg", //
-                        "src/Textures/side-2.jpg",
-                        "src/Textures/side-3.jpg",
-                        "src/Textures/side-4.jpg",
-                        "src/Textures/side-5.jpg",
-                        "src/Textures/side-6.jpg"
-                    ],
-                    settings: {
-                        type: MATERIAL_TYPES.LAMBERT
-                    }
-                }
+                color: "0xffffff"
+                // textureData: {
+                //     textures: [
+                //         // "src/Textures/brickwall.jpg"
+                //         "src/Textures/side-1.jpg", //
+                //         "src/Textures/side-2.jpg",
+                //         "src/Textures/side-3.jpg",
+                //         "src/Textures/side-4.jpg",
+                //         "src/Textures/side-5.jpg",
+                //         "src/Textures/side-6.jpg"
+                //     ],
+                //     settings: {
+                //         type: MATERIAL_TYPES.LAMBERT
+                //     }
+                // }
             }
         },
         position: {

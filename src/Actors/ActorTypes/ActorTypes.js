@@ -21,7 +21,7 @@ export const LIGHT_ACTOR_TYPES = {
 
 export const MESH_TYPES = {
     BOX: "box",
-    CIRCLE: "box",
+    CIRCLE: "circle",
     CONE: "cone",
     CYLINDER: "cylinder",
     EXTRUDE: "extrude",
@@ -31,7 +31,8 @@ export const MESH_TYPES = {
     SPHERE: "sphere",
     TORUS: "torus",
     TUBE: "tube",
-    EDGES: "edges"
+    EDGES: "edges",
+    LINE: "line"
 }
 
 export const MESH_TEMPLATES = {
@@ -68,16 +69,12 @@ export const MESH_TEMPLATES = {
         thetaStart: 0,
         thetaLength: 2 * Math.PI
     },
-    // EXTRUDE: {},
-    // LATHE: {},
     PLANE: {
         width: 1,
         height: 1,
         widthSegments: 1,
         heightSegments: 1
     },
-    // SHAPE: {
-    // },
     SPHERE: {
         radius: 1,
         widthSegments: 8,
@@ -94,8 +91,6 @@ export const MESH_TEMPLATES = {
         tubularSegments: 6,
         arc: 2 * Math.PI
     }
-    // TUBE: {},
-    // EDGES: {}
 }
 
 export const MATERIAL_TYPES = {

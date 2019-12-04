@@ -188,15 +188,91 @@ const ActorFactory = function ActorFactory() {
     // * Build Primitive Mesh
     this.buildPrimitiveMesh = function buildPrimitiveMesh(meshData) {
 
-        let geometry, material;
+        let geometry, material, data;
 
         switch (meshData.meshType) {
         case MESH_TYPES.BOX:
-            geometry = this.createBoxGeometry(Object.assign(MESH_TEMPLATES.BOX, meshData.geometry));
+            data = Object.assign(MESH_TEMPLATES.BOX, meshData.geometry);
+            geometry = new THREE.BoxBufferGeometry(
+                data.width,
+                data.height,
+                data.depth,
+                data.widthSegments,
+                data.heightSegments,
+                data.depthSegments
+            );
             material = this.buildMaterial(meshData.materialData, 6);
             break;
         case MESH_TYPES.PLANE:
-            geometry = this.createPlaneGeometry(Object.assign(MESH_TEMPLATES.PLANE, meshData.geometry));
+            data = Object.assign(MESH_TEMPLATES.PLANE, meshData.geometry);
+            geometry = new THREE.PlaneBufferGeometry(
+                data.width,
+                data.height,
+                data.widthSegments,
+                data.heightSegments
+            );
+            material = this.buildMaterial(meshData.materialData, 1);
+            break;
+        case MESH_TYPES.CIRCLE:
+            data = Object.assign(MESH_TEMPLATES.CIRCLE, meshData.geometry);
+            geometry = new THREE.CircleBufferGeometry(
+                data.radius,
+                data.segments,
+                data.thetaStart,
+                data.thetaLength
+
+            );
+            material = this.buildMaterial(meshData.materialData, 1);
+            break;
+        case MESH_TYPES.CONE:
+            data = Object.assign(MESH_TEMPLATES.CONE, meshData.geometry);
+            geometry = new THREE.ConeBufferGeometry(
+                data.radius,
+                data.height,
+                data.radialSegments,
+                data.heightSegments,
+                data.openEnded,
+                data.thetaStart,
+                data.thetaLength
+            );
+            material = this.buildMaterial(meshData.materialData, 2);
+            break;
+        case MESH_TYPES.CYLINDER:
+            data = Object.assign(MESH_TEMPLATES.CYLINDER, meshData.geometry);
+            geometry = new THREE.CylinderBufferGeometry(
+                data.radiusTop,
+                data.radiusBottom,
+                data.height,
+                data.radialSegments,
+                data.heightSegments,
+                data.openEnded,
+                data.thetaStart,
+                data.thetaLength
+            );
+            material = this.buildMaterial(meshData.materialData, 2);
+            break;
+        case MESH_TYPES.SPHERE:
+            data = Object.assign(MESH_TEMPLATES.SPHERE, meshData.geometry);
+            geometry = new THREE.SphereBufferGeometry(
+                data.radius,
+                data.widthSegments,
+                data.heightSegments,
+                data.phiStart,
+                data.phiLength,
+                data.thetaStart,
+                data.thetaLength
+            );
+            material = this.buildMaterial(meshData.materialData, 1);
+            break;
+        case MESH_TYPES.TORUS:
+            data = Object.assign(MESH_TEMPLATES.TORUS, meshData.geometry);
+            geometry = new THREE.CylinderBufferGeometry(
+                data.radius,
+                data.tube,
+                data.radialSegments,
+                data.tubularSegments,
+                data.arc
+            );
             material = this.buildMaterial(meshData.materialData, 1);
             break;
         default:
@@ -215,32 +291,9 @@ const ActorFactory = function ActorFactory() {
         // TODO
     }
 
-    // * Create Box Geometry
-    this.createBoxGeometry = function createBoxGeometry(data) {
-        // TODO - Does this really need it's own function?
-        return new THREE.BoxBufferGeometry(
-            data.width,
-            data.height,
-            data.depth,
-            data.widthSegments,
-            data.heightSegments,
-            data.depthSegments
-        );
-    }
-
-    // * Create Plane Geometery
-    this.createPlaneGeometry = function createPlaneGeometry(data) {
-        return new THREE.PlaneBufferGeometry(
-            data.width,
-            data.height,
-            data.widthSegments,
-            data.heightSegments
-        );
-    }
-
     // * Build Material
     this.buildMaterial = function buildMaterial(data, numSides) {
-        let textureData = data.textureData !== undefined ? data.textureData : null;
+        let textureData = data.textureData !== undefined ? data.textureData : {};
         // let bumpMapData = data.bumpMapData !== undefined ? data.bumpMapData : null;
 
         let materialData;
@@ -260,8 +313,7 @@ const ActorFactory = function ActorFactory() {
         // * Check if passed texture data is in Array format or not
         if (textureData.textures && Array.isArray(textureData.textures)) {
             let textures = textureData.textures,
-                idx = 0,
-                currentSettings = null;
+                idx = 0;
 
             // * Material data should be an array
             materialData = [];
