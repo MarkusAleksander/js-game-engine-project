@@ -1,5 +1,5 @@
 import ManagerPrototype from '../ManagerPrototype/ManagerPrototype.js';
-import Utilities from './../Globals/Utilities.js';
+import CameraManager from './CameraManager.js';
 
 // * -----------------------------------
 // *    GRAPHICS MANAGER
@@ -17,11 +17,13 @@ const GraphicsManager = function GraphicsManager(data) {
     // * Canvas ID
     this.canvasID = data.canvasID !== undefined ? data.canvasID : '';
     // * Camera Object
-    this.Camera = null;
+    this.CameraManager = null;
     // * Should Update Aspect Ratio?
     this.shouldUpdateRenderAspect = false;
     // * Should Resize Renderer?
     this.shouldResizeRenderer = false;
+    // * World background color
+    this.worldBackgroundColor = data.backgroundColor !== undefined ? data.backgroundColor : 0xAAAAAA
 
     ManagerPrototype.call(this, data);
 
@@ -53,13 +55,16 @@ const GraphicsManager = function GraphicsManager(data) {
     // * Scene creation
     this.createScene = function createScene() {
         this.Scene = new THREE.Scene();
-        this.Scene.background = new THREE.Color(0xAAAAAA);
+        this.Scene.background = new THREE.Color(this.worldBackgroundColor);
     }
 
     // * Get Scene
     this.getScene = function getScene() {
         return this.Scene;
     }
+
+
+    // * ------- SCENE ACTOR METHODS ------- * //
 
     // * Add Actor to the Scene
     this.addActorToScene = function addActorToScene(actor) {
@@ -72,6 +77,7 @@ const GraphicsManager = function GraphicsManager(data) {
     this.removeActorFromScene = function removeActorFromScene(actor) {
         this.Scene.remove(actor.getActorObject());
     }
+
 
     // * ------- RENDERER METHODS ------- * //
 
@@ -104,8 +110,7 @@ const GraphicsManager = function GraphicsManager(data) {
 
     // * Update Render Aspect Ratio
     this.updateRenderAspectRatio = function updateRenderAspectRatio() {
-        this.Camera.aspect = window.innerWidth / window.innerHeight;
-        this.Camera.updateProjectionMatrix();
+        this.CameraManager.updateProjectionMatrix();
         this.setUpdateRenderAspectStatus(false);
     }
 
@@ -122,7 +127,7 @@ const GraphicsManager = function GraphicsManager(data) {
         this.setShouldRenderResize(false);
     }
 
-    // * Main Update Function
+    // * Render Function
     this.render = function render() {
 
         if (this.shouldUpdateRenderAspect) {
@@ -134,50 +139,27 @@ const GraphicsManager = function GraphicsManager(data) {
         }
 
         // * Do render
-        this.Renderer.render(this.Scene, this.Camera);
+        this.Renderer.render(this.Scene, this.CameraManager.getCamera());
     }
 
+
     // * ------- CAMERA METHODS ------- * //
-    // TODO - Export camera to a separate module, handled by the Graphics?
 
     // * Create Camera
     this.createCamera = function createCamera(cameraData) {
-        let settings = [
-            cameraData.fov !== undefined ? cameraData.fov : 75,
-            cameraData.aspect !== undefined ? cameraData.aspect : window.innerWidth / window.innerHeight,
-            cameraData.near !== undefined ? cameraData.near : 0.1,
-            cameraData.far !== undefined ? cameraData.far : 500
-        ]
-
-        this.Camera = new THREE.PerspectiveCamera(...settings);
+        // * Set up Camera
+        this.CameraManager = new CameraManager(cameraData);
+        this.CameraManager.initialise();
+        window.Camera = this.CameraManager.getCamera();
     }
 
     // * Get Camera
     this.getCamera = function getCamera() {
-        return this.Camera;
-    }
-
-    // * Move camera to location (absolute positioning)
-    this.moveCameraTo = function moveCameraTo(loc) {
-        this.Camera.position.x = loc.x !== undefined ? loc.x : this.Camera.position.x;
-        this.Camera.position.y = loc.y !== undefined ? loc.y : this.Camera.position.y;
-        this.Camera.position.z = loc.z !== undefined ? loc.z : this.Camera.position.z;
-    }
-
-    // * Set Camera Target
-    this.setCameraTargetTo = function setCameraTargetTo(target) {
-        this.Camera.lookAt(target.x, target.y, target.z);
-    }
-
-    // * Move camera by distance (relative positioning)
-    this.moveCameraBy = function moveCameraBy(loc) {
-        this.Camera.position.x = loc.x !== undefined ? this.Camera.position.x + loc.x : this.Camera.position.x;
-        this.Camera.position.y = loc.y !== undefined ? this.Camera.position.y + loc.y : this.Camera.position.y;
-        this.Camera.position.z = loc.z !== undefined ? this.Camera.position.z + loc.z : this.Camera.position.z;
+        return this.CameraManager;
     }
 }
 
 GraphicsManager.prototype = Object.create(ManagerPrototype.prototype);
-GraphicsManager.prototypeconstructor = GraphicsManager;
+GraphicsManager.prototype.constructor = GraphicsManager;
 
 export default GraphicsManager;

@@ -129,7 +129,7 @@ ActorPrototype.prototype.rotateActorBy = function rotateActorBy(vector, rotation
         vector.z !== undefined ? vector.z : 0
     ), Utilities.degToRad(rotation));
 
-    o.applyQuaternion(quat);
+    o.applyQuaternion(quat.normalize());
 }
 
 // * Get Current Actor Position

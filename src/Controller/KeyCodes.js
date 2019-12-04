@@ -34,7 +34,11 @@ const KEYCODES = {
     key_W: 87,
     key_X: 88,
     key_Y: 89,
-    key_Z: 90
+    key_Z: 90,
+    key_UP: 38,
+    key_DOWN: 40,
+    key_LEFT: 37,
+    key_RIGHT: 39
 }
 
 export default KEYCODES;

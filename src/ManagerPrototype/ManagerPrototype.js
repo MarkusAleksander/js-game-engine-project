@@ -1,24 +1,35 @@
 import Utilities from './../Globals/Utilities.js';
 
-// * ------------------- Generic System Manager Prototype
+// * -----------------------------------
+// *    PROTOTYPE MANAGER CLASS
+// * -----------------------------------
 const ManagerPrototype = function ManagerPrototype(data) {
+
+    // * -----------------------------------
+    // *    PROTOTYPE MANAGER CLASS PROPERTIES
+    // * -----------------------------------
+
     this.isInitialised = false;
-    this.isUpdating = false; // ? needed?
     this.managerName = data && data.managerName !== undefined ? data.managerName : 'prototype';
 }
 
+// * -----------------------------------
+// *    PROTOTYPE MANAGER METHODS
+// * -----------------------------------
+
+// * Initialise the Manager
 ManagerPrototype.prototype.initialise = function initialise() {
     Utilities.outputDebug('Initialising Manager: ' + this.managerName);
     this.isInitialised = true;
 }
 
+// * Update the Manager
 ManagerPrototype.prototype.update = function update() {
-    if (this.isInitialised) {
-        Utilities.outputDebug('Updating Manager: ' + this.managerName);
-    } else {
-        Utilities.outputDebug(this.managerName + ' - Manager not initialised!');
-        // TODO: Throw assertion
-    }
+    Utilities.outputDebug(
+        this.isInitialised
+            ? 'Updating Manager: ' + this.managerName
+            : this.managerName + ' - Manager not initialised!' /* TODO - THROW ERROR */
+    );
 }
 
 export default ManagerPrototype;
