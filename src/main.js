@@ -3,9 +3,9 @@
 *   Entry point of the Game Engine - Here the Running Modes are set, the Managers are created and Initialised, the Scene is created and the Engine is Run()
 */
 import EngineManager from './Engine/EngineManager.js';
-import GraphicsManager from './Graphics/Graphics.js';
+import GraphicsManager from './Graphics/GraphicsManager.js';
 import ActorManager from './Actors/ActorManager.js';
-import ControllerManager from './Controller/Controller.js';
+import ControllerManager from './Controller/ControllerManager.js';
 
 import Utilities from './Globals/Utilities.js';
 import { DEBUG_MODE, PROD_MODE, SINGLE_FRAME_RENDER, CONTINUOUS_FRAME_RENDER, PERFORMANCE_DETAIL_ON, PERFORMANCE_DETAIL_OFF } from './Globals/Globals.js';

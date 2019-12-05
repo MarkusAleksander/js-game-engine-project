@@ -1,4 +1,4 @@
-import { MESH_ACTOR_TYPES, MESH_TYPES, LIGHT_ACTOR_TYPES, MATERIAL_TYPES, MATERIAL_FACE_TYPES, MATERIAL_REPEAT_TYPES } from '../Actors/ActorTypes/ActorTypes.js';
+import { MESH_ACTOR_TYPES, MESH_TYPES, LIGHT_ACTOR_TYPES, MATERIAL_TYPES, MATERIAL_FACE_TYPES, MATERIAL_REPEAT_TYPES } from '../Globals/ActorTypes.js';
 import applyController from './sceneControllers.js';
 
 // * -----------------------------------
@@ -14,28 +14,31 @@ const createScene = function createScene(Graphics, ActorMgr, Controller) {
     let Player = ActorMgr.createMeshActor({
         actorType: MESH_ACTOR_TYPES.PRIMITIVE,
         meshData: {
-            meshType: MESH_TYPES.SPHERE,
+            meshType: MESH_TYPES.BOX,
             geometry: {
-                radius: PlayerSize,
+                // radius: PlayerSize,
+                width: PlayerSize,
+                height: PlayerSize,
+                depth: PlayerSize,
                 widthSegments: 25,
                 heightSegments: 25
             },
             materialData: {
-                color: "0xffffff"
-                // textureData: {
-                //     textures: [
-                //         // "src/Textures/brickwall.jpg"
-                //         "src/Textures/side-1.jpg", //
-                //         "src/Textures/side-2.jpg",
-                //         "src/Textures/side-3.jpg",
-                //         "src/Textures/side-4.jpg",
-                //         "src/Textures/side-5.jpg",
-                //         "src/Textures/side-6.jpg"
-                //     ],
-                //     settings: {
-                //         type: MATERIAL_TYPES.LAMBERT
-                //     }
-                // }
+                color: "0xffffff",
+                textureData: {
+                    textures: [
+                        // "src/Textures/brickwall.jpg"
+                        "src/Textures/side-1.jpg", //
+                        "src/Textures/side-2.jpg",
+                        "src/Textures/side-3.jpg",
+                        "src/Textures/side-4.jpg",
+                        "src/Textures/side-5.jpg",
+                        "src/Textures/side-6.jpg"
+                    ],
+                    settings: {
+                        type: MATERIAL_TYPES.LAMBERT
+                    }
+                }
             }
         },
         position: {

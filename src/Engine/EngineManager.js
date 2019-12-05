@@ -1,6 +1,6 @@
 /*
 *   EngineManager.js
-*   Management Class for the System,
+*   Management Class for the System, Main Game loop is located here and other Managers update functions are called from here
 */
 import ManagerPrototype from '../ManagerPrototype/ManagerPrototype.js';
 
@@ -26,16 +26,9 @@ const EngineManager = function EngineManager(data) {
     this.timeStep = Utilities.checkUndefinedAndReturn(data.timeStep, 1000 / 60);
     // * Number of frames rendererd
     this.numberFramesRendered = 0;
-
-    // * time frame details
-
-    // * Time to do a single render
+    // * Time variables for controlling system Framerate
     this.loopTimeStart = 0;
     this.loopTimeThen = 0;
-    this.renderTimeTaken = 0;
-
-    this.timeFirstRender = 0;
-    this.timeSinceFirstRender = 0;
 
     ManagerPrototype.call(this, data);
 

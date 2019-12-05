@@ -1,5 +1,10 @@
+/*
+*   GraphicsManager.js
+*   Main interfrace for the 3D Graphics Library and rendering to the screen. Also interface for the Camera Manager
+*/
 import ManagerPrototype from '../ManagerPrototype/ManagerPrototype.js';
 import CameraManager from './CameraManager.js';
+import Utilities from '../Globals/Utilities.js';
 
 // * -----------------------------------
 // *    GRAPHICS MANAGER
@@ -15,7 +20,7 @@ const GraphicsManager = function GraphicsManager(data) {
     // * Renderer Object
     this.Renderer = null;
     // * Canvas ID
-    this.canvasID = data.canvasID !== undefined ? data.canvasID : '';
+    this.canvasID = Utilities.checkUndefinedAndReturn(data.canvasID, '');
     // * Camera Object
     this.CameraManager = null;
     // * Should Update Aspect Ratio?
@@ -23,7 +28,7 @@ const GraphicsManager = function GraphicsManager(data) {
     // * Should Resize Renderer?
     this.shouldResizeRenderer = false;
     // * World background color
-    this.worldBackgroundColor = data.backgroundColor !== undefined ? data.backgroundColor : 0xAAAAAA
+    this.worldBackgroundColor = Utilities.checkUndefinedAndReturn(data.backgroundColor, 0xAAAAAA);
 
     ManagerPrototype.call(this, data);
 

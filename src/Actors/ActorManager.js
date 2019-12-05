@@ -1,7 +1,7 @@
 import ManagerPrototype from '../ManagerPrototype/ManagerPrototype.js';
 import ActorPrototype from './ActorTypes/ActorPrototype.js';
 import ActorFactory from './ActorFactory.js';
-import { ACTOR_TYPES } from './ActorTypes/ActorTypes.js';
+import { ACTOR_TYPES } from '../Globals/ActorTypes.js';
 
 import Utilities from './../Globals/Utilities.js';
 

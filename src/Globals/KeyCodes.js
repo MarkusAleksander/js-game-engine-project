@@ -1,4 +1,4 @@
-const KEYCODES = {
+export const KEYCODES = {
     key_0: 48,
     key_1: 49,
     key_2: 50,
@@ -41,4 +41,7 @@ const KEYCODES = {
     key_RIGHT: 39
 }
 
-export default KEYCODES;
+export const INPUT_MODES = {
+    CONTINUOUS: "continous",
+    SINGLE: "single"
+}

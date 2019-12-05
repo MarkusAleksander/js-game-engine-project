@@ -1,4 +1,9 @@
+/*
+*   CameraManager.js
+*   Interface for the Camera Object (accessed via the Graphics Manager)
+*/
 import ManagerPrototype from '../ManagerPrototype/ManagerPrototype.js';
+import Utilities from '../Globals/Utilities.js';
 
 // * -----------------------------------
 // *    CAMERA MANAGER
@@ -11,11 +16,10 @@ const CameraManager = function CameraManager(data) {
 
     // * Camera Object
     this.Camera = null;
-
-    this.fov = data.fov !== undefined ? data.fov : 75;
-    this.aspect = data.aspect !== undefined ? data.aspect : window.innerWidth / window.innerHeight;
-    this.near = data.near !== undefined ? data.near : 0.1;
-    this.far = data.far !== undefined ? data.far : 500;
+    this.fov = Utilities.checkUndefinedAndReturn(data.fov, 75);
+    this.aspect = Utilities.checkUndefinedAndReturn(data.aspect, window.innerWidth / window.innerHeight);
+    this.near = Utilities.checkUndefinedAndReturn(data.near, 0.1);
+    this.far = Utilities.checkUndefinedAndReturn(data.far, 500);
 
     ManagerPrototype.call(this, data);
 

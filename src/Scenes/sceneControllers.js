@@ -1,4 +1,4 @@
-import KEYCODES from '../Controller/KeyCodes.js';
+import { KEYCODES, INPUT_MODES } from '../Globals/KeyCodes.js';
 
 const applyControllers = function applyControllers(actor, Controller, camera) {
     // * Controller setup
@@ -18,12 +18,12 @@ const applyControllers = function applyControllers(actor, Controller, camera) {
         // * Rotate Left
         actor.rotateActorBy({ y: 1 }, 5);
         camera.setCameraTargetTo(actor.getPosition());
-    });
+    }, INPUT_MODES.SINGLE);
     Controller.registerInputEvent(KEYCODES.key_D, "keydown", function onKeyDown() {
         // * Rotate Right
         actor.rotateActorBy({ y: 1 }, -5);
         camera.setCameraTargetTo(actor.getPosition());
-    });
+    }, INPUT_MODES.SINGLE);
 
 
     // * Move Camera

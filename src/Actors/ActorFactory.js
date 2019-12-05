@@ -1,6 +1,6 @@
 import LightActor from './ActorTypes/LightActor.js';
 import MeshActor from './ActorTypes/MeshActor.js';
-import { ACTOR_TYPES, MESH_ACTOR_TYPES, MESH_TYPES, MESH_TEMPLATES, LIGHT_ACTOR_TYPES, MATERIAL_TYPES, MATERIAL_FACE_TYPES, MATERIAL_REPEAT_TYPES } from './ActorTypes/ActorTypes.js';
+import { ACTOR_TYPES, MESH_ACTOR_TYPES, MESH_TYPES, MESH_TEMPLATES, LIGHT_ACTOR_TYPES, MATERIAL_TYPES, MATERIAL_FACE_TYPES, MATERIAL_REPEAT_TYPES } from '../Globals/ActorTypes.js';
 import Utilities from '../Globals/Utilities.js';
 
 // * -----------------------------------
