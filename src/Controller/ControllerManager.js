@@ -27,7 +27,7 @@ const ControllerManager = function ControllerManager(data) {
     // *    CONTROLLER MANAGER METHODS
     // * -----------------------------------
 
-    // TODO - Support mouse input, keyup events, non-continuous keypresses
+    // TODO - Support mouse input, mouse move, mouse scroll, keyup events
 
     // * Register an input key with type and callback
     this.registerInputEvent = function registerInputEvent(keyCode, eventType, fn, mode) {

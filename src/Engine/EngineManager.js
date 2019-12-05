@@ -83,6 +83,8 @@ const EngineManager = function EngineManager(data) {
     // * Main Update Loop
     this.update = function update(timeStamp) {
 
+        ManagerPrototype.prototype.update.call(this);
+
         let _self = this;
         // * Request the next animation frame
 

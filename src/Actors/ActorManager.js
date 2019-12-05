@@ -1,9 +1,16 @@
+/*
+*   ActorManager.js
+*   Management Class for all Actors within the game. Provides interface to build, register, deregister and remove Actors
+*/
 import ManagerPrototype from '../ManagerPrototype/ManagerPrototype.js';
+
 import ActorPrototype from './ActorTypes/ActorPrototype.js';
 import ActorFactory from './ActorFactory.js';
 import { ACTOR_TYPES } from '../Globals/ActorTypes.js';
 
 import Utilities from './../Globals/Utilities.js';
+
+// TODO - Implement an index map? Would likely improve performance for a large list that is often accessed, but would need to be updated for each addition / removal
 
 // * -----------------------------------
 // *    ACTOR MANAGER
@@ -33,13 +40,12 @@ const ActorManager = function ActorManager(data) {
         // * Create the Actor Factory
         this.ActorFactory = new ActorFactory();
 
-        // * Call to base to do any prototype based initialising
         ManagerPrototype.prototype.initialise.call(this);
     }
 
     // * Update method
     this.update = function update(tDelta) {
-        Utilities.outputDebug('Updating Actor Manager');
+        ManagerPrototype.prototype.update.call(this);
 
         // * Update all registered Actors
         this.registeredActorList.forEach((actor) => {
@@ -48,7 +54,7 @@ const ActorManager = function ActorManager(data) {
     }
 
 
-    // * ------- ACTOR MANAGEMENT METHODS ------- * //
+    // * ------- ACTOR CREATION METHODS ------- * //
 
     // * Create Actor
     this.createActor = function createActor(settings) {
@@ -58,16 +64,11 @@ const ActorManager = function ActorManager(data) {
         return newActor;
     }
 
-    // * Add Actor to List
-    this.addActor = function addActor(actor) {
-        this.actorList.push(actor);
-    }
-
     // * Create a Mesh Actor
     this.createMeshActor = function createMeshActor(settings) {
         let meshActor = this.ActorFactory.createActor(settings, ACTOR_TYPES.MESH);
 
-        if (!meshActor) { return; }
+        if (!meshActor) { return null; }
 
         this.addActor(meshActor);
 
@@ -78,11 +79,23 @@ const ActorManager = function ActorManager(data) {
     this.createLightActor = function createLightActor(settings) {
         let lightActor = this.ActorFactory.createActor(settings, ACTOR_TYPES.LIGHT);
 
-        if (!lightActor) { return; }
+        if (!lightActor) { return null; }
 
         this.addActor(lightActor);
 
         return lightActor;
+    }
+
+
+    // * ------- ACTOR MANAGEMENT METHODS ------- * //
+
+    // * Add Actor to List
+    this.addActor = function addActor(actor) {
+        if (!(actor instanceof ActorPrototype)) {
+            Utilities.outputDebug('Actor not instance of ActorPrototype!');
+            return;
+        }
+        this.actorList.push(actor);
     }
 
     // * Register Actor
@@ -96,17 +109,10 @@ const ActorManager = function ActorManager(data) {
     }
 
     // * Deregister Actor
-    // TODO - By object or ID or both?
-    this.deregisterActor = function deregisterActor(actorID) {
-        let idx = this.registeredActorList.findIndex((actor) => { return actorID === actor.getID(); });
+    this.deregisterActorByID = function deregisterActorByID(actorID) {
+        let actor = this.getActorByID(actorID);
 
-        // * Check actor found
-        if (idx < 0) {
-            Utilities.outputDebug('Actor not found when trying deregister.');
-            return;
-        }
-
-        let actor = this.registeredActorList[idx];
+        if (!actor) { return; }
 
         // * Check Actor has been deactivated
         if (actor.getActiveStatus()) {
@@ -121,18 +127,16 @@ const ActorManager = function ActorManager(data) {
         this.registeredActorList.splice(idx, 1);
     }
 
-    // * Remove Actor (destroy)
-    // TODO - By object or ID or both?
-    this.removeActor = function removeActor(actorID) {
+    // * Remove Actor (Destroy)
+    this.removeActorByID = function removeActorByID(actorID) {
         let idx = this.registeredActorList.findIndex((actor) => { return actorID === actor.getID(); });
 
-        // * Check actor found
         if (idx < 0) {
-            Utilities.outputDebug('Actor not found when trying remove.');
+            Utilities.outputDebug('Actor not found');
             return;
         }
 
-        let actor = this.registeredActorList[idx];
+        let actor = this.actorList[idx];
 
         // * Check actor has been deactivated and deregistered
         if (actor.getActiveStatus() || actor.getRegisteredStatus()) {
@@ -143,6 +147,18 @@ const ActorManager = function ActorManager(data) {
         // * Remove actor
         // TODO - Implement clean up process
         this.actorList.splice(idx, 1);
+    }
+
+    // * Get Registered Actors by ID
+    this.getActorByID = function getActorById(actorID) {
+        let idx = this.registeredActorList.findIndex((actor) => { return actorID === actor.getID(); });
+
+        if (idx < 0) {
+            Utilities.outputDebug('Actor not found');
+            return null;
+        }
+
+        return this.registeredActorList[idx];
     }
 }
 

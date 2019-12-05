@@ -84,6 +84,15 @@ const GraphicsManager = function GraphicsManager(data) {
     }
 
 
+    // * ------- UPDATE METHODS ------- * //
+
+    this.update = function update() {
+        ManagerPrototype.prototype.update.call(this);
+
+        this.CameraManager.update();
+    }
+
+
     // * ------- RENDERER METHODS ------- * //
 
     // * Create Renderer

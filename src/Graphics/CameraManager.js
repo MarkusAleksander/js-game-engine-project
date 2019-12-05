@@ -142,14 +142,11 @@ const CameraManager = function CameraManager(data) {
         this.moveCameraVertically(2 * Math.PI * this.rotateDelta.y / window.innerHeight);
 
         this.rotateStart.copy(this.rotateEnd);
-
-        this.update();
     }
 
     // * Set Camera Target
     this.setCameraTargetTo = function setCameraTargetTo(target) {
         this.target.set(target.x, target.y, target.z);
-        this.update();
     }
 
     // * Get current rotation
