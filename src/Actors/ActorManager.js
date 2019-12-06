@@ -10,7 +10,7 @@ import { ACTOR_TYPES } from '../Globals/ActorTypes.js';
 
 import Utilities from './../Globals/Utilities.js';
 
-// TODO - Implement an index map? Would likely improve performance for a large list that is often accessed, but would need to be updated for each addition / removal
+// TODO - Implement an index map? Would likely improve performance for a large list that is often accessed, but would need to be updated for each addition /
 
 // * -----------------------------------
 // *    ACTOR MANAGER
@@ -25,6 +25,8 @@ const ActorManager = function ActorManager(data) {
     this.actorList = [];
     // * List of registered in game Actors
     this.registeredActorList = [];
+    // * index map of registered Actors
+    this.actorIndexMap = new Map();
     // * Reference to the ActorFactory
     this.ActorFactory = null;
 
@@ -106,11 +108,12 @@ const ActorManager = function ActorManager(data) {
         }
         this.registeredActorList.push(actor);
         actor.setRegisteredStatus(true);
+        this.buildActorIndexMap();
     }
 
     // * Deregister Actor
     this.deregisterActorByID = function deregisterActorByID(actorID) {
-        let actor = this.getActorByID(actorID);
+        let actor = this.getRegisteredActorByID(actorID);
 
         if (!actor) { return; }
 
@@ -122,9 +125,10 @@ const ActorManager = function ActorManager(data) {
 
         // * Deregister Actor
         actor.setRegisteredStatus(false);
-
         // * Remove Actor from Registered list
         this.registeredActorList.splice(idx, 1);
+
+        this.buildActorIndexMap();
     }
 
     // * Remove Actor (Destroy)
@@ -149,9 +153,9 @@ const ActorManager = function ActorManager(data) {
         this.actorList.splice(idx, 1);
     }
 
-    // * Get Registered Actors by ID
-    this.getActorByID = function getActorById(actorID) {
-        let idx = this.registeredActorList.findIndex((actor) => { return actorID === actor.getID(); });
+    // * Get Unregistered Actors by ID
+    this.getUnregisteredActorByID = function getUnregisteredActorById(actorID) {
+        let idx = this.registeredActorList.findIndex((actor) => { return actorID === actor.getID() && !actor.isRegistered; });
 
         if (idx < 0) {
             Utilities.outputDebug('Actor not found');
@@ -159,6 +163,33 @@ const ActorManager = function ActorManager(data) {
         }
 
         return this.registeredActorList[idx];
+    }
+
+    // * Get Registered Actor by ID
+    this.getRegisteredActorByID = function getRegisteredActorByID(actorID) {
+        let actor = this.actorIndexMap.get(actorID);
+
+        if (!actor) {
+            Utilities.outputDebug('Actor not found');
+            return null;
+        }
+
+        return actor;
+    }
+
+    // * ------- ACTOR MANAGEMENT METHODS ------- * //
+
+    // * Creat an index map to save searching through the array everytime we need to access an Actor
+    // * The only caveat is that the index map needs to be rebuilt each time and actor is removed or added
+    this.buildActorIndexMap = function buildActorIndexMap() {
+        // * Reset the map
+        this.actorIndexMap.clear();
+
+        // * Build the map
+        this.registeredActorList.forEach((actor) => {
+            this.actorIndexMap.set(actor.uID, actor);
+        });
+
     }
 }
 

@@ -18,12 +18,12 @@ const applyControllers = function applyControllers(actor, Controller, camera) {
         // * Rotate Left
         actor.rotateActorBy({ y: 1 }, 5);
         camera.setCameraTargetTo(actor.getPosition());
-    }, INPUT_MODES.SINGLE);
+    }); // * , INPUT_MODES.SINGLE
     Controller.registerInputEvent(KEYCODES.key_D, "keydown", function onKeyDown() {
         // * Rotate Right
         actor.rotateActorBy({ y: 1 }, -5);
         camera.setCameraTargetTo(actor.getPosition());
-    }, INPUT_MODES.SINGLE);
+    }); // * , INPUT_MODES.SINGLE
 
 
     // * Move Camera

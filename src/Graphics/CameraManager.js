@@ -52,6 +52,11 @@ const CameraManager = function CameraManager(data) {
     this.rotateEnd = new THREE.Vector2();
     this.rotateDelta = new THREE.Vector2();
 
+    this.damping = 0.05; // * Set to 1 for no damping
+
+    this.minDistance = 5;
+    this.maxDistance = 25;
+
     // * -----------------------------------
     // *    CAMERA MANAGER METHODS
     // * -----------------------------------
@@ -66,38 +71,48 @@ const CameraManager = function CameraManager(data) {
     }
 
     this.update = function update(data) {
-        // this.prototype.update();
 
-        let position = this.Camera.position;
+        // * Get current camera position
+        let cameraPosition = this.Camera.position;
 
-        this.offset.copy(position).sub(this.target);
+        // * Calculate offset Vector
+        this.offset.copy(cameraPosition).sub(this.target);
+        // * Rotate offset to Y is up
         this.offset.applyQuaternion(this.quat);
 
+        // * Set spherical using offset
         this.Spherical.setFromVector3(this.offset);
 
-        // * Apply damping here if required
-        this.Spherical.theta += this.SphericalDelta.theta;
-        this.Spherical.phi += this.SphericalDelta.phi;
+        // * Set theta and phi towards target - apply damping if set
+        this.Spherical.theta += this.SphericalDelta.theta * this.damping;
+        this.Spherical.phi += this.SphericalDelta.phi * this.damping;
 
-        // * Restrict theta and phi
+        // * Ensure theta and phi are restricted
         this.Spherical.theta = Math.max(this.minThetaAngle, Math.min(this.maxThetaAngle, this.Spherical.theta));
         this.Spherical.phi = Math.max(this.minPhiAngle, Math.min(this.maxPhiAngle, this.Spherical.phi));
 
+        // * Make safe values
         this.Spherical.makeSafe();
 
-        this.Spherical.radius = Math.max(0, Math.min(20, this.Spherical.radius));
+        // * Set radius of spherical to distance bounds
+        this.Spherical.radius = Math.max(this.minDistance, Math.min(this.maxDistance, this.Spherical.radius));
 
-        // * If panning - move target by panOffset
+        // TODO If panning - move target by panOffset
 
+        // * Apply spherical data to Offset
         this.offset.setFromSpherical(this.Spherical);
+        // * rotate offset to Camera Up is Up
         this.offset.applyQuaternion(this.quatInverse);
 
-        position.copy(this.target).add(this.offset);
+        // * Copy new position into Camera position
+        cameraPosition.copy(this.target).add(this.offset);
 
+        // * Make camera look at target
         this.Camera.lookAt(this.target);
 
-        // * Reset spherical data - add damping here
-        this.SphericalDelta.set(0, 0, 0);
+        // * Reset spherical data
+        this.SphericalDelta.theta *= 1 - this.damping;
+        this.SphericalDelta.phi *= 1 - this.damping;
 
         if (
             this.lastPosition.distanceToSquared(this.Camera.position) > 0.00001 ||
