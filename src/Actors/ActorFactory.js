@@ -1,5 +1,8 @@
 import LightActor from './ActorTypes/LightActor.js';
 import MeshActor from './ActorTypes/MeshActor.js';
+
+import Actor from './ActorTypes/Actor.js';
+
 import { ACTOR_TYPES, MESH_ACTOR_TYPES, MESH_TYPES, MESH_TEMPLATES, LIGHT_ACTOR_TYPES, MATERIAL_TYPES, MATERIAL_FACE_TYPES, MATERIAL_REPEAT_TYPES } from '../Globals/ActorTypes.js';
 import Utilities from '../Globals/Utilities.js';
 
@@ -37,30 +40,34 @@ const ActorFactory = function ActorFactory() {
             actorObjectSettings
         );
 
-
         if (!newActor) {
             Utilities.outputDebug("Failed to create actor: ", actorObjectSettings);
             return null;
         }
-
-        const actor = new MeshActor({
+        // debugger;
+        const actor = new Actor({
             id: this.nextUID++
         });
 
         actor.setActorObject(newActor);
 
-        if (actorObjectSettings.sceneData && actorObjectSettings.sceneData.position) {
-            actor.moveActorTo(actorObjectSettings.sceneData.position);
+        let rootObjSettings = actorObjectSettings.settings;
+
+        if (rootObjSettings.sceneData && rootObjSettings.sceneData.position) {
+            actor.moveActorTo(rootObjSettings.sceneData.position);
         }
 
-        if (actorObjectSettings.sceneData && actorObjectSettings.sceneData.rotation) {
-            actor.rotateActorTo(actorObjectSettings.sceneData.rotation);
+        if (rootObjSettings.sceneData && rootObjSettings.sceneData.rotation) {
+            actor.rotateActorTo(rootObjSettings.sceneData.rotation);
         }
 
         return actor;
     }
 
     this.buildObjects = function buildObjects(data) {
+
+        // TODO - Build Reference map for each item on the object
+
         // * Set up object
         let obj;
 
@@ -147,22 +154,22 @@ const ActorFactory = function ActorFactory() {
 
     this.createLight = function createLight(settings) {
         // TODO - Improve construction - note - color is different for hemi
-        const light = new LightActor({
-            id: this.cAuID++,
-            color: settings.color,
-            intensity: settings.intensity,
-            position: settings.position,
-            target: settings.target
-        });
+        // const light = new LightActor({
+        //     id: this.cAuID++,
+        //     color: settings.color,
+        //     intensity: settings.intensity,
+        //     position: settings.position,
+        //     target: settings.target
+        // });
 
         let lightObj = null;
 
-        switch (settings.type) {
+        switch (settings.lightType) {
         case LIGHT_ACTOR_TYPES.DIRECTIONAL:
-            lightObj = new THREE.DirectionalLight(light.getColor(), light.getIntensity());
+            lightObj = new THREE.DirectionalLight(settings.color, settings.intensity);
             break;
         case LIGHT_ACTOR_TYPES.AMBIENT:
-            lightObj = new THREE.AmbientLight(light.getColor(), light.getIntensity());
+            lightObj = new THREE.AmbientLight(settings.color, settings.intensity);
             break;
         case LIGHT_ACTOR_TYPES.HEMISPHERE:
             lightObj = new THREE.HemisphereLight(settings.skyColor, settings.groundColor, light.getIntensity);
@@ -173,9 +180,9 @@ const ActorFactory = function ActorFactory() {
 
         lightObj.add(new THREE.AxesHelper(5));
 
-        light.setActorObject(lightObj);
+        // light.setActorObject(lightObj);
 
-        return light;
+        return lightObj;
     }
 
     // * Check if Mesh Actor settings meet the required data
@@ -365,7 +372,7 @@ const ActorFactory = function ActorFactory() {
 
     // * Build Material
     this.buildMaterial = function buildMaterial(data, numSides) {
-
+        // debugger;
         // debugger;
         let color = data.color,
             textures = data.textures,
@@ -408,17 +415,16 @@ const ActorFactory = function ActorFactory() {
                     materialData.push(this.createMaterial(textures[i], textureTypes));
                 }
             }
+        } else if (textures && !Array.isArray(textures)) {
+            materialData = this.createMaterial(textures, textureTypes);
+
+            return materialData;
         }
 
         if (!materialData && color) {
             materialData = new THREE.MeshBasicMaterial({ color: color });
         }
 
-        // else if (textureData.texture && !Array.isArray(textureData.texture)) {
-        //     materialData = this.createMaterial(textureData.texture, textureData.settings !== undefined ? textureData.settings : null);
-
-        //     return materialData;
-        // }
 
         // TODO - Improve
         // if (color) {
