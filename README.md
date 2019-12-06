@@ -10,15 +10,24 @@ Game Engine Project under development using Three.js and much better development
 TODOs:
 
 -   Object disposal
--   Debug output mode
 -   Write Scene Creation Guide
+-   Mesh merge
 
 ## Usage Nots
 
 ## Creating an Actor (WIP)
 
+-   Define if Single or Combined (nested?)
+-   for each actor object:
+-   Define as Mesh or Actor (potential others - ie. Trigger Actor?)
+-   Add settings object
+    Meshes:
 -   Define Mesh Type - PRIMITIVE | CUSTOM
-    Primitive for basic shapes, custom for custom build
+-   Primitive for basic shapes, custom for custom build
+    Lights:
+-
+
+Other details - rotation, position, materials etc
 
 ## Three JS Notes (for memory)
 
