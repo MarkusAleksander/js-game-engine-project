@@ -5,7 +5,6 @@ import applyController from './sceneControllers.js';
 // *    SCENE CREATION
 // * -----------------------------------
 const createScene = function createScene(Graphics, ActorMgr, Controller) {
-    // debugger;
     // * -----------------------------------
     // *    Create player actor
     // * -----------------------------------
@@ -65,7 +64,6 @@ const createScene = function createScene(Graphics, ActorMgr, Controller) {
 
     let groundSize = 20;
 
-    // debugger;
     let Ground = ActorMgr.createMeshActor({
         actorType: MESH_ACTOR_TYPES.PRIMITIVE,
         meshData: {
@@ -107,7 +105,6 @@ const createScene = function createScene(Graphics, ActorMgr, Controller) {
     // * -----------------------------------
     // *    Create LIGHT
     // * -----------------------------------
-    // debugger;
     let Light = ActorMgr.createLightActor({
         type: LIGHT_ACTOR_TYPES.DIRECTIONAL,
         color: 0xffffff,
@@ -126,9 +123,12 @@ const createScene = function createScene(Graphics, ActorMgr, Controller) {
     Graphics.addActorToScene(Light);
     Light.setActiveStatus(true);
 
-    // debugger;
+    // Light.addUpdateFunction(function () {
+    //     // this.moveActorBy({ x: 1, y: 0, z: 0 }, 0.1);
+    //     // this.rotateActorBy({ x: 0, y: 0, z: 1 }, -0.5);
+    // });
+
     window.Light = Light;
-    // debugger;
     Light.getActorObject().castShadow = true;
     Light.getActorObject().shadow.camera.near = 0;
     Light.getActorObject().shadow.camera.far = 100;

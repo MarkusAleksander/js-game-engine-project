@@ -1,3 +1,7 @@
+/*
+*   ActorPrototype.js
+*   Base class for all Actors in the scene - contains all movement, rotation and state logic
+*/
 import Utilities from '../../Globals/Utilities.js';
 
 // * -----------------------------------
@@ -34,8 +38,8 @@ const ActorPrototype = function ActorPrototype(data) {
 // * -----------------------------------
 
 // * Set Actor Activity Status
-ActorPrototype.prototype.setActiveStatus = function setActiveStatus(status) {
-    this.isActive = status;
+ActorPrototype.prototype.setActiveStatus = function setActiveStatus(activeState) {
+    this.isActive = activeState;
 }
 
 // * Get Current Actor Active Status
@@ -47,7 +51,7 @@ ActorPrototype.prototype.getActiveStatus = function getActiveStatus() {
 ActorPrototype.prototype.update = function update() {
     // * Only update if Active
     if (!this.isActive) { return; }
-    Utilities.outputDebug('updating actor: ' + this.uID);
+    Utilities.outputDebug('Updating Actor: ' + this.uID);
 
     // * Run registered update functions
     this.actorUpdateFunctions.forEach((fn) => {
@@ -76,8 +80,8 @@ ActorPrototype.prototype.getActorObject = function getActorObject() {
 }
 
 // * Set Registered Status
-ActorPrototype.prototype.setRegisteredStatus = function setRegisteredStatus(status) {
-    this.isRegistered = status;
+ActorPrototype.prototype.setRegisteredStatus = function setRegisteredStatus(registeredStatus) {
+    this.isRegistered = registeredStatus;
 }
 
 // * Check if Registered
@@ -113,6 +117,7 @@ ActorPrototype.prototype.moveActorBy = function moveActorBy(vector, distance) {
 ActorPrototype.prototype.rotateActorTo = function rotateActorTo(rot) {
     let o = this.attachedObject;
 
+    // TODO - Should be a quaternion
     o.rotation.x = rot.x !== undefined ? rot.x : o.x;
     o.rotation.y = rot.y !== undefined ? rot.y : o.y;
     o.rotation.z = rot.z !== undefined ? rot.z : o.z;
@@ -134,15 +139,12 @@ ActorPrototype.prototype.rotateActorBy = function rotateActorBy(vector, rotation
 
 // * Get Current Actor Position
 ActorPrototype.prototype.getPosition = function getPosition() {
-    // TODO
-    // return this.position;
     return this.attachedObject.position;
 }
 
 // * Get Current Actor Rotation
 ActorPrototype.prototype.getRotation = function getRotation() {
-    // TODO
-    // return this.rotation;
+    return this.attachedObject.rotation;
 }
 
 export default ActorPrototype;

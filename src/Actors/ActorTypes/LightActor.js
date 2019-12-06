@@ -1,4 +1,9 @@
+/*
+*   LightActor.js
+*   Class for Light based Actors in the scene
+*/
 import ActorPrototype from './ActorPrototype.js';
+import Utilities from '../../Globals/Utilities.js';
 
 // * -----------------------------------
 // *    LIGHT ACTOR
@@ -9,14 +14,15 @@ const LightActor = function LightActor(data) {
     // *    LIGHT ACTOR PROPERTIES
     // * -----------------------------------
 
-    this.target = { x: 0, y: 0, z: 0 };
+    // * Light target / direction
+    this.target = new THREE.Vector3();
     // * Desired intensity setting
-    this.desiredIntensity = data.intensity !== undefined ? data.intensity : 1;
+    this.desiredIntensity = Utilities.checkUndefinedAndReturn(data.intensity, 1);
     // * Actual intensity setting
     this.currentIntensity = 0;
     // * Light color
-    //  TODO - different color properties by light
-    this.color = data.color !== undefined ? data.color : 0xffffff;
+    this.color = Utilities.checkUndefinedAndReturn(data.color, 0xffffff);
+    //  TODO - different light properties are available
 
     ActorPrototype.call(this, data);
 
@@ -32,18 +38,22 @@ const LightActor = function LightActor(data) {
 
     // * Move Target Absolutely
     this.moveTargetTo = function moveTargetTo(loc) {
-        this.target.x = loc.x !== undefined ? loc.x : this.target.x;
-        this.target.y = loc.y !== undefined ? loc.y : this.target.y;
-        this.target.z = loc.z !== undefined ? loc.z : this.target.z;
-        this.needsUpdate = true;
+        this.attachedObject.target.set(
+            Utilities.checkUndefinedAndReturn(loc.x, this.target.x),
+            Utilities.checkUndefinedAndReturn(loc.y, this.target.y),
+            Utilities.checkUndefinedAndReturn(loc.z, this.target.z),
+        );
+        this.target = this.attachedObject.target;
     }
 
     // * Move Target Relatively
     this.moveTargetBy = function moveTargetBy(loc) {
-        this.target.x = loc.x !== undefined ? loc.x + this.target.x : this.position.x;
-        this.target.y = loc.y !== undefined ? loc.y + this.target.y : this.position.y;
-        this.target.z = loc.z !== undefined ? loc.z + this.target.z : this.position.z;
-        this.needsUpdate = true;
+        this.attachedObject.target.set(
+            Utilities.checkUndefinedAndReturn(loc.x + this.target.x, this.position.x),
+            Utilities.checkUndefinedAndReturn(loc.y + this.target.y, this.position.y),
+            Utilities.checkUndefinedAndReturn(loc.z + this.target.z, this.position.z)
+        );
+        this.target = this.attachedObject.target;
     }
 
     // * Update intensity
