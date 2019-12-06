@@ -29,6 +29,9 @@ TODOs:
 
 Other details - rotation, position, materials etc
 
+Actors can be made up of many meshes / light objects
+Actors can have child actors
+
 ## Three JS Notes (for memory)
 
 -   1 ThreeJS unit equates to 1 metre

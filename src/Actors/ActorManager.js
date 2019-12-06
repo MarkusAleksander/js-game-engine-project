@@ -59,8 +59,13 @@ const ActorManager = function ActorManager(data) {
     // * ------- ACTOR CREATION METHODS ------- * //
 
     // * Create Actor
-    this.createActor = function createActor(settings) {
-        let newActor = this.ActorFactory.createActor(settings);
+    this.createActor = function createActor(actorObjectSettings) {
+        let newActor = this.ActorFactory.createActor(actorObjectSettings);
+
+        if (!newActor) {
+            Utilities.outputDebug('Failed to create Actor');
+            return null;
+        }
 
         this.actorList.push(newActor);
         return newActor;

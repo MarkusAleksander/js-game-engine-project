@@ -15,8 +15,8 @@ const MeshActor = function MeshActor(data) {
     // * -----------------------------------
 
     // TODO - Checking for undefined isn't very useful for deep objects, needs reworking
-    this.materialColor = data.meshData.materialData !== undefined
-        ? Utilities.checkUndefinedAndReturn(data.meshData.materialData.color, 0xffffff)
+    this.materialColor = data.material !== undefined
+        ? Utilities.checkUndefinedAndReturn(data.material.color, 0xffffff)
         : 0xffffff;
 
     ActorPrototype.call(this, data);

@@ -13,7 +13,7 @@ const ActorFactory = function ActorFactory() {
     // * -----------------------------------
 
     // * Current Actor Unique ID
-    this.cAuID = 1;
+    this.nextUID = 1;
     // * Texture loader
     this.textureLoader = new THREE.TextureLoader();
 
@@ -23,47 +23,97 @@ const ActorFactory = function ActorFactory() {
     // * -----------------------------------
 
     // * Create Actor
-    this.createActor = function createActor(settings, actorType) {
+    this.createActor = function createActor(actorObjectSettings) {
 
         let newActor = null;
 
+        if (!actorObjectSettings.type) {
+            Utilities.outputDebug('No Actor type specified');
+            return null;
+        }
+
         // * Switch to Actor building path
+        newActor = this.buildObjects(
+            actorObjectSettings
+        );
 
-        // TODO - only works for single mesh actors
 
-        switch (actorType) {
+        if (!newActor) {
+            Utilities.outputDebug("Failed to create actor: ", actorObjectSettings);
+            return null;
+        }
+
+        const actor = new MeshActor({
+            id: this.nextUID++
+        });
+
+        actor.setActorObject(newActor);
+
+        if (actorObjectSettings.sceneData && actorObjectSettings.sceneData.position) {
+            actor.moveActorTo(actorObjectSettings.sceneData.position);
+        }
+
+        if (actorObjectSettings.sceneData && actorObjectSettings.sceneData.rotation) {
+            actor.rotateActorTo(actorObjectSettings.sceneData.rotation);
+        }
+
+        return actor;
+    }
+
+    this.buildObjects = function buildObjects(data) {
+        // * Set up object
+        let obj;
+
+        // * Build object
+        if (data.type && data.settings) {
+            obj = this.createObjectByType(
+                data.type,
+                data.settings
+            )
+        }
+
+        // * If failed, return null
+        if (!obj) { return null; }
+
+        // * Loop through children
+        if (data.children && Array.isArray(data.children)) {
+            for (let i = 0; i < data.children.length; i++) {
+                let childObj = this.buildObjects(data.children[i]);
+
+                if (childObj) {
+                    obj.add(childObj);
+                }
+            }
+        }
+
+        return obj;
+
+    }
+
+    this.createObjectByType = function createObjectByType(type, settings) {
+        let newObj = null;
+
+        switch (type) {
         case ACTOR_TYPES.MESH:
             // * Create a Mesh Actor
-            newActor = this.createMeshActor(settings);
+            newObj = this.createMesh(settings);
             break;
         case ACTOR_TYPES.LIGHT:
             // * Create a Light Actor
-            newActor = this.createLightActor(settings);
+            newObj = this.createLight(settings);
             break;
         default:
             // * Don't create anything
             break;
         }
-        if (!newActor) {
-            Utilities.outputDebug("Failed to create actor: ", settings);
-            return null;
-        }
-        // debugger;
-        if (settings.position) {
-            newActor.moveActorTo(settings.position);
-        }
 
-        if (settings.rotation) {
-            newActor.rotateActorTo(settings.rotation);
-        }
-
-        return newActor;
+        return newObj;
     }
 
-    this.createMeshActor = function createMeshActor(settings) {
+    this.createMesh = function createMesh(settings) {
 
         // * Check compatible settings
-        let isValidSettings = this.isValidMeshActorSettings(settings);
+        let isValidSettings = true; // this.isValidMeshActorSettings(settings);
 
         // * Do not continue if not valid object
         if (!isValidSettings) {
@@ -72,28 +122,30 @@ const ActorFactory = function ActorFactory() {
         }
 
         // * Create Actor
-        const actor = new MeshActor(settings);
+        // const actor = new MeshActor(settings);
 
         let actorMesh = null;
 
         // * Build Mesh
-        if (settings.actorType === MESH_ACTOR_TYPES.PRIMITIVE) {
-            actorMesh = this.buildPrimitiveMesh(settings.meshData);
+        if (settings.meshType === MESH_ACTOR_TYPES.PRIMITIVE) {
+            actorMesh = this.buildPrimitiveMesh(settings);
         }
-        if (settings.actorType === MESH_ACTOR_TYPES.CUSTOM) {
-            actorMesh = this.buildCustomMesh(settings.meshData);
+        if (settings.meshType === MESH_ACTOR_TYPES.CUSTOM) {
+            actorMesh = this.buildCustomMesh(settings);
         }
+
+        actorMesh.add(new THREE.AxesHelper(3));
 
         // * Assign mesh to Actor object
-        actor.setActorObject(actorMesh);
+        // actor.setActorObject(actorMesh);
 
         // * Assign an ID when complete
-        actor.uID = this.cAuID++;
+        // actor.uID = this.cAuID++;
 
-        return actor;
+        return actorMesh;
     }
 
-    this.createLightActor = function createLightActor(settings) {
+    this.createLight = function createLight(settings) {
         // TODO - Improve construction - note - color is different for hemi
         const light = new LightActor({
             id: this.cAuID++,
@@ -118,6 +170,9 @@ const ActorFactory = function ActorFactory() {
         default:
             break;
         }
+
+        lightObj.add(new THREE.AxesHelper(5));
+
         light.setActorObject(lightObj);
 
         return light;
@@ -186,104 +241,121 @@ const ActorFactory = function ActorFactory() {
     // * -----------------------------------
 
     // * Build Primitive Mesh
-    this.buildPrimitiveMesh = function buildPrimitiveMesh(meshData) {
+    this.buildPrimitiveMesh = function buildPrimitiveMesh(settings) {
 
-        let geometry, material, data;
+        let geometry = settings.geometry,
+            material = settings.material,
+            transformation = settings.transformation;
 
-        switch (meshData.meshType) {
+        // * Build Geometry
+        switch (geometry.type) {
         case MESH_TYPES.BOX:
-            data = Object.assign(MESH_TEMPLATES.BOX, meshData.geometry);
+            geometry = Object.assign(MESH_TEMPLATES.BOX, geometry.data);
             geometry = new THREE.BoxBufferGeometry(
-                data.width,
-                data.height,
-                data.depth,
-                data.widthSegments,
-                data.heightSegments,
-                data.depthSegments
+                geometry.width,
+                geometry.height,
+                geometry.depth,
+                geometry.widthSegments,
+                geometry.heightSegments,
+                geometry.depthSegments
             );
-            material = this.buildMaterial(meshData.materialData, 6);
+            material = this.buildMaterial(material, 6);
             break;
         case MESH_TYPES.PLANE:
-            data = Object.assign(MESH_TEMPLATES.PLANE, meshData.geometry);
+            geometry = Object.assign(MESH_TEMPLATES.PLANE, geometry.data);
             geometry = new THREE.PlaneBufferGeometry(
-                data.width,
-                data.height,
-                data.widthSegments,
-                data.heightSegments
+                geometry.width,
+                geometry.height,
+                geometry.widthSegments,
+                geometry.heightSegments
             );
-            material = this.buildMaterial(meshData.materialData, 1);
+            material = this.buildMaterial(material, 1);
             break;
         case MESH_TYPES.CIRCLE:
-            data = Object.assign(MESH_TEMPLATES.CIRCLE, meshData.geometry);
+            geometry = Object.assign(MESH_TEMPLATES.CIRCLE, geometry.data);
             geometry = new THREE.CircleBufferGeometry(
-                data.radius,
-                data.segments,
-                data.thetaStart,
-                data.thetaLength
+                geometry.radius,
+                geometry.segments,
+                geometry.thetaStart,
+                geometry.thetaLength
 
             );
-            material = this.buildMaterial(meshData.materialData, 1);
+            material = this.buildMaterial(material, 1);
             break;
         case MESH_TYPES.CONE:
-            data = Object.assign(MESH_TEMPLATES.CONE, meshData.geometry);
+            geometry = Object.assign(MESH_TEMPLATES.CONE, geometry.data);
             geometry = new THREE.ConeBufferGeometry(
-                data.radius,
-                data.height,
-                data.radialSegments,
-                data.heightSegments,
-                data.openEnded,
-                data.thetaStart,
-                data.thetaLength
+                geometry.radius,
+                geometry.height,
+                geometry.radialSegments,
+                geometry.heightSegments,
+                geometry.openEnded,
+                geometry.thetaStart,
+                geometry.thetaLength
             );
-            material = this.buildMaterial(meshData.materialData, 2);
+            material = this.buildMaterial(material, 2);
             break;
         case MESH_TYPES.CYLINDER:
-            data = Object.assign(MESH_TEMPLATES.CYLINDER, meshData.geometry);
+            geometry = Object.assign(MESH_TEMPLATES.CYLINDER, geometry.data);
             geometry = new THREE.CylinderBufferGeometry(
-                data.radiusTop,
-                data.radiusBottom,
-                data.height,
-                data.radialSegments,
-                data.heightSegments,
-                data.openEnded,
-                data.thetaStart,
-                data.thetaLength
+                geometry.radiusTop,
+                geometry.radiusBottom,
+                geometry.height,
+                geometry.radialSegments,
+                geometry.heightSegments,
+                geometry.openEnded,
+                geometry.thetaStart,
+                geometry.thetaLength
             );
-            material = this.buildMaterial(meshData.materialData, 2);
+            material = this.buildMaterial(material, 2);
             break;
         case MESH_TYPES.SPHERE:
-            data = Object.assign(MESH_TEMPLATES.SPHERE, meshData.geometry);
+            geometry = Object.assign(MESH_TEMPLATES.SPHERE, geometry.data);
             geometry = new THREE.SphereBufferGeometry(
-                data.radius,
-                data.widthSegments,
-                data.heightSegments,
-                data.phiStart,
-                data.phiLength,
-                data.thetaStart,
-                data.thetaLength
+                geometry.radius,
+                geometry.widthSegments,
+                geometry.heightSegments,
+                geometry.phiStart,
+                geometry.phiLength,
+                geometry.thetaStart,
+                geometry.thetaLength
             );
-            material = this.buildMaterial(meshData.materialData, 1);
+            material = this.buildMaterial(material, 1);
             break;
         case MESH_TYPES.TORUS:
-            data = Object.assign(MESH_TEMPLATES.TORUS, meshData.geometry);
+            geometry = Object.assign(MESH_TEMPLATES.TORUS, geometry.data);
             geometry = new THREE.CylinderBufferGeometry(
-                data.radius,
-                data.tube,
-                data.radialSegments,
-                data.tubularSegments,
-                data.arc
+                geometry.radius,
+                geometry.tube,
+                geometry.radialSegments,
+                geometry.tubularSegments,
+                geometry.arc
             );
-            material = this.buildMaterial(meshData.materialData, 1);
+            material = this.buildMaterial(material, 1);
             break;
         default:
             break;
         }
 
-        // TODO - Better Mesh build control
-        //debugger;
+        let newMesh = new THREE.Mesh(geometry, material);
 
-        return new THREE.Mesh(geometry, material);
+        // debugger;
+        if (transformation && transformation.position) {
+            newMesh.position.set(
+                transformation.position.x,
+                transformation.position.y,
+                transformation.position.z
+            );
+        }
+        if (transformation && transformation.rotation) {
+            newMesh.rotation.set(
+                transformation.rotation.x,
+                transformation.rotation.y,
+                transformation.rotation.z
+            );
+        }
 
+        return newMesh;
     }
 
     // * Build custom mesh
@@ -293,27 +365,31 @@ const ActorFactory = function ActorFactory() {
 
     // * Build Material
     this.buildMaterial = function buildMaterial(data, numSides) {
+
+        // debugger;
+        let color = data.color,
+            textures = data.textures,
+            textureTypes = data.textureTypes;
+
         let textureData = data.textureData !== undefined ? data.textureData : {};
         // let bumpMapData = data.bumpMapData !== undefined ? data.bumpMapData : null;
 
         let materialData;
 
         // * Check settings data as array
-        if (textureData.settings && Array.isArray(textureData.settings)) {
-            let settings = textureData.settings,
-                idx = 0;
+        if (textureTypes && Array.isArray(textureTypes)) {
+            let idx = 0;
 
             // * ensure there are enough settings for each side, populate from the beginning
-            while (settings.length < numSides) {
-                settings.push(settings[idx]);
+            while (textureTypes.length < numSides) {
+                textureTypes.push(textureTypes[idx]);
                 idx++;
             }
         }
 
         // * Check if passed texture data is in Array format or not
-        if (textureData.textures && Array.isArray(textureData.textures)) {
-            let textures = textureData.textures,
-                idx = 0;
+        if (textures && Array.isArray(textures)) {
+            let idx = 0;
 
             // * Material data should be an array
             materialData = [];
@@ -326,17 +402,34 @@ const ActorFactory = function ActorFactory() {
 
             for (let i = 0; i < textures.length; i++) {
                 // * is settings an array or single item?
-                if (Array.isArray(textureData.settings)) {
-                    materialData.push(this.createMaterial(textures[i], textureData.settings[i]));
+                if (Array.isArray(textureTypes)) {
+                    materialData.push(this.createMaterial(textures[i], textureTypes[i]));
                 } else {
-                    materialData.push(this.createMaterial(textures[i], textureData.settings));
+                    materialData.push(this.createMaterial(textures[i], textureTypes));
                 }
             }
-        } else if (textureData.texture && !Array.isArray(textureData.texture)) {
-            materialData = this.createMaterial(textureData.texture, textureData.settings !== undefined ? textureData.settings : null);
-
-            return materialData;
         }
+
+        if (!materialData && color) {
+            materialData = new THREE.MeshBasicMaterial({ color: color });
+        }
+
+        // else if (textureData.texture && !Array.isArray(textureData.texture)) {
+        //     materialData = this.createMaterial(textureData.texture, textureData.settings !== undefined ? textureData.settings : null);
+
+        //     return materialData;
+        // }
+
+        // TODO - Improve
+        // if (color) {
+        //     if (Array.isArray(materialData)) {
+        //         for (let i = 0; i < materialData.length; i++) {
+        //             materialData[i].color.set(color);
+        //         }
+        //     } else {
+        //         materialData.color.set(color);
+        //     }
+        // }
 
         return materialData;
         // return materials;
@@ -356,6 +449,7 @@ const ActorFactory = function ActorFactory() {
 
     }
 
+    // TODO - This is texture creation rather than "material"
     this.createMaterial = function createMaterial(textureString, textureSettings) {
 
         if (textureSettings === null || textureSettings.type == MATERIAL_TYPES.NONE) { return null; }

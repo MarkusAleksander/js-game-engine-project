@@ -10,7 +10,7 @@ import ControllerManager from './Controller/ControllerManager.js';
 import Utilities from './Globals/Utilities.js';
 import { DEBUG_MODE, PROD_MODE, SINGLE_FRAME_RENDER, CONTINUOUS_FRAME_RENDER, PERFORMANCE_DETAIL_ON, PERFORMANCE_DETAIL_OFF } from './Globals/Globals.js';
 
-import createScene from './Scenes/scene_4.js';
+import createScene from './Scenes/scene_5.js';
 
 // * -----------------------------------
 // *    MAIN
