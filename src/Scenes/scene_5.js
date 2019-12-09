@@ -62,7 +62,12 @@ const createScene = function createScene(Graphics, ActorMgr, Controller) {
                         },
                         transformation: {
                             position: new THREE.Vector3(0, PlayerSize * 2, 0)
-                        }
+                        },
+                        updates: [
+                            function () {
+                                this.rotation.z += 0.05;
+                            }
+                        ]
                     },
                     children: [
                         {
@@ -81,6 +86,54 @@ const createScene = function createScene(Graphics, ActorMgr, Controller) {
                                 transformation: {
                                     position: new THREE.Vector3(0, PlayerSize * 2, 0)
                                 }
+                            }
+                        }
+                    ]
+                },
+                {
+                    type: ACTOR_TYPES.MESH,
+                    settings: {
+                        meshType: MESH_ACTOR_TYPES.PRIMITIVE,
+                        geometry: {
+                            type: MESH_TYPES.SPHERE,
+                            data: {
+                                radius: PlayerSize / 2
+                            }
+                        },
+                        material: {
+                            color: 0xffffff
+                        },
+                        transformation: {
+                            position: new THREE.Vector3(0, PlayerSize * 2, 0)
+                        },
+                        updates: [
+                            function () {
+                                this.rotation.z -= 0.05;
+                            }
+                        ]
+                    },
+                    children: [
+                        {
+                            type: ACTOR_TYPES.MESH,
+                            settings: {
+                                meshType: MESH_ACTOR_TYPES.PRIMITIVE,
+                                geometry: {
+                                    type: MESH_TYPES.SPHERE,
+                                    data: {
+                                        radius: PlayerSize / 2
+                                    }
+                                },
+                                material: {
+                                    color: 0xffffff
+                                },
+                                transformation: {
+                                    position: new THREE.Vector3(0, PlayerSize * 2, 0)
+                                }
+                                // updates: [
+                                //     function () {
+                                //         this.rotation.z += 0.05;
+                                //     }
+                                // ]
                             }
                         }
                     ]

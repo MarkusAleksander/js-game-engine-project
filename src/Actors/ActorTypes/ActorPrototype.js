@@ -20,7 +20,7 @@ const ActorPrototype = function ActorPrototype(data) {
     // * Actor Active Status (is it recieving and processing updates?)
     this.isActive = false;
     // * Reference to the Actor Attached Object (in this case, the THREE JS object)
-    this.attachedObject = null;
+    this.attachedObject = data.actor !== undefined ? data.actor : null;
     // * Has the actor been Registered to the Actor Manager?
     this.isRegistered = false;
     // * Check if needs update - initially true as all objects may need to update to their new scene requirements
@@ -28,6 +28,11 @@ const ActorPrototype = function ActorPrototype(data) {
 
     // * Actor Update Function List
     this.actorUpdateFunctions = [];
+
+    // * Object Map
+    this.objectMap = data.objectMap !== undefined ? data.objectMap : new Map();
+    // * Update Map
+    this.updateMap = data.updateMap !== undefined ? data.updateMap : new Map();
 
     // TODO
     // * - Set velocity , then update position internally based on that?
@@ -55,7 +60,15 @@ ActorPrototype.prototype.update = function update() {
 
     // * Run registered update functions
     this.actorUpdateFunctions.forEach((fn) => {
+        // TODO - retest
         fn()
+    });
+
+    // debugger;
+    this.updateMap.forEach((updates) => {
+        updates[0].forEach((fn) => {
+            fn.call(updates[1]);
+        });
     });
 }
 

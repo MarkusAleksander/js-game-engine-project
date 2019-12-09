@@ -40,16 +40,19 @@ const ActorFactory = function ActorFactory() {
             actorObjectSettings
         );
 
-        if (!newActor) {
+        // debugger;
+
+        if (!newActor[0]) {
             Utilities.outputDebug("Failed to create actor: ", actorObjectSettings);
             return null;
         }
         // debugger;
         const actor = new Actor({
-            id: this.nextUID++
+            id: this.nextUID++,
+            actor: newActor[0],
+            objectMap: newActor[1],
+            updateMap: newActor[2]
         });
-
-        actor.setActorObject(newActor);
 
         let rootObjSettings = actorObjectSettings.settings;
 
@@ -64,12 +67,20 @@ const ActorFactory = function ActorFactory() {
         return actor;
     }
 
-    this.buildObjects = function buildObjects(data) {
+    this.buildObjects = function buildObjects(data, id, objMap, updateMap) {
 
         // TODO - Build Reference map for each item on the object
-
+        // debugger;
         // * Set up object
         let obj;
+
+        if (!id) { id = 0 }
+
+        id = String(id);
+
+        if (!objMap) { objMap = new Map(); }
+
+        if (!updateMap) { updateMap = new Map(); }
 
         // * Build object
         if (data.type && data.settings) {
@@ -82,18 +93,24 @@ const ActorFactory = function ActorFactory() {
         // * If failed, return null
         if (!obj) { return null; }
 
+        objMap.set(id, obj);
+
+        if (data.settings.updates && data.settings.updates.length) {
+            updateMap.set(id, [data.settings.updates, obj]);
+        }
+
         // * Loop through children
         if (data.children && Array.isArray(data.children)) {
             for (let i = 0; i < data.children.length; i++) {
-                let childObj = this.buildObjects(data.children[i]);
+                let childObj = this.buildObjects(data.children[i], String(id) + String(i), objMap, updateMap);
 
                 if (childObj) {
-                    obj.add(childObj);
+                    obj.add(childObj[0]);
                 }
             }
         }
 
-        return obj;
+        return [obj, objMap, updateMap];
 
     }
 
