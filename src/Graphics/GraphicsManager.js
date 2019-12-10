@@ -98,13 +98,15 @@ const GraphicsManager = function GraphicsManager(data) {
     // * Create Renderer
     this.createRenderer = function createRenderer() {
         this.Renderer = new THREE.WebGLRenderer({
-            canvas: document.querySelector(this.canvasID),
-            antialias: true,
-            gammaFactor: 2.2,
-            gammaOutput: true
+            canvas: document.querySelector(this.canvasID)
+            // antialias: true
         });
+        this.Renderer.antialias = true;
+        this.Renderer.gammaFactor = 2.2;
+        this.Renderer.gammaOutput = true;
         this.Renderer.shadowMap.enabled = true;
         this.Renderer.setSize(window.innerWidth, window.innerHeight);
+        // this.Renderer.physicallyCorrectLights = true;
     }
 
     // * Get Renderer

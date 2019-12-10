@@ -129,11 +129,6 @@ const createScene = function createScene(Graphics, ActorMgr, Controller) {
                                 transformation: {
                                     position: new THREE.Vector3(0, PlayerSize * 2, 0)
                                 }
-                                // updates: [
-                                //     function () {
-                                //         this.rotation.z += 0.05;
-                                //     }
-                                // ]
                             }
                         }
                     ]
@@ -141,6 +136,8 @@ const createScene = function createScene(Graphics, ActorMgr, Controller) {
             ]
         }
     );
+
+    // TODO - Add actor as child of actor
 
     ActorMgr.registerActor(Player);
     Graphics.addActorToScene(Player);

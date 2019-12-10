@@ -19,6 +19,8 @@ const ActorFactory = function ActorFactory() {
     this.nextUID = 1;
     // * Texture loader
     this.textureLoader = new THREE.TextureLoader();
+    // * GLTF Loader
+    this.gltfLoader = new THREE.GLTFLoader();
 
 
     // * -----------------------------------
@@ -35,24 +37,29 @@ const ActorFactory = function ActorFactory() {
             return null;
         }
 
+        const actor = new Actor({
+            id: this.nextUID++
+            // actor: newActor[0],
+            // objectMap: newActor[1],
+            // updateMap: newActor[2]
+        });
+
         // * Switch to Actor building path
-        newActor = this.buildObjects(
-            actorObjectSettings
+        // TODO - better naming than buildObjects
+        /*newActor = */
+        this.buildObjects(
+            actorObjectSettings, actor
         );
 
+        // actor.
+
         // debugger;
 
-        if (!newActor[0]) {
-            Utilities.outputDebug("Failed to create actor: ", actorObjectSettings);
-            return null;
-        }
+        // if (!newActor[0]) {
+        //     Utilities.outputDebug("Failed to create actor: ", actorObjectSettings);
+        //     return null;
+        // }
         // debugger;
-        const actor = new Actor({
-            id: this.nextUID++,
-            actor: newActor[0],
-            objectMap: newActor[1],
-            updateMap: newActor[2]
-        });
 
         let rootObjSettings = actorObjectSettings.settings;
 
@@ -67,7 +74,7 @@ const ActorFactory = function ActorFactory() {
         return actor;
     }
 
-    this.buildObjects = function buildObjects(data, id, objMap, updateMap) {
+    this.buildObjects = function buildObjects(data, actor, id, objMap, updateMap) {
 
         // TODO - Build Reference map for each item on the object
         // debugger;
@@ -86,12 +93,13 @@ const ActorFactory = function ActorFactory() {
         if (data.type && data.settings) {
             obj = this.createObjectByType(
                 data.type,
-                data.settings
+                data.settings,
+                actor
             )
         }
 
-        // * If failed, return null
-        if (!obj) { return null; }
+        // * If failed
+        if (!obj) { return; }
 
         objMap.set(id, obj);
 
@@ -102,7 +110,7 @@ const ActorFactory = function ActorFactory() {
         // * Loop through children
         if (data.children && Array.isArray(data.children)) {
             for (let i = 0; i < data.children.length; i++) {
-                let childObj = this.buildObjects(data.children[i], String(id) + String(i), objMap, updateMap);
+                let childObj = this.buildObjects(data.children[i], undefined, String(id) + String(i), objMap, updateMap);
 
                 if (childObj) {
                     obj.add(childObj[0]);
@@ -110,11 +118,15 @@ const ActorFactory = function ActorFactory() {
             }
         }
 
-        return [obj, objMap, updateMap];
+        actor.setActorObject(obj);
+        actor.objectMap = objMap;
+        actor.updateMap = updateMap;
+
+        // return [obj, objMap, updateMap];
 
     }
 
-    this.createObjectByType = function createObjectByType(type, settings) {
+    this.createObjectByType = function createObjectByType(type, settings, actor) {
         let newObj = null;
 
         switch (type) {
@@ -126,6 +138,9 @@ const ActorFactory = function ActorFactory() {
             // * Create a Light Actor
             newObj = this.createLight(settings);
             break;
+        case ACTOR_TYPES.GLTF:
+            newObj = this.loadByGLTF(settings, actor);
+            break
         default:
             // * Don't create anything
             break;
@@ -200,6 +215,34 @@ const ActorFactory = function ActorFactory() {
         // light.setActorObject(lightObj);
 
         return lightObj;
+    }
+
+    // * Load by GLTF
+    this.loadByGLTF = function loadByGLTF(settings, actor) {
+        // let obj = {};
+
+        // TODO - draco loader?
+
+        this.gltfLoader.load(
+            settings.asset,
+            (gltf) => {
+                let scene = gltf.scene;
+
+                scene.scale.set(settings.scale, settings.scale, settings.scale);
+                scene.traverse((item) => {
+                    item.castShadow = true;
+                    item.receiveShadow = true;
+                });
+                actor.setActorObject(scene);
+                settings.onload();
+            },
+            undefined,
+            (error) => {
+                console.log(error);
+            }
+        );
+
+        return {};
     }
 
     // * Check if Mesh Actor settings meet the required data

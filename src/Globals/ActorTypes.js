@@ -2,7 +2,8 @@
 
 export const ACTOR_TYPES = {
     MESH: "mesh",
-    LIGHT: "light"
+    LIGHT: "light",
+    GLTF: "gltf"
 };
 
 export const MESH_ACTOR_TYPES = {
