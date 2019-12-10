@@ -25,6 +25,7 @@ const createScene = function createScene(Graphics, ActorMgr, Controller) {
                 ActorMgr.registerActor(Player);
                 Graphics.addActorToScene(Player);
                 Player.setActiveStatus(true);
+                window.Player = Player;
             }
         }
     });

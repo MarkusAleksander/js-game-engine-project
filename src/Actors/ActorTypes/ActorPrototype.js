@@ -34,6 +34,9 @@ const ActorPrototype = function ActorPrototype(data) {
     // * Update Map
     this.updateMap = data.updateMap !== undefined ? data.updateMap : new Map();
 
+    this.state = "idle";
+    this.prevState = this.state;
+
     // * Animations
     this.animations = {};
     this.currentAnimation = "idle";
@@ -83,6 +86,17 @@ ActorPrototype.prototype.update = function update(dT) {
     if (this.animationMixer) {
         this.animationMixer.update(dT * 0.001 * this.animationSpeed);
     }
+
+    this.prevState = this.state;
+    // TODO - improve animation state
+
+    if (this.state === "idle" && this.currentAnimation !== "idle") {
+        this.setAnimation("idle");
+    }
+
+    this.state = "idle";
+
+    // this.isMoving = false;
 }
 
 // * Add update function to Actor
@@ -137,6 +151,11 @@ ActorPrototype.prototype.moveActorBy = function moveActorBy(vector, distance) {
         vector.y !== undefined ? vector.y : 0,
         vector.z !== undefined ? vector.z : 0
     ), distance);
+
+    this.state = "moving";
+    if (this.prevState !== this.state) {
+        this.setAnimation("walk");
+    }
 }
 
 // * Rotate Absolutely
@@ -188,19 +207,11 @@ ActorPrototype.prototype.addAnimations = function addAnimations(animations, anim
     // TODO - convert to map for animation naming
     for (let animationName in this.animationAliases) {
         if (this.animationAliases.hasOwnProperty(animationName)) {
-            let clip = this.animationMixer.clipAction(this.animations[this.animationAliases[animationName]]);
-
-            clip.enabled = false;
-            this.animationActions.set(animationName, clip);
+            this.animationActions.set(animationName, this.animationMixer.clipAction(this.animations[this.animationAliases[animationName]]));
         }
     }
 
-    let startingAnim = this.animationActions.get(this.currentAnimation);
-
-    if (startingAnim) {
-        startingAnim.enabled = true;
-        startingAnim.play();
-    }
+    this.setAnimation("idle");
 
     // debugger;
 
@@ -212,6 +223,31 @@ ActorPrototype.prototype.addAnimations = function addAnimations(animations, anim
     // * Get clips
     // this.animationMixer
 
+}
+
+ActorPrototype.prototype.setAnimation = function setAnimation(animName) {
+
+    // * Disable all running animations
+    for (let [key, action] of this.animationActions) {
+        action.enabled = false;
+    }
+
+    let requestedAnimation = this.animationActions.get(animName);
+
+    if (requestedAnimation) {
+        requestedAnimation.enabled = true;
+        requestedAnimation.reset();
+        requestedAnimation.play();
+    }
+
+    this.currentAnimation = animName;
+
+    // {
+    //     if (startingAnim) {
+    //         startingAnim.enabled = true;
+    //         startingAnim.play();
+    //     }
+    // }
 }
 
 export default ActorPrototype;
