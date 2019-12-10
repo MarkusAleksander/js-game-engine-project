@@ -223,6 +223,8 @@ const ActorFactory = function ActorFactory() {
 
         // TODO - draco loader?
 
+        // TODO - LoadingManager
+
         this.gltfLoader.load(
             settings.asset,
             (gltf) => {
@@ -234,6 +236,7 @@ const ActorFactory = function ActorFactory() {
                     item.receiveShadow = true;
                 });
                 actor.setActorObject(scene);
+                actor.addAnimations(gltf.animations, settings.animationAliases, settings.animationSpeed);
                 settings.onload();
             },
             undefined,

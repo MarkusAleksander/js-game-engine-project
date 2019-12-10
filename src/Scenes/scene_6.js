@@ -12,10 +12,15 @@ const createScene = function createScene(Graphics, ActorMgr, Controller) {
     let Player = ActorMgr.createActor({
         type: ACTOR_TYPES.GLTF,
         settings: {
-            asset: "assets/overlord/scene.gltf",
+            asset: "assets/solus_the_knight/scene.gltf",
             scale: 0.05,
             castShadow: true,
             receiveShadow: true,
+            animationSpeed: 0.33,
+            animationAliases: {
+                idle: "Solus_Rig|anim_idle",
+                walk: "Solus_Rig|anim_walk_in_place"
+            },
             onload: () => {
                 ActorMgr.registerActor(Player);
                 Graphics.addActorToScene(Player);

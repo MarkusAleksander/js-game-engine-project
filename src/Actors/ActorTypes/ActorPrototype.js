@@ -34,6 +34,15 @@ const ActorPrototype = function ActorPrototype(data) {
     // * Update Map
     this.updateMap = data.updateMap !== undefined ? data.updateMap : new Map();
 
+    // * Animations
+    this.animations = {};
+    this.currentAnimation = "idle";
+    this.animationMixer = null;
+    this.animationAliases = {};
+    // * Adjust animation speed
+    this.animationSpeed = 1;
+    this.animationActions = new Map();
+
     // TODO
     // * - Set velocity , then update position internally based on that?
 }
@@ -53,7 +62,7 @@ ActorPrototype.prototype.getActiveStatus = function getActiveStatus() {
 }
 
 // * Actor Update Function
-ActorPrototype.prototype.update = function update() {
+ActorPrototype.prototype.update = function update(dT) {
     // * Only update if Active
     if (!this.isActive) { return; }
     Utilities.outputDebug('Updating Actor: ' + this.uID);
@@ -70,6 +79,10 @@ ActorPrototype.prototype.update = function update() {
             fn.call(updates[1]);
         });
     });
+    // debugger;
+    if (this.animationMixer) {
+        this.animationMixer.update(dT * 0.001 * this.animationSpeed);
+    }
 }
 
 // * Add update function to Actor
@@ -158,6 +171,47 @@ ActorPrototype.prototype.getPosition = function getPosition() {
 // * Get Current Actor Rotation
 ActorPrototype.prototype.getRotation = function getRotation() {
     return this.attachedObject.rotation;
+}
+
+// * Add animations
+ActorPrototype.prototype.addAnimations = function addAnimations(animations, animationAliases, animationSpeed) {
+    animations.forEach((anim) => {
+        this.animations[anim.name] = anim;
+    });
+    // TODO - Merge with predefined animation names
+    this.animationAliases = animationAliases;
+    this.animationMixer = new THREE.AnimationMixer(this.getActorObject());
+    this.animationSpeed = animationSpeed;
+
+    // TODO - all clips - for the moment, just idle
+
+    // TODO - convert to map for animation naming
+    for (let animationName in this.animationAliases) {
+        if (this.animationAliases.hasOwnProperty(animationName)) {
+            let clip = this.animationMixer.clipAction(this.animations[this.animationAliases[animationName]]);
+
+            clip.enabled = false;
+            this.animationActions.set(animationName, clip);
+        }
+    }
+
+    let startingAnim = this.animationActions.get(this.currentAnimation);
+
+    if (startingAnim) {
+        startingAnim.enabled = true;
+        startingAnim.play();
+    }
+
+    // debugger;
+
+    // let clip = this.animations[this.animationAliases.idle];
+    // let action = this.animationMixer.clipAction(clip);
+
+    // action.play();
+
+    // * Get clips
+    // this.animationMixer
+
 }
 
 export default ActorPrototype;
