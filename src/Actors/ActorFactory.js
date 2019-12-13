@@ -232,9 +232,14 @@ const ActorFactory = function ActorFactory() {
 
                 scene.scale.set(settings.scale, settings.scale, settings.scale);
                 scene.traverse((item) => {
-                    item.castShadow = true;
-                    item.receiveShadow = true;
+                    if (item.isMesh) {
+                        // debugger;
+                        item.castShadow = true;
+                        item.receiveShadow = true;
+                    }
                 });
+                debugger;
+                scene.add(new THREE.AxesHelper(3));
                 actor.setActorObject(scene);
                 actor.addAnimations(gltf.animations, settings.animationAliases, settings.animationSpeed);
                 settings.onload();
@@ -312,7 +317,6 @@ const ActorFactory = function ActorFactory() {
 
     // * Build Primitive Mesh
     this.buildPrimitiveMesh = function buildPrimitiveMesh(settings) {
-
         let geometry = settings.geometry,
             material = settings.material,
             transformation = settings.transformation;
@@ -437,6 +441,7 @@ const ActorFactory = function ActorFactory() {
     this.buildMaterial = function buildMaterial(data, numSides) {
         // debugger;
         // debugger;
+        // debugger;
         let color = data.color,
             textures = data.textures,
             textureTypes = data.textureTypes;
@@ -479,7 +484,14 @@ const ActorFactory = function ActorFactory() {
                 }
             }
         } else if (textures && !Array.isArray(textures)) {
-            materialData = this.createMaterial(textures, textureTypes);
+            if (Array.isArray(textureTypes)) {
+                materialData = [];
+                for (let i = 0; i < textureTypes.length; i++) {
+                    materialData.push(this.createMaterial(textures, textureTypes[i]));
+                }
+            } else if (!Array.isArray(textureTypes)) {
+                materialData = this.createMaterial(textures, textureTypes);
+            }
 
             return materialData;
         }
