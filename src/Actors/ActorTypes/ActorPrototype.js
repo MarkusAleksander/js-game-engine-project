@@ -84,7 +84,7 @@ ActorPrototype.prototype.update = function update(dT) {
     });
     // debugger;
     if (this.animationMixer) {
-        this.animationMixer.update(dT * 0.001 * this.animationSpeed);
+        this.animationMixer.update(dT * 0.002 * this.animationSpeed);
     }
 
     this.prevState = this.state;
@@ -227,27 +227,21 @@ ActorPrototype.prototype.addAnimations = function addAnimations(animations, anim
 
 ActorPrototype.prototype.setAnimation = function setAnimation(animName) {
 
-    // * Disable all running animations
-    for (let [key, action] of this.animationActions) {
-        action.enabled = false;
-    }
-
     let requestedAnimation = this.animationActions.get(animName);
 
     if (requestedAnimation) {
         requestedAnimation.enabled = true;
         requestedAnimation.reset();
         requestedAnimation.play();
+        // debugger;
+        let from = this.animationActions.get(this.currentAnimation);
+
+        let crossfadeTime = 200;
+
+        from.crossFadeTo(requestedAnimation, crossfadeTime / 1000, true);
     }
 
     this.currentAnimation = animName;
-
-    // {
-    //     if (startingAnim) {
-    //         startingAnim.enabled = true;
-    //         startingAnim.play();
-    //     }
-    // }
 }
 
 export default ActorPrototype;

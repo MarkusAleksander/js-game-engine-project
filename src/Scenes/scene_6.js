@@ -13,7 +13,7 @@ const createScene = function createScene(Graphics, ActorMgr, Controller) {
         type: ACTOR_TYPES.GLTF,
         settings: {
             asset: "assets/solus_the_knight/scene.gltf",
-            scale: 0.05,
+            scale: 0.01,
             castShadow: true,
             receiveShadow: true,
             animationSpeed: 0.33,
@@ -33,8 +33,52 @@ const createScene = function createScene(Graphics, ActorMgr, Controller) {
     applyController(Player, Controller, Graphics.getCamera());
     // * Position Camera
 
-    Graphics.getCamera().moveCameraTo({ x: -15, y: 15, z: 15 });
+    Graphics.getCamera().moveCameraTo({ x: -5, y: 5, z: 5 });
     Graphics.getCamera().setCameraTargetTo({ x: 0, y: 0, z: 0 });
+
+
+    // * -----------------------------------
+    // *    Create Size Cube
+    // * -----------------------------------
+    let SizeCube = ActorMgr.createActor({
+        type: ACTOR_TYPES.MESH,
+        settings: {
+            meshType: MESH_ACTOR_TYPES.PRIMITIVE,
+            geometry: {
+                type: MESH_TYPES.BOX,
+                data: {
+                    width: 1,
+                    height: 1,
+                    depth: 1
+                }
+            },
+            material: {
+                color: 0xffffff,
+                textures: [
+                    "src/Textures/side-1.jpg",
+                    "src/Textures/side-2.jpg",
+                    "src/Textures/side-3.jpg",
+                    "src/Textures/side-4.jpg",
+                    "src/Textures/side-5.jpg",
+                    "src/Textures/side-6.jpg"
+                ],
+                textureTypes: {
+                    type: MATERIAL_TYPES.LAMBERT
+                }
+            },
+            sceneData: {
+                position: {
+                    x: 0,
+                    y: 0.5,
+                    z: 0
+                }
+            }
+        }
+    });
+
+    ActorMgr.registerActor(SizeCube);
+    Graphics.addActorToScene(SizeCube);
+    SizeCube.setActiveStatus(true);
 
     // * -----------------------------------
     // *    Create Ground
