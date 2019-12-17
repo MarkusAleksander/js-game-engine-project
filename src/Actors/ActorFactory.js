@@ -239,7 +239,7 @@ const ActorFactory = function ActorFactory() {
                     }
                 });
                 debugger;
-                scene.add(new THREE.AxesHelper(3));
+                scene.add(new THREE.AxesHelper(3 / settings.scale));
                 actor.setActorObject(scene);
                 actor.addAnimations(gltf.animations, settings.animationAliases, settings.animationSpeed);
                 settings.onload();
