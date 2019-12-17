@@ -7,10 +7,12 @@ import GraphicsManager from './Graphics/GraphicsManager.js';
 import ActorManager from './Actors/ActorManager.js';
 import ControllerManager from './Controller/ControllerManager.js';
 
+import EntityManager from './ECS/EntityManager.js';
+
 import Utilities from './Globals/Utilities.js';
 import { DEBUG_MODE, PROD_MODE, SINGLE_FRAME_RENDER, CONTINUOUS_FRAME_RENDER, PERFORMANCE_DETAIL_ON, PERFORMANCE_DETAIL_OFF } from './Globals/Globals.js';
 
-import createScene from './Scenes/scene_7.js';
+import createScene from './Scenes/scene_8.js';
 
 // * -----------------------------------
 // *    MAIN
@@ -71,6 +73,7 @@ import createScene from './Scenes/scene_7.js';
         }
     )
 
+    const EntityMgr = new EntityManager();
 
     // * -----------------------------------
     // *    SYSTEM INITIALISATIONS
@@ -96,13 +99,15 @@ import createScene from './Scenes/scene_7.js';
     // * -----------------------------------
     // *    SCENE CREATION
     // * -----------------------------------
-    createScene(GraphicsMgr, ActorMgr, ControllerMgr);
+    // createScene(GraphicsMgr, ActorMgr, ControllerMgr);
+    createScene(GraphicsMgr, EntityMgr, ControllerMgr);
 
     // * Register Other Manager updaters to the Engine
     let GraphicsManagerUpdaterID = EngineMgr.registerUpdater(GraphicsMgr.update.bind(GraphicsMgr));
     let ActorManagerUpdaterID = EngineMgr.registerUpdater(ActorMgr.update.bind(ActorMgr));
     let ControllerManagerUpdaterID = EngineMgr.registerUpdater(ControllerMgr.update.bind(ControllerMgr));
 
+    let ECSManagerUpdaterID = EngineMgr.registerUpdater(EntityMgr.update.bind(EntityMgr));
 
     // * -----------------------------------
     // *    ENGINE READY AND GO

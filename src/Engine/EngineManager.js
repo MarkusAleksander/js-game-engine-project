@@ -29,6 +29,8 @@ const EngineManager = function EngineManager(data) {
     // * Time variables for controlling system Framerate
     this.loopTimeStart = 0;
     this.loopTimeThen = 0;
+    // * Is engine running?
+    this.running = false;
 
     ManagerPrototype.call(this, data);
 
@@ -42,6 +44,7 @@ const EngineManager = function EngineManager(data) {
         if (this.isInitialised) {
             Utilities.outputDebug('Starting engine');
             this.loopTimeThen = performance.now();
+            this.running = true;
             this.update(0);
         }
     }
@@ -88,7 +91,9 @@ const EngineManager = function EngineManager(data) {
         let _self = this;
         // * Request the next animation frame
 
-        requestAnimationFrame(_self.update.bind(_self));
+        if (this.running) {
+            requestAnimationFrame(_self.update.bind(_self));
+        }
 
         // * Get current timestamp
         this.loopTimeStart = timeStamp;

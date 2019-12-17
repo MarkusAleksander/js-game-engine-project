@@ -9,7 +9,7 @@ const EntityManager = function EntityManager() {
     this.RegisteredEntityList = new Map();
 
     this.createEntity = function createEntity(entityData) {
-        let entity = this.EntityFactory(entityData);
+        let entity = this.EntityFactory.createEntity(entityData);
 
         this.EntityList.set(entity.getUID(), entity);
 
@@ -27,7 +27,7 @@ const EntityManager = function EntityManager() {
     }
 
     this.deregisterEntity = function deregisterEntity(entityUID) {
-        if (this.RegisteredEntityList.has(entityUID)) { return; }
+        if (!this.RegisteredEntityList.has(entityUID)) { return; }
 
         Object.values(ECS.Systems).forEach(function forEachSystem(system) {
             system.removeEntity(entityUID);
@@ -38,8 +38,9 @@ const EntityManager = function EntityManager() {
 
     this.update = function update(dT) {
         // * Update systems
+        // debugger;
         Object.values(ECS.Systems).forEach(function forEachSystem(system) {
-            system.update();
+            system.update(dT);
         });
     }
 

@@ -36,19 +36,3 @@ const EntityFactory = function EntityFactory() {
 }
 
 export default EntityFactory;
-
-const Factory = new EntityFactory();
-
-let newEntity = Factory.createEntity({
-    name: "actor",
-    components: [
-        {
-            name: "Health",
-            data: {
-                value: 500
-            }
-        }
-    ]
-});
-
-console.log(newEntity.print());
