@@ -14,6 +14,7 @@ import HealthSystem from './Systems/HealthSystem.js';
 import MovementSystem from './Systems/MovementSystem.js';
 import PhysicsSystem from './Systems/PhysicsSystem.js';
 import RenderSystem from './Systems/RenderSystem.js';
+import AnimationSystem from './Systems/AnimationSystem.js';
 
 const ECS = {
     "Entity": Entity,
@@ -29,7 +30,8 @@ const ECS = {
         "HealthSystem": new HealthSystem(),
         "MovementSystem": new MovementSystem(),
         "PhysicsSystem": new PhysicsSystem(),
-        "RenderSystem": new RenderSystem()
+        "RenderSystem": new RenderSystem(),
+        "AnimationSystem": new AnimationSystem()
     }
 };
 

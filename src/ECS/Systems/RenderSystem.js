@@ -23,7 +23,7 @@ const RenderSystem = function RenderSystem() {
             }
 
             if (!render.hasLoaded && !render.isLoading) {
-                _self.createRenderable(render, translation);
+                _self.createRenderable(entity);
                 return;
             }
             // debugger;
@@ -37,38 +37,48 @@ const RenderSystem = function RenderSystem() {
         });
     }
 
-    this.createRenderable = function createRenderable(renderData, translationData) {
-        if (renderData.type == "load") {
+    this.createRenderable = function createRenderable(entity) {
+        let render = entity.getComponent("Render");
+        let translation = entity.getComponent("Translation");
+        let animation = entity.getComponent("Animation");
+
+        if (render.type == "load") {
             // * Load by GLTF
-            renderData.isLoading = true;
+            render.isLoading = true;
 
             this.GLTFLoader.load(
-                renderData.src,
+                render.src,
                 (gltf) => {
                     // debugger;
                     let scene = gltf.scene;
 
-                    scene.scale.set(renderData.scale, renderData.scale, renderData.scale);
+                    scene.scale.set(render.scale, render.scale, render.scale);
                     scene.traverse((item) => {
                         if (item.isMesh) {
-                            item.castShadow = renderData.castShadow;
-                            item.receiveShadow = renderData.receiveShadow
+                            item.castShadow = render.castShadow;
+                            item.receiveShadow = render.receiveShadow
                         }
                     });
-                    scene.add(new THREE.AxesHelper(3 / renderData.scale));
+                    scene.add(new THREE.AxesHelper(3 / render.scale));
 
-                    scene.position.set(
-                        translationData.initialPosition.x || 0,
-                        translationData.initialPosition.y || 0,
-                        translationData.initialPosition.z || 0
-                    );
-                    scene.applyQuaternion(translationData.initialRotation);
+                    render.isLoading = false;
+                    render.hasLoaded = true;
+                    render.renderable = scene;
 
-                    renderData.isLoading = false;
-                    renderData.hasLoaded = true;
-                    renderData.renderable = scene;
+                    if (translation) {
+                        render.renderable.position.set(
+                            translation.initialPosition.x || 0,
+                            translation.initialPosition.y || 0,
+                            translation.initialPosition.z || 0
+                        );
+                        render.renderable.applyQuaternion(translation.initialRotation);
+                    }
 
-                    EventManager.dispatchEvent("add_renderable", renderData.renderable);
+                    if (animation) {
+                        animation.animations = gltf.animations;
+                    }
+
+                    EventManager.dispatchEvent("add_renderable", render.renderable);
                 },
                 undefined,
                 (error) => {

@@ -32,10 +32,10 @@ const createScene = function createScene(Graphics, EntityMgr, Controller) {
                 name: "Animation",
                 data: {
                     animationSpeed: 0.33,
-                    animationAliases: {
-                        idle: "Solus_Rig|anim_idle",
-                        walk: "Solus_Rig|anim_walk_in_place"
-                    }
+                    animationAliases: new Map([
+                        ["idle", "Solus_Rig|anim_idle"],
+                        ["walk", "Solus_Rig|anim_walk_in_place"]
+                    ])
                 }
             }
         ]
