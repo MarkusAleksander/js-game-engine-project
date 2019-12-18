@@ -62,6 +62,23 @@ const Utilities = (function Utilities() {
         return degrees * (Math.PI / 180);
     }
 
+    // * Vector3 Interface
+    function _vector3(vec = { x: 0, y: 0, z: 0 }) {
+        return new THREE.Vector3(
+            vec.x !== undefined ? vec.x : 0,
+            vec.y !== undefined ? vec.y : 0,
+            vec.z !== undefined ? vec.z : 0
+        );
+    }
+
+    // * Vector2 Interface
+    function _vector2(vec = { x: 0, y: 0 }) {
+        return new THREE.Vector2(
+            vec.x !== undefined ? vec.x : 0,
+            vec.y !== undefined ? vec.y : 0
+        );
+    }
+
     // * -----------------------------------
     // *    HELPERS
     // * -----------------------------------
@@ -91,6 +108,8 @@ const Utilities = (function Utilities() {
         // * -----------------------------------
         radToDeg: _radToDeg,
         degToRad: _degToRad,
+        Vector3: _vector3,
+        Vector2: _vector2,
 
         // * -----------------------------------
         // *    HELPERS

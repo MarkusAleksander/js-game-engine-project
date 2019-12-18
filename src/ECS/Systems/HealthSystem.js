@@ -17,11 +17,11 @@ const HealthSystem = function HealthSystem() {
             let health = entity.getComponent("Health");
 
             // * Decrease Health
-            health.value = health.value < 0 ? 0 : health.value -= 1;
+            // health.value = health.value < 0 ? 0 : health.value -= 1;
 
-            if (health.value <= 0) {
-                _self.die.call(null, entity);
-            }
+            // if (health.value <= 0) {
+            //     _self.die.call(null, entity);
+            // }
         });
     }
 

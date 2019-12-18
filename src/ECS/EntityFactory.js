@@ -6,17 +6,19 @@ import ECS from './ECS.js';
 const EntityFactory = function EntityFactory() {
 
     // * -----------------------------------
-    // *    ENTITY PROPERTIES
+    // *    ENTITY FACTORY PROPERTIES
     // * -----------------------------------
     this.nextEntityUID = 1;
 
     // * -----------------------------------
-    // *    ENTITY METHODS
+    // *    ENTITY FACTORY METHODS
     // * -----------------------------------
-
     this.createEntity = function createEntity(entityData) {
         // * Create Entity
         let entity = new ECS.Entity(this.nextEntityUID++);
+
+        // * Add default base component
+        entity.addComponent(new ECS.Components.Base());
 
         // * Loop through Components
         if (Array.isArray(entityData.components)) {

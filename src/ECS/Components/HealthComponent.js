@@ -1,15 +1,14 @@
 import Component from './Component.js';
 
 // * -----------------------------------
-// *    COMPONENT
+// *    HEALTH COMPONENT
 // * -----------------------------------
 const Health = function Health(data) {
 
     // * -----------------------------------
-    // *    COMPONENT PROPERTIES
+    // *    HEALTH COMPONENT PROPERTIES
     // * -----------------------------------
 
-    // * Unique ID
     this.value = data.value || 100;
 
     // * Set Component Name
@@ -20,9 +19,5 @@ const Health = function Health(data) {
 
 Health.prototype = Object.create(Component.prototype);
 Health.prototype.constructor = Health;
-
-// * -----------------------------------
-// *    COMPONENT METHODS
-// * -----------------------------------
 
 export default Health;

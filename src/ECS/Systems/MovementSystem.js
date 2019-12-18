@@ -6,6 +6,26 @@ const MovementSystem = function MovementSystem() {
         components: ["Translation"]
     });
 
+    this.update = function update(dT) {
+        this.EntityList.forEach(function forEachEntity(entity) {
+            let translation = entity.getComponent("Translation");
+
+            translation.previousPosition = translation.currentPosition;
+            translation.previousRotation = translation.currentRotation;
+
+            translation.currentPosition = translation.nextPosition;
+            translation.currentRotation = translation.nextRotation;
+        });
+    }
+
+    this.moveBy = function moveBy(vector, distance) { }
+
+    this.moveTo = function moveTo(location) { }
+
+    this.rotateBy = function rotateBy(rotation) { }
+
+    this.rotateTo = function rotateTo(rotation) { }
+
     return this;
 }
 

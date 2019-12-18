@@ -5,6 +5,7 @@
 import ManagerPrototype from '../ManagerPrototype/ManagerPrototype.js';
 import CameraManager from './CameraManager.js';
 import Utilities from '../Globals/Utilities.js';
+import EventManager from './../EventSystem/EventManager.js';
 
 // * -----------------------------------
 // *    GRAPHICS MANAGER
@@ -72,10 +73,10 @@ const GraphicsManager = function GraphicsManager(data) {
     // * ------- SCENE ACTOR METHODS ------- * //
 
     // * Add Actor to the Scene
-    this.addActorToScene = function addActorToScene(actor) {
-        if (actor.getRegisteredStatus()) {
-            this.Scene.add(actor.getActorObject());
-        }
+    this.addRenderableToScene = function addRenderableToScene(renderable) {
+        // if (actor.getRegisteredStatus()) {
+        this.Scene.add(renderable);
+        // }
     }
 
     // * Remove Actor from Scene
@@ -173,6 +174,9 @@ const GraphicsManager = function GraphicsManager(data) {
     this.getCamera = function getCamera() {
         return this.CameraManager;
     }
+
+    EventManager.registerEvent('add_renderable');
+    EventManager.addEventListener('add_renderable', this.addRenderableToScene.bind(this));
 }
 
 GraphicsManager.prototype = Object.create(ManagerPrototype.prototype);
