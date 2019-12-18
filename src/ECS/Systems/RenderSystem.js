@@ -23,25 +23,21 @@ const RenderSystem = function RenderSystem() {
             }
 
             if (!render.hasLoaded && !render.isLoading) {
-                _self.createRenderable(render);
+                _self.createRenderable(render, translation);
                 return;
             }
-
+            // debugger;
             render.renderable.position.set(
                 translation.currentPosition.x || 0,
                 translation.currentPosition.y || 0,
                 translation.currentPosition.z || 0
             );
-            render.renderable.rotation.set(
-                translation.currentRotation.x || 0,
-                translation.currentRotation.y || 0,
-                translation.currentRotation.z || 0
-            );
+            render.renderable.applyQuaternion(translation.currentRotation);
 
         });
     }
 
-    this.createRenderable = function createRenderable(renderData) {
+    this.createRenderable = function createRenderable(renderData, translationData) {
         if (renderData.type == "load") {
             // * Load by GLTF
             renderData.isLoading = true;
@@ -60,6 +56,13 @@ const RenderSystem = function RenderSystem() {
                         }
                     });
                     scene.add(new THREE.AxesHelper(3 / renderData.scale));
+
+                    scene.position.set(
+                        translationData.initialPosition.x || 0,
+                        translationData.initialPosition.y || 0,
+                        translationData.initialPosition.z || 0
+                    );
+                    scene.applyQuaternion(translationData.initialRotation);
 
                     renderData.isLoading = false;
                     renderData.hasLoaded = true;

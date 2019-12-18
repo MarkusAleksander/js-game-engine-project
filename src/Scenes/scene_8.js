@@ -14,7 +14,8 @@ const createScene = function createScene(Graphics, EntityMgr, Controller) {
             {
                 name: "Translation",
                 data: {
-                    position: Utilities.Vector3({ x: -1, y: 0, z: 0 })
+                    position: Utilities.Vector3({ x: -1, y: 0, z: 0 }),
+                    rotation: new THREE.Quaternion().setFromAxisAngle(new THREE.Vector3(0, 1, 0), Math.PI)
                 }
             },
             {
