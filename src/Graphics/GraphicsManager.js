@@ -80,8 +80,8 @@ const GraphicsManager = function GraphicsManager(data) {
     }
 
     // * Remove Actor from Scene
-    this.removeActorFromScene = function removeActorFromScene(actor) {
-        this.Scene.remove(actor.getActorObject());
+    this.removeRenderableFromScene = function removeRenderableFromScene(actor) {
+        this.Scene.remove(renderable);
     }
 
 

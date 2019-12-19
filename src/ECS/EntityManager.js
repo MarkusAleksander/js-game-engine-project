@@ -36,6 +36,17 @@ const EntityManager = function EntityManager() {
         this.RegisteredEntityList.delete(entityUID);
     }
 
+    this.activateEntity = function activateEntity(entityUID) {
+        if (!this.RegisteredEntityList.has(entityUID)) { return; }
+        ECS.Systems.BaseSystem.setActiveState(true, entityUID);
+    }
+
+    this.deactiveEntity = function deactiveEntity(entityUID) {
+        if (!this.RegisteredEntityList.has(entityUID)) { return; }
+
+        ECS.Systems.BaseSystem.setActiveState(false, entityUID);
+    }
+
     this.update = function update(dT) {
         // * Update systems
         // debugger;

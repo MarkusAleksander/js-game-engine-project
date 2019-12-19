@@ -41,6 +41,7 @@ const RenderSystem = function RenderSystem() {
         let render = entity.getComponent("Render");
         let translation = entity.getComponent("Translation");
         let animation = entity.getComponent("Animation");
+        let base = entity.getComponent("Base");
 
         if (render.type == "load") {
             // * Load by GLTF
@@ -78,7 +79,9 @@ const RenderSystem = function RenderSystem() {
                         animation.animations = gltf.animations;
                     }
 
-                    EventManager.dispatchEvent("add_renderable", render.renderable);
+                    if (base.isActive) {
+                        EventManager.dispatchEvent("add_renderable", render.renderable);
+                    }
                 },
                 undefined,
                 (error) => {

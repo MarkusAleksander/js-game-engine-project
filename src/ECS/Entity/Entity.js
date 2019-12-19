@@ -52,13 +52,7 @@ Entity.prototype.hasComponent = function hasComponent(componentName) {
     return this.Components.has(componentName);
 }
 
-// * Update through components
-Entity.prototype.update = function update(dT) {
-    this.Components.forEach(function forEachComponent(component) {
-        component.update(dT);
-    });
-}
-
+// * Get entity UID
 Entity.prototype.getUID = function getUID() {
     return this.UID;
 }

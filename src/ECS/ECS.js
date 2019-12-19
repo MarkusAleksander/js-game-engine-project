@@ -15,6 +15,7 @@ import MovementSystem from './Systems/MovementSystem.js';
 import PhysicsSystem from './Systems/PhysicsSystem.js';
 import RenderSystem from './Systems/RenderSystem.js';
 import AnimationSystem from './Systems/AnimationSystem.js';
+import BaseSystem from './Systems/BaseSystem.js';
 
 const ECS = {
     "Entity": Entity,
@@ -27,6 +28,7 @@ const ECS = {
         "Animation": gAnimation
     },
     "Systems": {
+        "BaseSystem": new BaseSystem(),
         "HealthSystem": new HealthSystem(),
         "MovementSystem": new MovementSystem(),
         "PhysicsSystem": new PhysicsSystem(),

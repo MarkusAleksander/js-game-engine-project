@@ -1,10 +1,23 @@
-import EventMgr from './../EventSystem/EventManager.js';
+import EventManager from './../EventSystem/EventManager.js';
 import Utilities from './../Globals/Utilities.js';
 
 const createScene = function createScene(Graphics, EntityMgr, Controller) {
     // debugger;
     let Player = EntityMgr.createEntity({
         components: [
+            {
+                name: "Base",
+                data: {
+                    onActivated: function () {
+                        if (this.isActive) {
+                            EventManager.dispatchEvent("add_renderable", Player.getComponent("Render").renderable);
+                        }
+                    },
+                    onDeactivated: function () {
+                        Graphics.removeRenderableFromScene(Player.getComponent("Render").renderable);
+                    }
+                }
+            },
             {
                 name: "Health",
                 data: {
@@ -44,8 +57,9 @@ const createScene = function createScene(Graphics, EntityMgr, Controller) {
     window.Player = Player;
 
     EntityMgr.registerEntity(Player);
+    EntityMgr.activateEntity(Player.getUID());
 
-    EventMgr.addEventListener("die", function onDie(e) {
+    EventManager.addEventListener("die", function onDie(e) {
         EntityMgr.deregisterEntity(e.getUID());
     });
 

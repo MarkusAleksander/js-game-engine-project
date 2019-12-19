@@ -106,7 +106,7 @@ const createScene = function createScene(Graphics, ActorMgr) {
 
     // * Actor Removal process
     // Player.setActiveStatus(false);
-    // Graphics.removeActorFromScene(Player);
+    // Graphics.removeRenderableFromScene(Player);
     // ActorMgr.deregisterActor(Player.getID());
 
 
