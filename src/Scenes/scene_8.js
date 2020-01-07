@@ -1,5 +1,6 @@
-import EventManager from './../EventSystem/EventManager.js';
-import Utilities from './../Globals/Utilities.js';
+import EventManager from "./../EventSystem/EventManager.js";
+import Utilities from "./../Globals/Utilities.js";
+import { KEYCODES, INPUT_MODES } from "../Globals/KeyCodes.js";
 
 const createScene = function createScene(Graphics, EntityMgr, Controller) {
     // debugger;
@@ -8,38 +9,46 @@ const createScene = function createScene(Graphics, EntityMgr, Controller) {
             {
                 name: "Base",
                 data: {
-                    onActivated: function () {
+                    onActivated: function() {
                         if (this.isActive) {
-                            EventManager.dispatchEvent("add_renderable", Player.getComponent("Render").renderable);
+                            EventManager.dispatchEvent(
+                                "add_renderable",
+                                Player.getComponent("Render").renderable
+                            );
                         }
                     },
-                    onDeactivated: function () {
-                        Graphics.removeRenderableFromScene(Player.getComponent("Render").renderable);
-                    }
-                }
+                    onDeactivated: function() {
+                        Graphics.removeRenderableFromScene(
+                            Player.getComponent("Render").renderable
+                        );
+                    },
+                },
             },
             {
                 name: "Health",
                 data: {
-                    value: 500
-                }
+                    value: 500,
+                },
             },
             {
                 name: "Translation",
                 data: {
                     position: Utilities.Vector3({ x: -1, y: 0, z: 0 }),
-                    rotation: new THREE.Quaternion().setFromAxisAngle(new THREE.Vector3(0, 1, 0), Math.PI)
-                }
+                    rotation: new THREE.Quaternion().setFromAxisAngle(
+                        new THREE.Vector3(0, 1, 0),
+                        Math.PI
+                    ),
+                },
             },
             {
                 name: "Render",
                 data: {
                     type: "load",
-                    src: 'assets/solus_the_knight/scene.gltf',
+                    src: "assets/solus_the_knight/scene.gltf",
                     scale: 0.01,
                     castShadow: true,
-                    receiveShadow: true
-                }
+                    receiveShadow: true,
+                },
             },
             {
                 name: "Animation",
@@ -47,11 +56,34 @@ const createScene = function createScene(Graphics, EntityMgr, Controller) {
                     animationSpeed: 0.33,
                     animationAliases: new Map([
                         ["idle", "Solus_Rig|anim_idle"],
-                        ["walk", "Solus_Rig|anim_walk_in_place"]
-                    ])
-                }
-            }
-        ]
+                        ["walk", "Solus_Rig|anim_walk_in_place"],
+                    ]),
+                },
+            },
+            {
+                name: "Control",
+                data: {
+                    controls: new Map([
+                        [
+                            KEYCODES.key_W,
+                            [
+                                "keydown",
+                                function() {
+                                    // * Forward
+                                    Player.getComponent("Translation").moveBy(
+                                        { z: 1 },
+                                        0.0245
+                                    );
+                                    // camera.setCameraTargetTo(
+                                    //     actor.getPosition()
+                                    // );
+                                },
+                            ],
+                        ],
+                    ]),
+                },
+            },
+        ],
     });
 
     window.Player = Player;
@@ -63,12 +95,11 @@ const createScene = function createScene(Graphics, EntityMgr, Controller) {
         EntityMgr.deregisterEntity(e.getUID());
     });
 
-
     Graphics.getCamera().moveCameraTo({ x: -5, y: 5, z: 5 });
     Graphics.getCamera().setCameraTargetTo({ x: 0, y: 0, z: 0 });
     Graphics.getScene().add(new THREE.AxesHelper(10));
 
     window.Graphics = Graphics;
-}
+};
 
 export default createScene;

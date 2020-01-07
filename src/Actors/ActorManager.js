@@ -1,14 +1,14 @@
 /*
-*   ActorManager.js
-*   Management Class for all Actors within the game. Provides interface to build, register, deregister and remove Actors
-*/
-import ManagerPrototype from '../ManagerPrototype/ManagerPrototype.js';
+ *   ActorManager.js
+ *   Management Class for all Actors within the game. Provides interface to build, register, deregister and remove Actors
+ */
+import ManagerPrototype from "../ManagerPrototype/ManagerPrototype.js";
 
-import ActorPrototype from './ActorTypes/ActorPrototype.js';
-import ActorFactory from './ActorFactory.js';
-import { ACTOR_TYPES } from '../Globals/ActorTypes.js';
+import ActorPrototype from "./ActorTypes/ActorPrototype.js";
+import ActorFactory from "./ActorFactory.js";
+import { ACTOR_TYPES } from "../Globals/ActorTypes.js";
 
-import Utilities from './../Globals/Utilities.js';
+import Utilities from "./../Globals/Utilities.js";
 
 // TODO - Implement an index map? Would likely improve performance for a large list that is often accessed, but would need to be updated for each addition /
 
@@ -16,7 +16,6 @@ import Utilities from './../Globals/Utilities.js';
 // *    ACTOR MANAGER
 // * -----------------------------------
 const ActorManager = function ActorManager(data) {
-
     // * -----------------------------------
     // *    ACTOR MANAGER PROPERTIES
     // * -----------------------------------
@@ -32,7 +31,6 @@ const ActorManager = function ActorManager(data) {
 
     ManagerPrototype.call(this, data);
 
-
     // * -----------------------------------
     // *    ACTOR MANAGER METHODS
     // * -----------------------------------
@@ -43,7 +41,7 @@ const ActorManager = function ActorManager(data) {
         this.ActorFactory = new ActorFactory();
 
         ManagerPrototype.prototype.initialise.call(this);
-    }
+    };
 
     // * Update method
     this.update = function update(tDelta) {
@@ -53,8 +51,7 @@ const ActorManager = function ActorManager(data) {
         this.registeredActorList.forEach((actor) => {
             actor.update(tDelta);
         });
-    }
-
+    };
 
     // * ------- ACTOR CREATION METHODS ------- * //
 
@@ -63,68 +60,81 @@ const ActorManager = function ActorManager(data) {
         let newActor = this.ActorFactory.createActor(actorObjectSettings);
 
         if (!newActor) {
-            Utilities.outputDebug('Failed to create Actor');
+            Utilities.outputDebug("Failed to create Actor");
             return null;
         }
 
         this.actorList.push(newActor);
         return newActor;
-    }
+    };
 
     // * Create a Mesh Actor
     this.createMeshActor = function createMeshActor(settings) {
-        let meshActor = this.ActorFactory.createActor(settings, ACTOR_TYPES.MESH);
+        let meshActor = this.ActorFactory.createActor(
+            settings,
+            ACTOR_TYPES.MESH
+        );
 
-        if (!meshActor) { return null; }
+        if (!meshActor) {
+            return null;
+        }
 
         this.addActor(meshActor);
 
         return meshActor;
-    }
+    };
 
     // * Create a Light Actor
     this.createLightActor = function createLightActor(settings) {
-        let lightActor = this.ActorFactory.createActor(settings, ACTOR_TYPES.LIGHT);
+        let lightActor = this.ActorFactory.createActor(
+            settings,
+            ACTOR_TYPES.LIGHT
+        );
 
-        if (!lightActor) { return null; }
+        if (!lightActor) {
+            return null;
+        }
 
         this.addActor(lightActor);
 
         return lightActor;
-    }
-
+    };
 
     // * ------- ACTOR MANAGEMENT METHODS ------- * //
 
     // * Add Actor to List
     this.addActor = function addActor(actor) {
         if (!(actor instanceof ActorPrototype)) {
-            Utilities.outputDebug('Actor not instance of ActorPrototype!');
+            Utilities.outputDebug("Actor not instance of ActorPrototype!");
             return;
         }
         this.actorList.push(actor);
-    }
+    };
 
     // * Register Actor
     this.registerActor = function registerActor(actor) {
         if (!(actor instanceof ActorPrototype)) {
-            Utilities.outputDebug('Actor not instance of ActorPrototype!');
+            Utilities.outputDebug("Actor not instance of ActorPrototype!");
             return;
         }
         this.registeredActorList.push(actor);
         actor.setRegisteredStatus(true);
         this.buildActorIndexMap();
-    }
+    };
 
     // * Deregister Actor
     this.deregisterActorByID = function deregisterActorByID(actorID) {
         let actor = this.getRegisteredActorByID(actorID);
 
-        if (!actor) { return; }
+        if (!actor) {
+            return;
+        }
 
         // * Check Actor has been deactivated
         if (actor.getActiveStatus()) {
-            Utilities.outputDebug('Actor not deactivated before deregistration.');
+            Utilities.outputDebug(
+                "Actor not deactivated before deregistration."
+            );
             return;
         }
 
@@ -134,14 +144,16 @@ const ActorManager = function ActorManager(data) {
         this.registeredActorList.splice(idx, 1);
 
         this.buildActorIndexMap();
-    }
+    };
 
     // * Remove Actor (Destroy)
     this.removeActorByID = function removeActorByID(actorID) {
-        let idx = this.registeredActorList.findIndex((actor) => { return actorID === actor.getID(); });
+        let idx = this.registeredActorList.findIndex((actor) => {
+            return actorID === actor.getID();
+        });
 
         if (idx < 0) {
-            Utilities.outputDebug('Actor not found');
+            Utilities.outputDebug("Actor not found");
             return;
         }
 
@@ -149,38 +161,42 @@ const ActorManager = function ActorManager(data) {
 
         // * Check actor has been deactivated and deregistered
         if (actor.getActiveStatus() || actor.getRegisteredStatus()) {
-            Utilities.outputDebug('Actor not properly deactivated or deregistered');
+            Utilities.outputDebug(
+                "Actor not properly deactivated or deregistered"
+            );
             return;
         }
 
         // * Remove actor
         // TODO - Implement clean up process
         this.actorList.splice(idx, 1);
-    }
+    };
 
     // * Get Unregistered Actors by ID
     this.getUnregisteredActorByID = function getUnregisteredActorById(actorID) {
-        let idx = this.registeredActorList.findIndex((actor) => { return actorID === actor.getID() && !actor.isRegistered; });
+        let idx = this.registeredActorList.findIndex((actor) => {
+            return actorID === actor.getID() && !actor.isRegistered;
+        });
 
         if (idx < 0) {
-            Utilities.outputDebug('Actor not found');
+            Utilities.outputDebug("Actor not found");
             return null;
         }
 
         return this.registeredActorList[idx];
-    }
+    };
 
     // * Get Registered Actor by ID
     this.getRegisteredActorByID = function getRegisteredActorByID(actorID) {
         let actor = this.actorIndexMap.get(actorID);
 
         if (!actor) {
-            Utilities.outputDebug('Actor not found');
+            Utilities.outputDebug("Actor not found");
             return null;
         }
 
         return actor;
-    }
+    };
 
     // * ------- ACTOR MANAGEMENT METHODS ------- * //
 
@@ -194,11 +210,15 @@ const ActorManager = function ActorManager(data) {
         this.registeredActorList.forEach((actor) => {
             this.actorIndexMap.set(actor.uID, actor);
         });
-
-    }
-}
+    };
+};
 
 ActorManager.prototype = Object.create(ManagerPrototype.prototype);
 ActorManager.prototype.constructor = ActorManager;
 
-export default ActorManager;
+// * Construct Actor Manager
+const ActorMgr = new ActorManager({
+    managerName: "ActorManager",
+});
+
+export default ActorMgr;
