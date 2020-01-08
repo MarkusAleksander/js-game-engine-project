@@ -41,6 +41,22 @@ const createScene = function createScene(Graphics, EntityMgr, Controller) {
                 },
             },
             {
+                name: "Velocity",
+                data: {
+                    positionVelocity: new Map([
+                        [
+                            "direction",
+                            Utilities.Vector3({
+                                x: 0,
+                                y: 0,
+                                z: -1,
+                            }),
+                        ],
+                        ["distance", 0],
+                    ]),
+                },
+            },
+            {
                 name: "Render",
                 data: {
                     type: "load",

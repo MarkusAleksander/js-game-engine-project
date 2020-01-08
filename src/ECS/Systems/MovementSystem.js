@@ -1,73 +1,112 @@
-import System from './System.js';
-import Utilities from '../../Globals/Utilities.js';
+import System from "./System.js";
+import Utilities from "../../Globals/Utilities.js";
 
 const MovementSystem = function MovementSystem() {
-
     System.call(this, {
-        components: ["Translation"]
+        components: ["Translation", "Velocity"],
     });
+
+    let _self = this;
+    let _v1 = Utilities.Vector3({ x: 0, y: 0, z: 0 });
+
+    this.updatePosition = false;
+    this.updateRotation = false;
 
     this.update = function update(dT) {
         this.EntityList.forEach(function forEachEntity(entity) {
             let translation = entity.getComponent("Translation");
+            let velocity = entity.getComponent("Velocity");
 
-            translation.previousPosition = translation.currentPosition;
-            translation.currentPosition = translation.nextPosition;
+            // * Only need to update Translation is there's velocity
+            if (!velocity) return;
+
             // debugger;
+
+            if (velocity.isMoving) {
+                _self.move(
+                    velocity.positionCurrentVelocity.get("direction"),
+                    velocity.positionCurrentVelocity.get("distance"),
+                    translation
+                );
+
+                translation.previousPosition = translation.currentPosition;
+                translation.currentPosition = translation.nextPosition;
+                _self.updatePosition = true;
+            }
+
+            // if (velocity.isRotating) {
             translation.previousRotation = translation.currentRotation;
             translation.currentRotation = translation.nextRotation;
             translation.nextRotation = new THREE.Quaternion();
+            //     this.updateRotation = true;
+            // }
         });
-    }
+    };
 
-    this.moveBy = function moveBy(vector, distance, entityUID) {
-        let entity = this.EntityList.get(entityUID);
+    this.move = function move(vector, distance, translationComponent) {
+        _v1.copy(vector).applyQuaternion(translationComponent.currentRotation);
 
-        if (!entity) { return; }
+        translationComponent.nextPosition.add(_v1.multiplyScalar(distance));
+    };
 
-        let translation = entity.getComponent("Translation");
+    // this.moveBy = function moveBy(vector, distance, entityUID) {
+    //     let entity = this.EntityList.get(entityUID);
 
-        translation._rotationVector.copy(vector).applyQuaternion(translation.currentRotation);
-        translation.nextPosition.add(translation._rotationVector.multiplyScalar(distance));
-    }
+    //     if (!entity) {
+    //         return;
+    //     }
 
-    this.moveTo = function moveTo(location, entityUID) {
-        let entity = this.EntityList.get(entityUID);
+    //     let translation = entity.getComponent("Translation");
 
-        if (!entity) { return; }
+    //     translation._rotationVector
+    //         .copy(vector)
+    //         .applyQuaternion(translation.currentRotation);
+    //     translation.nextPosition.add(
+    //         translation._rotationVector.multiplyScalar(distance)
+    //     );
+    // };
 
-        let translation = entity.getComponent("Translation");
+    // this.moveTo = function moveTo(location, entityUID) {
+    //     let entity = this.EntityList.get(entityUID);
 
-        translation.nextPosition = location;
-    }
+    //     if (!entity) {
+    //         return;
+    //     }
 
-    this.rotateBy = function rotateBy(vector, degrees, entityUID) {
-        let entity = this.EntityList.get(entityUID);
+    //     let translation = entity.getComponent("Translation");
 
-        if (!entity) { return; }
+    //     translation.nextPosition = location;
+    // };
 
-        let quat = new THREE.Quaternion();
+    // this.rotateBy = function rotateBy(vector, degrees, entityUID) {
+    //     let entity = this.EntityList.get(entityUID);
 
-        quat.setFromAxisAngle(new THREE.Vector3(
-            vector.x || 0,
-            vector.y || 0,
-            vector.z || 0
-        ), Utilities.degToRad(degrees));
+    //     if (!entity) {
+    //         return;
+    //     }
 
-        entity.getComponent("Translation").nextRotation = quat.normalize();
+    //     let quat = new THREE.Quaternion();
 
-    }
+    //     quat.setFromAxisAngle(
+    //         new THREE.Vector3(vector.x || 0, vector.y || 0, vector.z || 0),
+    //         Utilities.degToRad(degrees)
+    //     );
 
-    this.rotateTo = function rotateTo(rotation, entityUID) {
-        let entity = this.EntityList.get(entityUID);
+    //     entity.getComponent("Translation").nextRotation = quat.normalize();
+    // };
 
-        if (!entity) { return; }
+    // this.rotateTo = function rotateTo(rotation, entityUID) {
+    //     let entity = this.EntityList.get(entityUID);
 
-        // TODO
-    }
+    //     if (!entity) {
+    //         return;
+    //     }
+
+    //     // TODO
+    // };
 
     return this;
-}
+};
 
 MovementSystem.prototype = Object.create(System.prototype);
 MovementSystem.prototype.constructor = MovementSystem;

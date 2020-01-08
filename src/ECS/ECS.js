@@ -9,6 +9,7 @@ import Render from "./Components/RenderComponent.js";
 import Physics from "./Components/PhysicsComponent.js";
 import gAnimation from "./Components/AnimationComponent.js";
 import Control from "./Components/ControlComponent.js";
+import Velocity from "./Components/VelocityComponent.js";
 
 // * Systems
 import HealthSystem from "./Systems/HealthSystem.js";
@@ -29,6 +30,7 @@ const ECS = {
         Physics: Physics,
         Animation: gAnimation,
         Control: Control,
+        Velocity: Velocity,
     },
     Systems: {
         BaseSystem: new BaseSystem(),

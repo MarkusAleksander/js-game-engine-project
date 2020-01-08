@@ -21,7 +21,7 @@ const ControllerManager = function ControllerManager(data) {
     this.inputs = new Map();
 
     // * List of Active Inputs
-    this.activeInputs = new Map();
+    // this.activeInputs = new Map();
 
     // * Pointer to self for window event listeners
     let _self = this;
@@ -59,29 +59,29 @@ const ControllerManager = function ControllerManager(data) {
         });
     };
 
-    this.getActiveInputs = function getActiveInputs() {
-        return this.activeInputs;
-    };
+    // this.getActiveInputs = function getActiveInputs() {
+    //     return this.activeInputs;
+    // };
 
-    this.addInputToActiveList = function addInputToActiveList(data) {
-        this.activeInputs.set(data.keyCode, [data.pActive, data.vActive]);
-    };
+    // this.addInputToActiveList = function addInputToActiveList(data) {
+    //     this.activeInputs.set(data.keyCode, [data.pActive, data.vActive]);
+    // };
 
-    this.removeInputFromActiveList = function removeInputFromActiveList(data) {
-        this.activeInputs.delete(data.keyCode);
-    };
+    // this.removeInputFromActiveList = function removeInputFromActiveList(data) {
+    //     this.activeInputs.delete(data.keyCode);
+    // };
 
-    this.removeInputFromVActiveList = function removeInputFromVActiveList(
-        data
-    ) {
-        let arr = this.activeInputs.get(data.keyCode);
+    // this.removeInputFromVActiveList = function removeInputFromVActiveList(
+    //     data
+    // ) {
+    //     let arr = this.activeInputs.get(data.keyCode);
 
-        if (arr) {
-            arr[1] = false;
-        }
+    //     if (arr) {
+    //         arr[1] = false;
+    //     }
 
-        this.activeInputs.set(data.keyCode, arr);
-    };
+    //     this.activeInputs.set(data.keyCode, arr);
+    // };
 
     // * Update the Key Status on User event
     this.updateKeyStatus = function updateKeyStatus(e) {
@@ -96,18 +96,18 @@ const ControllerManager = function ControllerManager(data) {
     window.addEventListener("keydown", _self.updateKeyStatus.bind(_self));
     window.addEventListener("keyup", _self.updateKeyStatus.bind(_self));
 
-    EventMgr.addEventListener(
-        "input_register_active",
-        this.addInputToActiveList
-    );
-    EventMgr.addEventListener(
-        "input_deregister_active",
-        this.removeInputFromActiveList
-    );
-    EventMgr.addEventListener(
-        "input_deregister_vactive",
-        this.removeInputFromVActiveList
-    );
+    // EventMgr.addEventListener(
+    //     "input_register_active",
+    //     this.addInputToActiveList
+    // );
+    // EventMgr.addEventListener(
+    //     "input_deregister_active",
+    //     this.removeInputFromActiveList
+    // );
+    // EventMgr.addEventListener(
+    //     "input_deregister_vactive",
+    //     this.removeInputFromVActiveList
+    // );
 };
 
 // * Key event Class wrapper - handle state of the key
@@ -154,6 +154,8 @@ ControllerManager.KeyInputEvent = function KeyInputEvent(
         if (!this.isVirtualActive) {
             return;
         }
+
+        this.eventFn();
 
         // * If should be single, set virtual state to off
         if (this.mode === INPUT_MODES.SINGLE) {

@@ -4,11 +4,7 @@ import ControllerMgr from "./../../Controller/ControllerManager.js";
 const Control = function Control(data) {
     this.controls = data.controls;
     this.playerControlled = true;
-
-    // * Register Controls with Manager
-    this.controls.forEach(function forEachControl(v, k) {
-        ControllerMgr.registerInputEvent(k, ...v);
-    });
+    this.controls = data.controls;
 
     Component.call(this, "Control");
 
