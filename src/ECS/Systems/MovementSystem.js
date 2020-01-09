@@ -51,6 +51,8 @@ const MovementSystem = function MovementSystem() {
                 _q.normalize();
 
                 velocity.isRotating = false;
+
+                // debugger;
             }
 
             _self.rotate(_q, translation);
@@ -58,8 +60,8 @@ const MovementSystem = function MovementSystem() {
     };
 
     this.move = function move(vector, distance, translationComponent) {
-        debugger;
-        _v1.copy(vector).applyQuaternion(translationComponent.currentRotation);
+        // debugger;
+        _v1.copy(vector).applyQuaternion(translationComponent.WorldQuaternion);
 
         translationComponent.nextPosition.add(_v1.multiplyScalar(distance));
     };
@@ -67,9 +69,12 @@ const MovementSystem = function MovementSystem() {
     this.rotate = function rotate(quat, translationComponent) {
         translationComponent.previousRotation =
             translationComponent.currentRotation;
+
         translationComponent.currentRotation =
             translationComponent.nextRotation;
+
         translationComponent.nextRotation = quat;
+        translationComponent.WorldQuaternion.multiply(quat).normalize();
     };
 
     // this.moveBy = function moveBy(vector, distance, entityUID) {

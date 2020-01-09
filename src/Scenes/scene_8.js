@@ -96,7 +96,7 @@ const createScene = function createScene(Graphics, EntityMgr, Controller) {
                                             Utilities.Vector3({
                                                 x: 0,
                                                 y: 0,
-                                                z: -1,
+                                                z: 1,
                                             }),
                                         ],
                                         ["distance", 0.0245],
@@ -120,7 +120,7 @@ const createScene = function createScene(Graphics, EntityMgr, Controller) {
                                             Utilities.Vector3({
                                                 x: 0,
                                                 y: 0,
-                                                z: 1,
+                                                z: -1,
                                             }),
                                         ],
                                         ["distance", 0.0245],

@@ -2,6 +2,7 @@ import Component from "./Component.js";
 import Utilities from "./../../Globals/Utilities.js";
 
 const Translation = function Translation(data) {
+    // * Positional
     this.currentPosition =
         data.position ||
         Utilities.Vector3({
@@ -13,12 +14,28 @@ const Translation = function Translation(data) {
     this.nextPosition = this.currentPosition;
     this.previousPosition = this.currentPosition;
 
-    this.currentRotation = data.rotation || new THREE.Quaternion();
+    // * Rotational
+
+    this.upVector = data.upVector || new THREE.Vector3({ x: 0, y: 1, z: 0 });
+
+    // * Current Rotation Vector
+    this.currentRotation =
+        data.rotation ||
+        new THREE.Vector3({
+            x: 0,
+            y: 0,
+            z: 0,
+        });
+
+    debugger;
+
+    // * World Quaternion
+    this.WorldQuaternion = new THREE.Quaternion();
+    this.WorldQuaternion.copy(this.currentRotation);
+
     this.initialRotation = this.currentRotation;
     this.nextRotation = this.currentRotation;
     this.previousRotation = this.currentRotation;
-
-    this._rotationVector = new THREE.Vector3();
 
     Component.call(this, "Translation");
 
