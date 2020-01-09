@@ -86,13 +86,91 @@ const createScene = function createScene(Graphics, EntityMgr, Controller) {
                                 "keydown",
                                 function() {
                                     // * Forward
-                                    Player.getComponent("Translation").moveBy(
-                                        { z: 1 },
-                                        0.0245
+                                    let velocity = Player.getComponent(
+                                        "Velocity"
                                     );
-                                    // camera.setCameraTargetTo(
-                                    //     actor.getPosition()
-                                    // );
+                                    if (!velocity) return;
+                                    velocity.directionalVelocity = new Map([
+                                        [
+                                            "direction",
+                                            Utilities.Vector3({
+                                                x: 0,
+                                                y: 0,
+                                                z: -1,
+                                            }),
+                                        ],
+                                        ["distance", 0.0245],
+                                    ]);
+                                },
+                            ],
+                        ],
+                        [
+                            KEYCODES.key_S,
+                            [
+                                "keydown",
+                                function() {
+                                    // * Forward
+                                    let velocity = Player.getComponent(
+                                        "Velocity"
+                                    );
+                                    if (!velocity) return;
+                                    velocity.directionalVelocity = new Map([
+                                        [
+                                            "direction",
+                                            Utilities.Vector3({
+                                                x: 0,
+                                                y: 0,
+                                                z: 1,
+                                            }),
+                                        ],
+                                        ["distance", 0.0245],
+                                    ]);
+                                },
+                            ],
+                        ],
+                        [
+                            KEYCODES.key_A,
+                            [
+                                "keydown",
+                                function() {
+                                    let velocity = Player.getComponent(
+                                        "Velocity"
+                                    );
+                                    if (!velocity) return;
+                                    velocity.rotationalVelocity = new Map([
+                                        [
+                                            "rotationVector",
+                                            Utilities.Vector3({
+                                                x: 0,
+                                                y: 1,
+                                                z: 0,
+                                            }),
+                                        ],
+                                        ["degree", 2],
+                                    ]);
+                                },
+                            ],
+                        ],
+                        [
+                            KEYCODES.key_D,
+                            [
+                                "keydown",
+                                function() {
+                                    let velocity = Player.getComponent(
+                                        "Velocity"
+                                    );
+                                    if (!velocity) return;
+                                    velocity.rotationalVelocity = new Map([
+                                        [
+                                            "rotationVector",
+                                            Utilities.Vector3({
+                                                x: 0,
+                                                y: 1,
+                                                z: 0,
+                                            }),
+                                        ],
+                                        ["degree", -2],
+                                    ]);
                                 },
                             ],
                         ],

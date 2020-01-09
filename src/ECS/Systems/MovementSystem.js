@@ -23,6 +23,7 @@ const MovementSystem = function MovementSystem() {
             // debugger;
 
             if (velocity.isMoving) {
+                // debugger;
                 _self.move(
                     velocity.positionCurrentVelocity.get("direction"),
                     velocity.positionCurrentVelocity.get("distance"),
@@ -32,21 +33,43 @@ const MovementSystem = function MovementSystem() {
                 translation.previousPosition = translation.currentPosition;
                 translation.currentPosition = translation.nextPosition;
                 _self.updatePosition = true;
+
+                // * Move is done
+                velocity.isMoving = false;
             }
 
-            // if (velocity.isRotating) {
-            translation.previousRotation = translation.currentRotation;
-            translation.currentRotation = translation.nextRotation;
-            translation.nextRotation = new THREE.Quaternion();
-            //     this.updateRotation = true;
-            // }
+            let _q = new THREE.Quaternion(),
+                _d = 0;
+
+            if (velocity.isRotating) {
+                _q.setFromAxisAngle(
+                    velocity.rotationalVelocity.get("rotationVector"),
+                    Utilities.degToRad(
+                        velocity.rotationalVelocity.get("degree")
+                    )
+                );
+                _q.normalize();
+
+                velocity.isRotating = false;
+            }
+
+            _self.rotate(_q, translation);
         });
     };
 
     this.move = function move(vector, distance, translationComponent) {
+        debugger;
         _v1.copy(vector).applyQuaternion(translationComponent.currentRotation);
 
         translationComponent.nextPosition.add(_v1.multiplyScalar(distance));
+    };
+
+    this.rotate = function rotate(quat, translationComponent) {
+        translationComponent.previousRotation =
+            translationComponent.currentRotation;
+        translationComponent.currentRotation =
+            translationComponent.nextRotation;
+        translationComponent.nextRotation = quat;
     };
 
     // this.moveBy = function moveBy(vector, distance, entityUID) {
