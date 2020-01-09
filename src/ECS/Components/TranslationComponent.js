@@ -27,8 +27,6 @@ const Translation = function Translation(data) {
             z: 0,
         });
 
-    debugger;
-
     // * World Quaternion
     this.WorldQuaternion = new THREE.Quaternion();
     this.WorldQuaternion.copy(this.currentRotation);

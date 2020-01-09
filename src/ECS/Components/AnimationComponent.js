@@ -1,7 +1,6 @@
-import Component from './Component.js';
+import Component from "./Component.js";
 
 const gAnimation = function gAnimation(data) {
-
     this.animations = [];
     this.animationAliases = data.animationAliases || new Map();
     this.animationSpeed = data.animationSpeed || 1;
@@ -10,11 +9,12 @@ const gAnimation = function gAnimation(data) {
     this.animationActions = new Map();
     this.currentAnimation = data.currentAnimation || "idle";
     this.previousAnimation = this.currentAnimation;
+    this.nextAnimation = this.currentAnimation;
 
     Component.call(this, "Animation");
 
     return this;
-}
+};
 
 gAnimation.prototype = Object.create(Component.prototype);
 gAnimation.prototype.constructor = gAnimation;

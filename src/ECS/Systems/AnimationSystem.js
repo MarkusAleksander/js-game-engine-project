@@ -1,9 +1,8 @@
-import System from './System.js';
+import System from "./System.js";
 
 const AnimationSystem = function AnimationSystem() {
-
     System.call(this, {
-        components: ["Animation", "Render"]
+        components: ["Animation", "Render"],
     });
 
     let _self = this;
@@ -18,53 +17,67 @@ const AnimationSystem = function AnimationSystem() {
                 }
                 return;
             }
-            animation.animationMixer.update(dT * 0.002 * animation.animationSpeed);
 
+            if (animation.currentAnimation !== animation.nextAnimation) {
+                _self.setAnimation(entity.getUID(), animation.nextAnimation);
+                animation.currentAnimation = animation.nextAnimation;
+            }
+
+            animation.animationMixer.update(
+                dT * 0.002 * animation.animationSpeed
+            );
         });
-    }
+    };
 
     this.setupAnimations = function setupAnimations(entity) {
-
         let animation = entity.getComponent("Animation"),
             render = entity.getComponent("Render");
 
-        if (!render.hasLoaded) { return; }
+        if (!render.hasLoaded) {
+            return;
+        }
 
         let animations = {};
 
-        animation.animations.forEach(function (anim) {
+        animation.animations.forEach(function(anim) {
             animations[anim.name] = anim;
         });
 
         // * Create mixer
         animation.animationMixer = new THREE.AnimationMixer(render.renderable);
-        animation.animationAliases.forEach(function forEachAnimation(animName, animKey) {
+        animation.animationAliases.forEach(function forEachAnimation(
+            animName,
+            animKey
+        ) {
             animation.animationActions.set(
                 animKey,
-                animation.animationMixer.clipAction(
-                    animations[animName]
-                ));
+                animation.animationMixer.clipAction(animations[animName])
+            );
         });
 
         animation.isReady = true;
 
         this.setAnimation(entity.getUID(), "idle");
-
-    }
+    };
 
     this.setAnimation = function setAnimation(entityUID, animationName) {
         let entity = this.EntityList.get(entityUID);
 
-        if (!entity) { return; }
+        if (!entity) {
+            return;
+        }
 
         let animation = entity.getComponent("Animation");
 
-        let requestedAnimationAction = animation.animationActions.get(animationName);
+        let requestedAnimationAction = animation.animationActions.get(
+            animationName
+        );
 
-        if (!requestedAnimationAction) { return; }
+        if (!requestedAnimationAction) {
+            return;
+        }
 
         let from = animation.animationActions.get(animation.currentAnimation);
-
 
         requestedAnimationAction.enabled = true;
         requestedAnimationAction.reset();
@@ -74,9 +87,8 @@ const AnimationSystem = function AnimationSystem() {
 
         animation.previousAnimation = animation.currentAnimation;
         animation.currentAnimation = animationName;
-
-    }
-}
+    };
+};
 
 AnimationSystem.prototype = Object.create(System.prototype);
 AnimationSystem.prototype.constructor = AnimationSystem;

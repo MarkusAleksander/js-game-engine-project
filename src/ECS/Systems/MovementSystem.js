@@ -3,7 +3,7 @@ import Utilities from "../../Globals/Utilities.js";
 
 const MovementSystem = function MovementSystem() {
     System.call(this, {
-        components: ["Translation", "Velocity"],
+        components: ["Translation"],
     });
 
     let _self = this;
@@ -14,16 +14,18 @@ const MovementSystem = function MovementSystem() {
 
     this.update = function update(dT) {
         this.EntityList.forEach(function forEachEntity(entity) {
-            let translation = entity.getComponent("Translation");
-            let velocity = entity.getComponent("Velocity");
+            let translation = entity.getComponent("Translation"),
+                velocity = entity.getComponent("Velocity"),
+                animation = entity.getComponent("Animation");
 
             // * Only need to update Translation is there's velocity
             if (!velocity) return;
 
-            // debugger;
+            if (animation) {
+                animation.nextAnimation = "idle";
+            }
 
             if (velocity.isMoving) {
-                // debugger;
                 _self.move(
                     velocity.positionCurrentVelocity.get("direction"),
                     velocity.positionCurrentVelocity.get("distance"),
@@ -33,6 +35,10 @@ const MovementSystem = function MovementSystem() {
                 translation.previousPosition = translation.currentPosition;
                 translation.currentPosition = translation.nextPosition;
                 _self.updatePosition = true;
+
+                if (animation) {
+                    animation.nextAnimation = "walk";
+                }
 
                 // * Move is done
                 velocity.isMoving = false;
@@ -51,8 +57,6 @@ const MovementSystem = function MovementSystem() {
                 _q.normalize();
 
                 velocity.isRotating = false;
-
-                // debugger;
             }
 
             _self.rotate(_q, translation);
@@ -60,7 +64,6 @@ const MovementSystem = function MovementSystem() {
     };
 
     this.move = function move(vector, distance, translationComponent) {
-        // debugger;
         _v1.copy(vector).applyQuaternion(translationComponent.WorldQuaternion);
 
         translationComponent.nextPosition.add(_v1.multiplyScalar(distance));
@@ -76,62 +79,6 @@ const MovementSystem = function MovementSystem() {
         translationComponent.nextRotation = quat;
         translationComponent.WorldQuaternion.multiply(quat).normalize();
     };
-
-    // this.moveBy = function moveBy(vector, distance, entityUID) {
-    //     let entity = this.EntityList.get(entityUID);
-
-    //     if (!entity) {
-    //         return;
-    //     }
-
-    //     let translation = entity.getComponent("Translation");
-
-    //     translation._rotationVector
-    //         .copy(vector)
-    //         .applyQuaternion(translation.currentRotation);
-    //     translation.nextPosition.add(
-    //         translation._rotationVector.multiplyScalar(distance)
-    //     );
-    // };
-
-    // this.moveTo = function moveTo(location, entityUID) {
-    //     let entity = this.EntityList.get(entityUID);
-
-    //     if (!entity) {
-    //         return;
-    //     }
-
-    //     let translation = entity.getComponent("Translation");
-
-    //     translation.nextPosition = location;
-    // };
-
-    // this.rotateBy = function rotateBy(vector, degrees, entityUID) {
-    //     let entity = this.EntityList.get(entityUID);
-
-    //     if (!entity) {
-    //         return;
-    //     }
-
-    //     let quat = new THREE.Quaternion();
-
-    //     quat.setFromAxisAngle(
-    //         new THREE.Vector3(vector.x || 0, vector.y || 0, vector.z || 0),
-    //         Utilities.degToRad(degrees)
-    //     );
-
-    //     entity.getComponent("Translation").nextRotation = quat.normalize();
-    // };
-
-    // this.rotateTo = function rotateTo(rotation, entityUID) {
-    //     let entity = this.EntityList.get(entityUID);
-
-    //     if (!entity) {
-    //         return;
-    //     }
-
-    //     // TODO
-    // };
 
     return this;
 };
