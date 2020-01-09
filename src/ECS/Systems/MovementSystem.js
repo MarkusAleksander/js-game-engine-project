@@ -18,6 +18,13 @@ const MovementSystem = function MovementSystem() {
                 velocity = entity.getComponent("Velocity"),
                 animation = entity.getComponent("Animation");
 
+            // * Pre velocity updates
+            translation.previousPosition = translation.currentPosition;
+            translation.currentPosition = translation.nextPosition;
+
+            translation.previousRotation = translation.currentRotation;
+            translation.currentRotation = translation.nextRotation;
+
             // * Only need to update Translation is there's velocity
             if (!velocity) return;
 
@@ -32,8 +39,6 @@ const MovementSystem = function MovementSystem() {
                     translation
                 );
 
-                translation.previousPosition = translation.currentPosition;
-                translation.currentPosition = translation.nextPosition;
                 _self.updatePosition = true;
 
                 if (animation) {
@@ -44,40 +49,32 @@ const MovementSystem = function MovementSystem() {
                 velocity.isMoving = false;
             }
 
-            let _q = new THREE.Quaternion(),
-                _d = 0;
+            // * Rotations
 
             if (velocity.isRotating) {
-                _q.setFromAxisAngle(
+                translation.nextRotation.setFromAxisAngle(
                     velocity.rotationalVelocity.get("rotationVector"),
                     Utilities.degToRad(
                         velocity.rotationalVelocity.get("degree")
                     )
                 );
-                _q.normalize();
+                translation.nextRotation.normalize();
+
+                _self.rotate(translation.nextRotation, translation);
 
                 velocity.isRotating = false;
             }
-
-            _self.rotate(_q, translation);
         });
     };
 
-    this.move = function move(vector, distance, translationComponent) {
-        _v1.copy(vector).applyQuaternion(translationComponent.WorldQuaternion);
-
-        translationComponent.nextPosition.add(_v1.multiplyScalar(distance));
+    this.move = function move(vector, distance, translation) {
+        _v1.copy(vector).applyQuaternion(translation.WorldQuaternion);
+        translation.nextPosition.add(_v1.multiplyScalar(distance));
     };
 
-    this.rotate = function rotate(quat, translationComponent) {
-        translationComponent.previousRotation =
-            translationComponent.currentRotation;
-
-        translationComponent.currentRotation =
-            translationComponent.nextRotation;
-
-        translationComponent.nextRotation = quat;
-        translationComponent.WorldQuaternion.multiply(quat).normalize();
+    this.rotate = function rotate(quat, translation) {
+        translation.WorldQuaternion.multiply(quat).normalize();
+        translation.nextRotation = new THREE.Quaternion();
     };
 
     return this;

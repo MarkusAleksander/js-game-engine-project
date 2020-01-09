@@ -23,8 +23,16 @@ const EntityManager = function EntityManager(data) {
             return;
         }
 
+        let entityComponents = Array.from(entity.Components.keys());
+
         Object.values(ECS.Systems).forEach(function forEachSystem(system) {
-            system.addEntity(entity);
+            if (
+                system.Components.every(function(el) {
+                    return entityComponents.includes(el);
+                })
+            ) {
+                system.addEntity(entity);
+            }
         });
 
         this.RegisteredEntityList.set(entity.getUID(), entity);

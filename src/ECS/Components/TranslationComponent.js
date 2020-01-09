@@ -27,13 +27,13 @@ const Translation = function Translation(data) {
             z: 0,
         });
 
-    // * World Quaternion
+    // * Rotation to World Axis
     this.WorldQuaternion = new THREE.Quaternion();
     this.WorldQuaternion.copy(this.currentRotation);
 
     this.initialRotation = this.currentRotation;
-    this.nextRotation = this.currentRotation;
     this.previousRotation = this.currentRotation;
+    this.nextRotation = new THREE.Quaternion();
 
     Component.call(this, "Translation");
 

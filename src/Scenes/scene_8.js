@@ -180,10 +180,56 @@ const createScene = function createScene(Graphics, EntityMgr, Controller) {
         ],
     });
 
+    let Ground = EntityMgr.createEntity({
+        components: [
+            {
+                name: "Base",
+                data: {
+                    onActivated: function() {
+                        if (this.isActive) {
+                            EventManager.dispatchEvent(
+                                "add_renderable",
+                                Ground.getComponent("Render").renderable
+                            );
+                        }
+                    },
+                    onDeactivated: function() {
+                        Graphics.removeRenderableFromScene(
+                            Ground.getComponent("Render").renderable
+                        );
+                    },
+                },
+            },
+            {
+                name: "Translation",
+                data: {
+                    position: Utilities.Vector3({ x: 0, y: 0, z: 0 }),
+                    rotation: new THREE.Quaternion().setFromAxisAngle(
+                        new THREE.Vector3(-1, 0, 0),
+                        Math.PI / 2
+                    ),
+                },
+            },
+            {
+                name: "Render",
+                data: {
+                    type: "load",
+                    src: "assets/solus_the_knight/scene.gltf",
+                    scale: 0.01,
+                    castShadow: true,
+                    receiveShadow: true,
+                },
+            },
+        ],
+    });
+
     window.Player = Player;
 
     EntityMgr.registerEntity(Player);
     EntityMgr.activateEntity(Player.getUID());
+
+    EntityMgr.registerEntity(Ground);
+    EntityMgr.activateEntity(Ground.getUID());
 
     EventManager.addEventListener("die", function onDie(e) {
         EntityMgr.deregisterEntity(e.getUID());
