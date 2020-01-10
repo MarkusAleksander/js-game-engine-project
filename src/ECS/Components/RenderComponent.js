@@ -1,21 +1,29 @@
-import Component from './Component.js';
+import Component from "./Component.js";
 
 const Render = function Render(data) {
-
-    this.isVisible = data.isVisible || false;
     this.renderable = data.renderable || new THREE.Object3D();
-    this.src = data.src || "";
-    this.scale = data.scale || 1;
-    this.castShadow = data.castShadow || false;
-    this.receiveShadow = data.receiveShadow || false;
-    this.type = data.type || "unknown";
     this.hasLoaded = false;
     this.isLoading = false;
+    this.type = data.type || "unknown";
+
+    this.meshData = {
+        isVisible: data.isVisible || false,
+        src: data.src || "",
+        scale: data.scale || 1,
+        castShadow: data.castShadow || false,
+        receiveShadow: data.receiveShadow || false,
+        type:
+            data.geometry !== undefined
+                ? data.geometry.type || "unknown"
+                : "unknown",
+        geometry: data.geometry !== undefined ? data.geometry.data || {} : {},
+        material: data.material !== undefined ? data.material || {} : {},
+    };
 
     Component.call(this, "Render");
 
     return this;
-}
+};
 
 Render.prototype = Object.create(Component.prototype);
 Render.prototype.constructor = Render;

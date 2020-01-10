@@ -1,6 +1,11 @@
 import EventManager from "./../EventSystem/EventManager.js";
 import Utilities from "./../Globals/Utilities.js";
 import { KEYCODES, INPUT_MODES } from "../Globals/KeyCodes.js";
+import {
+    MESH_TYPES,
+    MATERIAL_TYPES,
+    MATERIAL_REPEAT_TYPES,
+} from "../Globals/ActorTypes.js";
 
 const createScene = function createScene(Graphics, EntityMgr, Controller) {
     // debugger;
@@ -213,17 +218,35 @@ const createScene = function createScene(Graphics, EntityMgr, Controller) {
             {
                 name: "Render",
                 data: {
-                    type: "load",
-                    src: "assets/solus_the_knight/scene.gltf",
-                    scale: 0.01,
-                    castShadow: true,
+                    type: "simple",
+                    scale: 1,
+                    castShadow: false,
                     receiveShadow: true,
+                    geometry: {
+                        type: MESH_TYPES.PLANE,
+                        data: {
+                            width: 20,
+                            height: 20,
+                        },
+                    },
+                    material: {
+                        color: 0xffffff,
+                        textures: "src/Textures/brickwall.jpg",
+                        textureTypes: {
+                            type: MATERIAL_TYPES.LAMBERT,
+                            wrapU: MATERIAL_REPEAT_TYPES.REPEAT,
+                            wrapV: MATERIAL_REPEAT_TYPES.REPEAT,
+                            wrapUtimes: 4,
+                            wrapVtimes: 4,
+                        },
+                    },
                 },
             },
         ],
     });
 
     window.Player = Player;
+    window.Ground = Ground;
 
     EntityMgr.registerEntity(Player);
     EntityMgr.activateEntity(Player.getUID());
