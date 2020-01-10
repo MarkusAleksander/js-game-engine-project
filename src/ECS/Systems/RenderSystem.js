@@ -48,7 +48,7 @@ const RenderSystem = function RenderSystem() {
             render.isLoading = true;
 
             RenderFactory.loadByGLTF(
-                render.meshData,
+                render.renderData,
                 (gltf, scene) => {
                     render.isLoading = false;
                     render.hasLoaded = true;
@@ -87,7 +87,35 @@ const RenderSystem = function RenderSystem() {
         if (render.type === "simple") {
             render.isLoading = true;
 
-            RenderFactory.loadSimpleMesh(render.meshData, (scene) => {
+            RenderFactory.loadSimpleMesh(render.renderData, (scene) => {
+                render.isLoading = false;
+                render.hasLoaded = true;
+                render.renderable = scene;
+
+                if (translation) {
+                    render.renderable.position.set(
+                        translation.initialPosition.x || 0,
+                        translation.initialPosition.y || 0,
+                        translation.initialPosition.z || 0
+                    );
+                    render.renderable.applyQuaternion(
+                        translation.initialRotation
+                    );
+                }
+
+                if (base.isActive) {
+                    EventManager.dispatchEvent(
+                        "add_renderable",
+                        render.renderable
+                    );
+                }
+            });
+        }
+
+        if (render.type === "light") {
+            render.isLoading = true;
+
+            RenderFactory.createLight(render.renderData, (scene) => {
                 render.isLoading = false;
                 render.hasLoaded = true;
                 render.renderable = scene;

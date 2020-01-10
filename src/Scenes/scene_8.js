@@ -5,6 +5,7 @@ import {
     MESH_TYPES,
     MATERIAL_TYPES,
     MATERIAL_REPEAT_TYPES,
+    LIGHT_ACTOR_TYPES,
 } from "../Globals/ActorTypes.js";
 
 const createScene = function createScene(Graphics, EntityMgr, Controller) {
@@ -245,14 +246,106 @@ const createScene = function createScene(Graphics, EntityMgr, Controller) {
         ],
     });
 
+    let Light = EntityMgr.createEntity({
+        components: [
+            {
+                name: "Base",
+                data: {
+                    onActivated: function() {
+                        if (this.isActive) {
+                            EventManager.dispatchEvent(
+                                "add_renderable",
+                                Light.getComponent("Render").renderable
+                            );
+                        }
+                    },
+                    onDeactivated: function() {
+                        Graphics.removeRenderableFromScene(
+                            Light.getComponent("Render").renderable
+                        );
+                    },
+                },
+            },
+            {
+                name: "Translation",
+                data: {
+                    position: Utilities.Vector3({ x: 2, y: 2, z: 0 }),
+                },
+            },
+            {
+                name: "Render",
+                data: {
+                    type: "light",
+                    scale: 1,
+                    castShadow: true,
+                    receiveShadow: false,
+                    light: {
+                        type: LIGHT_ACTOR_TYPES.DIRECTIONAL,
+                        data: {
+                            color: 0xffffff,
+                            intensity: 2.5,
+                            target: { x: 0, y: 0, z: 0 },
+                        },
+                    },
+                },
+            },
+        ],
+    });
+
+    let AmbientLight = EntityMgr.createEntity({
+        components: [
+            {
+                name: "Base",
+                data: {
+                    onActivated: function() {
+                        if (this.isActive) {
+                            EventManager.dispatchEvent(
+                                "add_renderable",
+                                AmbientLight.getComponent("Render").renderable
+                            );
+                        }
+                    },
+                    onDeactivated: function() {
+                        Graphics.removeRenderableFromScene(
+                            AmbientLight.getComponent("Render").renderable
+                        );
+                    },
+                },
+            },
+            {
+                name: "Render",
+                data: {
+                    type: "light",
+                    scale: 1,
+                    castShadow: true,
+                    receiveShadow: false,
+                    light: {
+                        type: LIGHT_ACTOR_TYPES.AMBIENT,
+                        data: {
+                            color: 0xff0000,
+                            intensity: 1,
+                        },
+                    },
+                },
+            },
+        ],
+    });
+
     window.Player = Player;
     window.Ground = Ground;
+    window.Light = AmbientLight;
 
     EntityMgr.registerEntity(Player);
     EntityMgr.activateEntity(Player.getUID());
 
     EntityMgr.registerEntity(Ground);
     EntityMgr.activateEntity(Ground.getUID());
+
+    // EntityMgr.registerEntity(Light);
+    // EntityMgr.activateEntity(Light.getUID());
+
+    EntityMgr.registerEntity(AmbientLight);
+    EntityMgr.activateEntity(AmbientLight.getUID());
 
     EventManager.addEventListener("die", function onDie(e) {
         EntityMgr.deregisterEntity(e.getUID());

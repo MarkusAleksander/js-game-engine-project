@@ -131,7 +131,52 @@ const RenderableFactory = function RenderableFactory() {
         let scene = new THREE.Mesh(geometry, material);
         scene.add(new THREE.AxesHelper());
 
+        scene.castShadow = settings.castShadow;
+        scene.receiveShadow = settings.receiveShadow;
+
         onload(scene);
+    };
+
+    this.createLight = function createLight(settings, onload) {
+        // TODO - Improve construction - note - color is different for hemi
+        // const light = new LightActor({
+        //     id: this.cAuID++,
+        //     color: settings.color,
+        //     intensity: settings.intensity,
+        //     position: settings.position,
+        //     target: settings.target
+        // });
+
+        let light = settings.light;
+
+        let lightObj = null;
+
+        switch (light.type) {
+            case LIGHT_ACTOR_TYPES.DIRECTIONAL:
+                lightObj = new THREE.DirectionalLight(
+                    light.color,
+                    light.intensity
+                );
+                break;
+            case LIGHT_ACTOR_TYPES.AMBIENT:
+                lightObj = new THREE.AmbientLight(light.color, light.intensity);
+                break;
+            case LIGHT_ACTOR_TYPES.HEMISPHERE:
+                lightObj = new THREE.HemisphereLight(
+                    light.skyColor,
+                    light.groundColor,
+                    light.intensity
+                );
+                break;
+            default:
+                break;
+        }
+
+        lightObj.add(new THREE.AxesHelper());
+
+        lightObj.castShadow = settings.castShadow;
+
+        onload(lightObj);
     };
 
     this.buildMaterial = function buildMaterial(data, numSides) {
