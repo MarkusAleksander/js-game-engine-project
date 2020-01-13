@@ -282,8 +282,8 @@ const createScene = function createScene(Graphics, EntityMgr, Controller) {
                     light: {
                         type: LIGHT_ACTOR_TYPES.DIRECTIONAL,
                         data: {
-                            color: 0xffffff,
-                            intensity: 2.5,
+                            color: 0xffcccc,
+                            intensity: 1,
                             target: { x: 0, y: 0, z: 0 },
                         },
                     },
@@ -322,8 +322,8 @@ const createScene = function createScene(Graphics, EntityMgr, Controller) {
                     light: {
                         type: LIGHT_ACTOR_TYPES.AMBIENT,
                         data: {
-                            color: 0xff0000,
-                            intensity: 1,
+                            color: 0xffaabb,
+                            intensity: 0.9,
                         },
                     },
                 },
@@ -341,8 +341,8 @@ const createScene = function createScene(Graphics, EntityMgr, Controller) {
     EntityMgr.registerEntity(Ground);
     EntityMgr.activateEntity(Ground.getUID());
 
-    // EntityMgr.registerEntity(Light);
-    // EntityMgr.activateEntity(Light.getUID());
+    EntityMgr.registerEntity(Light);
+    EntityMgr.activateEntity(Light.getUID());
 
     EntityMgr.registerEntity(AmbientLight);
     EntityMgr.activateEntity(AmbientLight.getUID());

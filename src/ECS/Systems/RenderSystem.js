@@ -4,7 +4,7 @@ import RenderFactory from "./../../Renderable/RenderableFactory.js";
 
 const RenderSystem = function RenderSystem() {
     System.call(this, {
-        components: ["Render", "Translation"],
+        components: ["Render"],
     });
 
     let _self = this;
@@ -24,6 +24,10 @@ const RenderSystem = function RenderSystem() {
             if (!render.hasLoaded && !render.isLoading) {
                 // * If the render hasn't loaded, and isn't in the process of doing so, it needs to be loaded
                 _self.createRenderable(entity);
+                return;
+            }
+
+            if (!translation) {
                 return;
             }
 
@@ -114,7 +118,6 @@ const RenderSystem = function RenderSystem() {
 
         if (render.type === "light") {
             render.isLoading = true;
-
             RenderFactory.createLight(render.renderData, (scene) => {
                 render.isLoading = false;
                 render.hasLoaded = true;

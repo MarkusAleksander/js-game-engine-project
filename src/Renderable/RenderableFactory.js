@@ -146,8 +146,8 @@ const RenderableFactory = function RenderableFactory() {
         //     position: settings.position,
         //     target: settings.target
         // });
-
         let light = settings.light;
+        let data = light.data;
 
         let lightObj = null;
 
@@ -159,7 +159,7 @@ const RenderableFactory = function RenderableFactory() {
                 );
                 break;
             case LIGHT_ACTOR_TYPES.AMBIENT:
-                lightObj = new THREE.AmbientLight(light.color, light.intensity);
+                lightObj = new THREE.AmbientLight(data.color, data.intensity);
                 break;
             case LIGHT_ACTOR_TYPES.HEMISPHERE:
                 lightObj = new THREE.HemisphereLight(
@@ -180,9 +180,6 @@ const RenderableFactory = function RenderableFactory() {
     };
 
     this.buildMaterial = function buildMaterial(data, numSides) {
-        // debugger;
-        // debugger;
-        // debugger;
         let color = data.color,
             textures = data.textures,
             textureTypes = data.textureTypes;

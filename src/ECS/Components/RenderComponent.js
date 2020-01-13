@@ -23,7 +23,6 @@ const Render = function Render(data) {
     }
 
     if (data.light) {
-        debugger;
         let light = data.light;
 
         this.renderData.light = light || {};
