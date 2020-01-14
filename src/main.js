@@ -20,6 +20,7 @@ import {
 } from "./Globals/Globals.js";
 
 import createScene from "./Scenes/scene_8.js";
+import PhysicsMgr from "./Physics/PhysicsManager.js";
 
 // * -----------------------------------
 // *    MAIN
@@ -60,6 +61,9 @@ import createScene from "./Scenes/scene_8.js";
         far: 100,
     });
 
+    // * Initialise Physics
+    PhysicsMgr.initialise();
+
     // * Initialise Actor Manager
     ActorMgr.initialise();
 
@@ -85,7 +89,9 @@ import createScene from "./Scenes/scene_8.js";
     let ControllerManagerUpdaterID = EngineMgr.registerUpdater(
         ControllerMgr.update.bind(ControllerMgr)
     );
-
+    let PhysicsManagerUpdaterID = EngineMgr.registerUpdater(
+        PhysicsMgr.update.bind(PhysicsMgr)
+    );
     let ECSManagerUpdaterID = EngineMgr.registerUpdater(
         EntityMgr.update.bind(EntityMgr)
     );

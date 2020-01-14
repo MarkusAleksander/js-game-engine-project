@@ -183,6 +183,10 @@ const createScene = function createScene(Graphics, EntityMgr, Controller) {
                     ]),
                 },
             },
+            {
+                name: "Physics",
+                data: {},
+            },
         ],
     });
 

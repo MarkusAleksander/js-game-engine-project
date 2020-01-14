@@ -1,40 +1,39 @@
 <!DOCTYPE html>
 <html lang="en">
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+        <title>Document</title>
+        <style>
+            html,
+            body,
+            canvas {
+                overflow: hidden;
+                box-sizing: border-box;
+                width: 100%;
+                height: 100%;
+                margin: 0;
+                padding: 0;
+                border: 0;
+            }
 
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title>Document</title>
-    <style>
-        html,
-        body,
-        canvas {
-            height: 100%;
-            width: 100%;
-            margin: 0;
-            padding: 0;
-            border: 0;
-            box-sizing: border-box;
-            overflow: hidden;
-        }
+            canvas {
+                display: block;
+            }
+        </style>
+    </head>
 
-        canvas {
-            display: block;
-        }
-    </style>
-</head>
-
-<body>
-    <!-- * brickwall.jpg taken from turbosquid.com -->
-    <!-- * Asset solus the knight taken from sketchfab -->
-    <!-- * Asset animated dragon taken from sketchfab -->
-    <canvas id="canvas"></canvas>
-    <script src="three.min.js"></script>
-    <!-- * GLTF Loader -->
-    <!-- TODO - Module THREE js -->
-    <script src="GLTFLoader.js"></script>
-    <script type="module" src="src/main.js"></script>
-</body>
-
+    <body>
+        <!-- * brickwall.jpg taken from turbosquid.com -->
+        <!-- * Asset solus the knight taken from sketchfab -->
+        <!-- * Asset animated dragon taken from sketchfab -->
+        <canvas id="canvas"></canvas>
+        <script src="three.min.js"></script>
+        <script src="oimo.min.js"></script>
+        <!-- * GLTF Loader -->
+        <!-- TODO - Module THREE js -->
+        <script src="GLTFLoader.js"></script>
+        <script type="module" src="src/main.js"></script>
+    </body>
 </html>

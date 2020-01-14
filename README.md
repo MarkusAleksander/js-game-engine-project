@@ -4,15 +4,17 @@ Game Engine Project under development using Three.js and much better development
 
 -   Engine Manager (handle updates)
 -   Graphics Manager (handle rendering, render updates and scene)
--   Actor Manager (handle actors)
--   Actor Factory (create actors)
+-   Actor Manager (handle actors) - Defunct
+-   Actor Factory (create actors) - Defunct
 
 TODOs:
 
 -   Object disposal
 -   Write Scene Creation Guide
 -   Mesh merge
--   Entity Component System
+-   Entity Component System (Done) - Component and Entity Removal needs to be check
+-   Detect Directional - For Animation - Walking backwards or forwards?
+-   Physics
 
 ## Notes
 

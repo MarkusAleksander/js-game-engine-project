@@ -157,6 +157,7 @@ const RenderableFactory = function RenderableFactory() {
                     light.color,
                     light.intensity
                 );
+                lightObj.castShadow = settings.castShadow;
                 break;
             case LIGHT_ACTOR_TYPES.AMBIENT:
                 lightObj = new THREE.AmbientLight(data.color, data.intensity);
@@ -173,8 +174,6 @@ const RenderableFactory = function RenderableFactory() {
         }
 
         lightObj.add(new THREE.AxesHelper());
-
-        lightObj.castShadow = settings.castShadow;
 
         onload(lightObj);
     };
